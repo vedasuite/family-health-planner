@@ -1,0 +1,1073 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Family Health Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: a form panel on the left, live results on the right; stacks to one column on phones. */
+:root {
+  --bg: #f3f6f7;
+  --surface: #ffffff;
+  --surface-2: #eaf0f1;
+  --fg: #14232b;
+  --muted: #4d626b;
+  --line: #d3dcdf;
+  --accent: #0b6b6b;
+  --accent-fg: #ffffff;
+  --accent-soft: #dcefec;
+  --high: #a8281c;
+  --high-bg: #fcebe8;
+  --mod: #8a5200;
+  --mod-bg: #fff2d9;
+  --low: #1c6a3b;
+  --low-bg: #e2f3e7;
+  --info: #285585;
+  --info-bg: #e4edf8;
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d171b;
+    --surface: #142228;
+    --surface-2: #1a2b32;
+    --fg: #e5eef0;
+    --muted: #9db1b8;
+    --line: #2a3e46;
+    --accent: #4fc3b8;
+    --accent-fg: #062a27;
+    --accent-soft: #163a39;
+    --high: #ff9a90;
+    --high-bg: #3b1d1b;
+    --mod: #f2b552;
+    --mod-bg: #3a2d12;
+    --low: #78d496;
+    --low-bg: #163423;
+    --info: #94bdf0;
+    --info-bg: #182b43;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d171b;
+  --surface: #142228;
+  --surface-2: #1a2b32;
+  --fg: #e5eef0;
+  --muted: #9db1b8;
+  --line: #2a3e46;
+  --accent: #4fc3b8;
+  --accent-fg: #062a27;
+  --accent-soft: #163a39;
+  --high: #ff9a90;
+  --high-bg: #3b1d1b;
+  --mod: #f2b552;
+  --mod-bg: #3a2d12;
+  --low: #78d496;
+  --low-bg: #163423;
+  --info: #94bdf0;
+  --info-bg: #182b43;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  padding-block: 20px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1180px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.2; }
+h1 { font-size: clamp(26px, 4vw, 34px); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 19px; font-weight: 600; }
+h3 { font-size: 16px; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+
+.top { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: flex-end; justify-content: space-between; margin-bottom: 16px; }
+.top .sub { color: var(--muted); margin-top: 6px; max-width: 56ch; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: var(--surface); }
+.chip.warn { color: var(--mod); background: var(--mod-bg); border-color: transparent; }
+
+.notice { background: var(--info-bg); color: var(--info); border-radius: 10px; padding: 12px 14px; margin-bottom: 20px; font-size: 14px; }
+.notice strong { font-weight: 600; }
+
+.layout { display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 880px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+legend { font-family: var(--font-display); font-weight: 600; font-size: 16px; padding: 0 0 8px; width: 100%; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+.row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.row3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field > span, .age-wrap { font-size: 13px; font-weight: 500; color: var(--muted); }
+.hint { font-size: 12.5px; color: var(--muted); }
+input[type="number"], select {
+  width: 100%; font: inherit; color: var(--fg); background: var(--surface-2);
+  border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; min-height: 40px;
+}
+input[type="number"]:focus-visible, select:focus-visible, button:focus-visible, .chk input:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chk { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--fg); cursor: pointer; }
+.chk input { margin-top: 3px; width: 17px; height: 17px; accent-color: var(--accent); flex: none; }
+
+.members { display: flex; flex-direction: column; gap: 10px; }
+.member { border: 1px solid var(--line); background: var(--surface-2); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.member-top { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+.member-top select { max-width: 180px; background: var(--surface); }
+.conds { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px; }
+.age-wrap { display: flex; flex-direction: column; gap: 4px; }
+.age-wrap input { background: var(--surface); max-width: 120px; }
+.btn { font: inherit; font-weight: 600; font-size: 14px; border-radius: 8px; padding: 9px 14px; min-height: 40px; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
+.btn:hover { filter: brightness(0.97); }
+.link-btn { font: inherit; font-size: 13px; background: none; border: 0; color: var(--accent); cursor: pointer; padding: 6px 4px; text-decoration: underline; }
+
+.example-bar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; background: var(--mod-bg); color: var(--mod); border-radius: 10px; padding: 10px 12px; font-size: 13.5px; }
+.example-bar .link-btn { color: var(--mod); font-weight: 600; }
+
+.results { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.section { display: flex; flex-direction: column; gap: 12px; }
+.section-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; justify-content: space-between; }
+.section-head p { color: var(--muted); font-size: 13.5px; }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 1080px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+
+.risk { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.risk header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.risk .headline { font-weight: 500; }
+.pill { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+.pill.high { background: var(--high-bg); color: var(--high); }
+.pill.mod { background: var(--mod-bg); color: var(--mod); }
+.pill.low { background: var(--low-bg); color: var(--low); }
+.pill.info { background: var(--info-bg); color: var(--info); }
+.risk.high { border-top: 3px solid var(--high); }
+.risk.mod { border-top: 3px solid var(--mod); }
+.risk.low { border-top: 3px solid var(--low); }
+.risk.info { border-top: 3px solid var(--info); }
+
+ul.items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+ul.items li { display: flex; flex-direction: column; gap: 4px; font-size: 14px; min-width: 0; overflow-wrap: anywhere; }
+.tag { align-self: flex-start; font-size: 11.5px; font-weight: 600; color: var(--muted); background: var(--surface-2); border-radius: 6px; padding: 2px 8px; }
+.tag.guide { color: var(--accent); background: var(--accent-soft); }
+.tag.tool { color: var(--info); background: var(--info-bg); }
+.tag.proto { color: var(--mod); background: var(--mod-bg); }
+
+.block { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; min-width: 0; }
+.tests { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 720px) { .tests { grid-template-columns: minmax(0, 1fr); } }
+.test { border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px; background: var(--surface); min-width: 0; }
+.test .name { font-weight: 600; }
+.test .when { font-size: 14px; }
+.test .why { font-size: 13.5px; color: var(--muted); }
+
+.member-out { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px; }
+.member-out:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
+.member-out h3 { margin-bottom: 6px; }
+
+.emergency { background: var(--high-bg); color: var(--high); border-radius: 12px; padding: 14px 16px; font-size: 14px; }
+.emergency strong { font-weight: 700; }
+.scroll-x { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; }
+td.num { text-align: right; }
+details { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 12px 16px; }
+details summary { cursor: pointer; font-family: var(--font-display); font-weight: 600; }
+details[open] summary { margin-bottom: 12px; }
+details .inner { display: flex; flex-direction: column; gap: 14px; font-size: 14px; }
+.src-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 12px; padding: 28px; text-align: center; color: var(--muted); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+#copyBox { width: 100%; min-height: 140px; font: 13px/1.5 var(--font-body); color: var(--fg); background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+.status { font-size: 13px; color: var(--low); }
+input[type="text"], textarea {
+  width: 100%; font: inherit; color: var(--fg); background: var(--surface-2);
+  border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; min-height: 40px;
+}
+input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+textarea { resize: vertical; min-height: 84px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.profile-bar { display: flex; flex-wrap: wrap; gap: 10px 12px; align-items: flex-end; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; }
+.profile-bar .field { flex: 1 1 190px; }
+.profile-bar .hint { flex-basis: 100%; }
+.profile-bar .status { flex-basis: 100%; }
+.live-bar { display: none; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding: 8px 0; margin-bottom: 12px; border-bottom: 1px solid var(--line); gap: 6px; flex-wrap: wrap; }
+@media (max-width: 880px) { .live-bar:not([hidden]) { display: flex; } }
+.results-col { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.ask-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.ask-row .field { flex: 1 1 220px; }
+.answer { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface-2); border-radius: 10px; padding: 12px 14px; font-size: 14.5px; }
+.stack { display: flex; flex-direction: column; gap: 12px; }
+.block h2 + .hint { margin-top: 4px; }
+.status.err { color: var(--high); }
+#results { scroll-margin-top: 64px; }
+.live-bar { cursor: pointer; }
+#seeResults { width: 100%; }
+a.btn { display: inline-flex; align-items: center; text-decoration: none; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Family Health Planner</h1>
+      <p class="sub">See what runs in your family, which checks to ask about, and what to plan for, before something becomes urgent.</p>
+    </div>
+    <div class="chips">
+      <span class="chip warn">Prototype</span>
+      <span class="chip">Not clinically reviewed</span>
+      <span class="chip">Not a diagnosis</span>
+    </div>
+  </header>
+
+  <div class="notice">
+    <strong>How to read this.</strong> The medical rules here come from named guidelines and a validated Indian risk score, and every result says which. A doctor has not reviewed them yet. Everything you type stays in this browser tab. Nothing is sent or saved.
+  </div>
+
+  <section class="profile-bar" id="profileBar" aria-label="Saved profiles">
+    <label class="field"><span>Saved profiles</span>
+      <select id="profileSel"><option value="">Choose a saved profile</option></select>
+    </label>
+    <label class="field"><span>Name for this profile</span>
+      <input type="text" id="profileName" maxlength="40" placeholder="e.g. Papa, Mom, Me">
+    </label>
+    <button type="button" class="btn primary" id="profileSave">Save</button>
+    <button type="button" class="btn" id="profileNew">New blank</button>
+    <button type="button" class="btn" id="profileDelete">Delete</button>
+    <p class="hint" id="profileHint">Profiles are saved in this browser on this device only. Each family member who opens the link keeps their own.</p>
+    <p class="status" id="profileStatus" role="status"></p>
+  </section>
+
+  <div class="live-bar" id="liveBar" hidden></div>
+
+  <div class="layout">
+    <form id="form" class="panel" onsubmit="return false" autocomplete="off">
+      <div class="example-bar" id="exampleBar">
+        <span id="exampleMsg">Want to see how it works first? Load a sample family.</span>
+        <button type="button" class="link-btn" id="clearExample">Load example</button>
+      </div>
+
+      <fieldset>
+        <legend>About you</legend>
+        <div class="row2">
+          <label class="field"><span>Age (years)</span><input type="number" id="age" inputmode="numeric" min="1" max="110"></label>
+          <label class="field"><span>Sex</span>
+            <select id="sex"><option value="M">Male</option><option value="F">Female</option></select>
+          </label>
+        </div>
+        <div class="row3">
+          <label class="field"><span>Height (cm)</span><input type="number" id="height" inputmode="decimal" min="100" max="230"></label>
+          <label class="field"><span>Weight (kg)</span><input type="number" id="weight" inputmode="decimal" min="25" max="250"></label>
+          <label class="field"><span>Waist (cm)</span><input type="number" id="waist" inputmode="decimal" min="40" max="200"></label>
+        </div>
+        <p class="hint">Measure your waist around the belly at navel level, after breathing out. Waist is needed for the diabetes risk score.</p>
+        <label class="field"><span>Physical activity</span>
+          <select id="activity">
+            <option value="">Select</option>
+            <option value="0">Regular vigorous exercise, or strenuous physical work</option>
+            <option value="10">Regular moderate exercise, or moderate activity at work or home</option>
+            <option value="20">Regular mild exercise (yoga, easy walks), or mild activity</option>
+            <option value="30">No exercise and a mostly seated routine</option>
+          </select>
+        </label>
+        <label class="field"><span>Tobacco</span>
+          <select id="smoke">
+            <option value="never">Never used</option>
+            <option value="former">Used before, stopped</option>
+            <option value="current">Use now (smoking or chewing)</option>
+          </select>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Eating habits</legend>
+        <label class="chk"><input type="checkbox" id="d-salt"> High in salt: pickles, papad, namkeen, packaged food</label>
+        <label class="chk"><input type="checkbox" id="d-sweet"> Sweets or sugary drinks most days</label>
+        <label class="chk"><input type="checkbox" id="d-fried"> Fried or street food several times a week</label>
+        <label class="chk"><input type="checkbox" id="d-lowfv"> Fruit and vegetables less than once a day</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Your own health</legend>
+        <label class="chk"><input type="checkbox" id="o-dm"> Diabetes</label>
+        <label class="chk"><input type="checkbox" id="o-predm"> Prediabetes (told sugar is borderline)</label>
+        <label class="chk"><input type="checkbox" id="o-htn"> High blood pressure</label>
+        <label class="chk"><input type="checkbox" id="o-cvd"> Heart disease or stroke</label>
+        <label class="chk"><input type="checkbox" id="o-chol"> High cholesterol</label>
+        <label class="chk"><input type="checkbox" id="o-ckd"> Kidney disease</label>
+        <label class="chk"><input type="checkbox" id="o-gdm"> Diabetes during pregnancy (women)</label>
+        <p class="hint">Latest readings, if you have them (optional)</p>
+        <div class="row3">
+          <label class="field"><span>BP top</span><input type="number" id="sys" inputmode="numeric" min="60" max="260" placeholder="e.g. 128"></label>
+          <label class="field"><span>BP bottom</span><input type="number" id="dia" inputmode="numeric" min="30" max="160" placeholder="e.g. 82"></label>
+          <label class="field"><span>HbA1c (%)</span><input type="number" id="a1c" inputmode="decimal" step="0.1" min="3" max="18" placeholder="e.g. 5.6"></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Family history</legend>
+        <p class="hint">Add parents, brothers, sisters and children first. These count most. Grandparents, uncles and aunts are noted but do not change the scores. For a heart attack, blockage, bypass or stroke, add the age it first happened.</p>
+        <div class="members" id="members"></div>
+        <button type="button" class="btn" id="addMember">Add a family member</button>
+      </fieldset>
+
+      <div class="stack">
+        <button type="button" class="btn primary" id="seeResults">See my results</button>
+        <p class="hint">Results also update by themselves as you type. On a phone they appear below this form.</p>
+        <p class="status err" id="seeStatus" role="status"></p>
+      </div>
+    </form>
+
+    <main class="results-col">
+      <div class="results" id="results" aria-live="polite"></div>
+
+      <section class="block stack" id="explainBox" hidden>
+        <div>
+          <h2>Explain it in your language</h2>
+          <p class="hint">Claude rewrites the results above in simple words, or answers a question about them. The rules above decide the risk levels, not Claude. It can make mistakes, so check anything important with a doctor. Your results summary is sent to Claude when you press a button.</p>
+        </div>
+        <div class="ask-row">
+          <label class="field"><span>Language</span>
+            <select id="lang">
+              <option>English</option>
+              <option value="Hindi (हिन्दी)">Hindi (हिन्दी)</option>
+              <option value="Kannada (ಕನ್ನಡ)">Kannada (ಕನ್ನಡ)</option>
+              <option value="Tamil (தமிழ்)">Tamil (தமிழ்)</option>
+              <option value="Telugu (తెలుగు)">Telugu (తెలుగు)</option>
+              <option value="Malayalam (മലയാളം)">Malayalam (മലയാളം)</option>
+              <option value="Marathi (मराठी)">Marathi (मराठी)</option>
+              <option value="Bengali (বাংলা)">Bengali (বাংলা)</option>
+              <option value="Gujarati (ગુજરાતી)">Gujarati (ગુજરાતી)</option>
+            </select>
+          </label>
+          <button type="button" class="btn primary" id="explainBtn">Explain my results</button>
+        </div>
+        <div class="ask-row">
+          <label class="field"><span>Or ask a question about these results</span>
+            <input type="text" id="askQ" maxlength="300" placeholder="e.g. What should I do first?">
+          </label>
+          <button type="button" class="btn" id="askBtn">Ask</button>
+          <button type="button" class="btn" id="stopBtn" hidden>Stop</button>
+        </div>
+        <div class="answer" id="answer" role="status" hidden></div>
+      </section>
+
+      <section class="block stack" id="feedbackBox">
+        <div>
+          <h2>Tell me how this worked for you</h2>
+          <p class="hint">This is a test version. Your answers below help check whether it is clear and accurate. Nothing is sent from this page. You copy the text and send it to the person who shared this with you.</p>
+        </div>
+        <div class="row2">
+          <label class="field"><span>Who is testing</span><input type="text" id="fbWho" maxlength="40" placeholder="e.g. Mom"></label>
+          <label class="field"><span>Was it easy to understand?</span>
+            <select id="fbClear"><option value="">Select</option><option>1 - Confusing</option><option>2</option><option>3 - Okay</option><option>4</option><option>5 - Very clear</option></select>
+          </label>
+        </div>
+        <label class="field"><span>Did the results match what you already know about your health and family?</span>
+          <select id="fbMatch"><option value="">Select</option><option>Yes, matched well</option><option>Mostly</option><option>Partly</option><option>No, something looked wrong</option></select>
+        </label>
+        <label class="field"><span>Anything wrong, missing or confusing? Anything you would want it to tell you?</span>
+          <textarea id="fbText" maxlength="1500"></textarea>
+        </label>
+        <label class="chk"><input type="checkbox" id="fbInclude"> Include my results summary (levels and tests) in the text I copy</label>
+        <div class="actions"><a class="btn primary" id="fbWa" href="https://wa.me/" target="_blank" rel="noopener">Send on WhatsApp</a><button type="button" class="btn" id="fbCopy">Copy feedback</button><span class="status" id="fbStatus" role="status"></span></div>
+        <textarea id="fbBox" readonly hidden aria-label="Feedback text"></textarea>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+
+  var REL = {
+    father: { label: 'Father', sex: 'M', deg: 1 },
+    mother: { label: 'Mother', sex: 'F', deg: 1 },
+    brother: { label: 'Brother', sex: 'M', deg: 1 },
+    sister: { label: 'Sister', sex: 'F', deg: 1 },
+    son: { label: 'Son', sex: 'M', deg: 1 },
+    daughter: { label: 'Daughter', sex: 'F', deg: 1 },
+    grandfather: { label: 'Grandfather', sex: 'M', deg: 2 },
+    grandmother: { label: 'Grandmother', sex: 'F', deg: 2 },
+    uncle: { label: 'Uncle', sex: 'M', deg: 2 },
+    aunt: { label: 'Aunt', sex: 'F', deg: 2 }
+  };
+  var COND = [['dm', 'Diabetes'], ['htn', 'High BP'], ['cvd', 'Heart disease'], ['stroke', 'Stroke'], ['chol', 'High cholesterol']];
+  var COND_LABEL = { dm: 'diabetes', htn: 'high blood pressure', cvd: 'heart disease', stroke: 'stroke', chol: 'high cholesterol' };
+
+  var family = [];
+  var seq = 0;
+
+  /* ---------- family rows ---------- */
+  function rowHTML(m) {
+    var opts = Object.keys(REL).map(function (k) {
+      return '<option value="' + k + '"' + (k === m.rel ? ' selected' : '') + '>' + REL[k].label + '</option>';
+    }).join('');
+    var conds = COND.map(function (c) {
+      return '<label class="chk"><input type="checkbox" id="m' + m.id + '-' + c[0] + '" data-cond="' + c[0] + '"' + (m.cond[c[0]] ? ' checked' : '') + '> ' + c[1] + '</label>';
+    }).join('');
+    var showAge = m.cond.cvd || m.cond.stroke;
+    return '<div class="member" data-fid="' + m.id + '">' +
+      '<div class="member-top"><select id="m' + m.id + '-rel" data-f="rel" aria-label="Relation">' + opts + '</select>' +
+      '<button type="button" class="link-btn" data-remove>Remove</button></div>' +
+      '<div class="conds">' + conds + '</div>' +
+      '<label class="age-wrap"' + (showAge ? '' : ' hidden') + '>Age at first heart or stroke event' +
+      '<input type="number" id="m' + m.id + '-age" inputmode="numeric" min="0" max="110" data-f="evAge" value="' + (m.evAge == null ? '' : m.evAge) + '"></label>' +
+      '</div>';
+  }
+  function renderFamily() {
+    $('members').innerHTML = family.map(rowHTML).join('');
+  }
+  function addMember(rel, cond, evAge) {
+    family.push({ id: ++seq, rel: rel || 'father', cond: cond || {}, evAge: evAge == null ? null : evAge });
+  }
+  $('members').addEventListener('input', syncMember);
+  $('members').addEventListener('change', syncMember);
+  function syncMember(e) {
+    var row = e.target.closest('[data-fid]');
+    if (!row) return;
+    var m = family.filter(function (x) { return x.id === +row.getAttribute('data-fid'); })[0];
+    if (!m) return;
+    m.rel = row.querySelector('[data-f="rel"]').value;
+    COND.forEach(function (c) { m.cond[c[0]] = row.querySelector('[data-cond="' + c[0] + '"]').checked; });
+    var ageInput = row.querySelector('[data-f="evAge"]');
+    var v = parseFloat(ageInput.value);
+    m.evAge = isFinite(v) ? v : null;
+    row.querySelector('.age-wrap').hidden = !(m.cond.cvd || m.cond.stroke);
+  }
+  $('members').addEventListener('click', function (e) {
+    if (!e.target.hasAttribute('data-remove')) return;
+    var row = e.target.closest('[data-fid]');
+    var id = +row.getAttribute('data-fid');
+    family = family.filter(function (x) { return x.id !== id; });
+    renderFamily();
+    update();
+  });
+  $('addMember').addEventListener('click', function () {
+    addMember('father');
+    renderFamily();
+    update();
+  });
+
+  /* ---------- reading the form ---------- */
+  function num(id) { var v = parseFloat($(id).value); return isFinite(v) ? v : null; }
+  function readProfile() {
+    var act = $('activity').value;
+    return {
+      age: num('age'), sex: $('sex').value, ht: num('height'), wt: num('weight'), waist: num('waist'),
+      act: act === '' ? null : +act, smoke: $('smoke').value,
+      diet: { salt: $('d-salt').checked, sweet: $('d-sweet').checked, fried: $('d-fried').checked, lowfv: $('d-lowfv').checked },
+      own: { dm: $('o-dm').checked, predm: $('o-predm').checked, htn: $('o-htn').checked, cvd: $('o-cvd').checked, chol: $('o-chol').checked, ckd: $('o-ckd').checked, gdm: $('o-gdm').checked },
+      sys: num('sys'), dia: num('dia'), a1c: num('a1c')
+    };
+  }
+  function famView() {
+    return family.map(function (m) {
+      var r = REL[m.rel];
+      return { rel: m.rel, label: r.label, sex: r.sex, deg: r.deg, cond: m.cond, evAge: m.evAge };
+    });
+  }
+
+  /* ---------- helpers for output ---------- */
+  var TAGNAME = { guide: 'Guideline', tool: 'Scored tool', general: 'General advice', proto: 'Prototype rule' };
+  function tag(kind, src) { return '<span class="tag ' + kind + '">' + TAGNAME[kind] + (src ? ' · ' + src : '') + '</span>'; }
+  function li(text, kind, src) { return '<li><span>' + text + '</span>' + tag(kind, src) + '</li>'; }
+  function names(list) {
+    var l = list.map(function (m) { return m.label.toLowerCase(); });
+    if (l.length <= 1) return l.join('');
+    return l.slice(0, -1).join(', ') + ' and ' + l[l.length - 1];
+  }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  /* ---------- the rules ---------- */
+  function analyse(p, fam) {
+    var out = { cards: [], tests: [], care: [], plan: [], qs: [], famcare: [], method: {} };
+    var own = p.own;
+    var bmi = (p.ht && p.wt) ? p.wt / Math.pow(p.ht / 100, 2) : null;
+    out.bmi = bmi;
+    var firstDeg = fam.filter(function (m) { return m.deg === 1; });
+    var secondDeg = fam.filter(function (m) { return m.deg === 2; });
+
+    /* ===== Diabetes ===== */
+    var parentsDM = fam.filter(function (m) { return (m.rel === 'father' || m.rel === 'mother') && m.cond.dm; });
+    var fdrDM = firstDeg.filter(function (m) { return m.cond.dm; });
+    var a1cState = p.a1c == null ? null : p.a1c >= 6.5 ? 'dm' : p.a1c >= 5.7 ? 'pre' : 'norm';
+    var idrs = null, parts = null;
+    if (p.age != null && p.waist != null && p.act != null) {
+      var a = p.age < 35 ? 0 : p.age < 50 ? 20 : 30;
+      var w = p.sex === 'M' ? (p.waist < 90 ? 0 : p.waist < 100 ? 10 : 20) : (p.waist < 80 ? 0 : p.waist < 90 ? 10 : 20);
+      var f = parentsDM.length >= 2 ? 20 : parentsDM.length === 1 ? 10 : 0;
+      parts = { age: a, waist: w, act: p.act, fam: f };
+      idrs = a + w + p.act + f;
+    }
+    out.method.idrs = parts ? { parts: parts, total: idrs } : null;
+
+    var dm = { title: 'Diabetes', reasons: [] };
+    if (own.dm) {
+      dm.level = 'info'; dm.levelText = 'Already diagnosed';
+      dm.headline = 'You already have diabetes. The job now is steady control and watching for complications.';
+    } else if (a1cState === 'dm') {
+      dm.level = 'high'; dm.levelText = 'See a doctor';
+      dm.headline = 'Your HbA1c is in the diabetes range (6.5% or more). Only a doctor can confirm this, usually with a repeat test.';
+    } else if (own.predm || a1cState === 'pre') {
+      dm.level = 'high'; dm.levelText = 'Higher';
+      dm.headline = 'You are in the prediabetes range. Lifestyle changes work best at this stage.';
+    } else if (idrs != null) {
+      dm.level = idrs >= 60 ? 'high' : idrs >= 30 ? 'mod' : 'low';
+      dm.levelText = idrs >= 60 ? 'Higher' : idrs >= 30 ? 'Moderate' : 'Lower';
+      dm.headline = 'Indian Diabetes Risk Score: ' + idrs + ' out of 100. ' + (idrs >= 60 ? 'A score of 60 or more means a higher chance of having or developing type 2 diabetes.' : idrs >= 30 ? 'A score of 30 to 50 is the moderate band.' : 'Below 30 is the lower band.');
+    } else {
+      dm.level = 'info'; dm.levelText = 'Needs more info';
+      dm.headline = 'Add your waist and activity level to calculate the Indian Diabetes Risk Score.';
+    }
+    if (idrs != null) dm.reasons.push(li('Score built from age, waist, activity and whether parents have diabetes. Breakdown is at the bottom of the page.', 'tool', 'IDRS, Madras Diabetes Research Foundation'));
+    if (parentsDM.length) dm.reasons.push(li(cap(names(parentsDM)) + (parentsDM.length > 1 ? ' have' : ' has') + ' diabetes. Having a parent with diabetes adds points to the score.', 'tool', 'IDRS'));
+    var sibKids = fdrDM.filter(function (m) { return m.rel !== 'father' && m.rel !== 'mother'; });
+    if (sibKids.length) dm.reasons.push(li('A ' + names(sibKids) + ' with diabetes counts as a first-degree relative for testing advice, although the score itself counts parents only.', 'guide', 'ADA'));
+    if (secondDeg.some(function (m) { return m.cond.dm; })) dm.reasons.push(li('Diabetes in grandparents, uncles or aunts is noted but does not change the score.', 'general'));
+    if (bmi != null) dm.reasons.push(li('Your BMI is ' + bmi.toFixed(1) + '. Guidelines use 23 or more as the point to consider testing for people of Asian origin.', 'guide', 'ADA'));
+    if (a1cState === 'norm') dm.reasons.push(li('Your last HbA1c (' + p.a1c + '%) is below 5.7%, the normal range.', 'guide', 'ADA'));
+    out.cards.push(dm);
+
+    /* diabetes tests */
+    var adaRF = [];
+    if (fdrDM.length) adaRF.push('a first-degree relative with diabetes');
+    if (own.htn) adaRF.push('high blood pressure');
+    if (own.cvd) adaRF.push('heart disease');
+    if (own.chol) adaRF.push('high cholesterol');
+    if (p.act === 30) adaRF.push('low physical activity');
+    if (own.dm) {
+      out.tests.push({ name: 'HbA1c', when: 'As often as your doctor sets it.', why: 'Shows average sugar control over about three months.', kind: 'general' });
+      out.tests.push({ name: 'Kidney, eye and foot checks', when: 'Ask your doctor which are due.', why: 'Diabetes can affect kidneys, eyes and nerves in the feet. Regular checks catch changes early.', kind: 'general', src: 'ADA' });
+    } else if (a1cState === 'dm') {
+      out.tests.push({ name: 'Repeat HbA1c or fasting glucose', when: 'Soon. Book a doctor visit.', why: 'A reading in the diabetes range needs confirming.', kind: 'guide', src: 'ADA' });
+    } else if (own.predm || a1cState === 'pre') {
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Every year.', why: 'People in the prediabetes range should be tested yearly.', kind: 'guide', src: 'ADA' });
+    } else if (own.gdm) {
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'At least every 3 years, for life.', why: 'Diabetes during pregnancy raises the lifelong chance of type 2 diabetes.', kind: 'guide', src: 'ADA' });
+    } else if (p.age != null && p.age >= 35) {
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Now, if you have not had one in the last 3 years. Then at least every 3 years if normal.', why: 'Screening is advised for all adults from age 35.', kind: 'guide', src: 'ADA 2025' });
+    } else if (bmi != null && bmi >= 23 && adaRF.length) {
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Worth doing now. Then at least every 3 years if normal.', why: 'BMI of 23 or more plus ' + adaRF[0] + ' meets the testing criteria.', kind: 'guide', src: 'ADA' });
+    } else if (bmi == null && adaRF.length) {
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Add height and weight to check the criteria. Ask your doctor in any case.', why: 'You have ' + adaRF[0] + ', which is a recognised risk factor.', kind: 'guide', src: 'ADA' });
+    } else if (p.age != null) {
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Not required yet by the criteria. Plan one by age 35, or sooner if weight or other risk factors change.', why: 'Ask your doctor if you want an earlier baseline.', kind: 'guide', src: 'ADA' });
+    }
+
+    /* ===== Heart ===== */
+    var famHeart = firstDeg.filter(function (m) { return m.cond.cvd || m.cond.stroke; });
+    var premature = famHeart.filter(function (m) { return m.evAge != null && m.evAge < (m.sex === 'M' ? 55 : 65); });
+    var unknownAge = famHeart.filter(function (m) { return m.evAge == null; });
+    var ownRF = [];
+    if (own.dm) ownRF.push('diabetes');
+    if (own.htn) ownRF.push('high blood pressure');
+    if (own.chol) ownRF.push('high cholesterol');
+    if (p.smoke === 'current') ownRF.push('tobacco use');
+    if (own.ckd) ownRF.push('kidney disease');
+
+    var ht = { title: 'Heart and stroke', reasons: [] };
+    if (own.cvd) {
+      ht.level = 'info'; ht.levelText = 'Already diagnosed';
+      ht.headline = 'You already have heart disease or a stroke. Follow your cardiologist. Medicines should never lapse.';
+    } else if (premature.length) {
+      ht.level = 'high'; ht.levelText = 'Higher';
+      ht.headline = 'A close relative had a heart or stroke event at a young age. This is one of the strongest family signals.';
+    } else if (ownRF.length >= 2) {
+      ht.level = 'high'; ht.levelText = 'Higher';
+      ht.headline = 'You have ' + ownRF.length + ' heart risk factors together.';
+    } else if (ownRF.length === 1 || famHeart.length || secondDeg.some(function (m) { return m.cond.cvd || m.cond.stroke; })) {
+      ht.level = 'mod'; ht.levelText = 'Moderate';
+      ht.headline = 'There is at least one heart risk signal worth acting on.';
+    } else {
+      ht.level = 'low'; ht.levelText = 'Lower';
+      ht.headline = 'No major family or personal signal entered. South Asian background still raises baseline risk, so basic checks matter.';
+    }
+    premature.forEach(function (m) {
+      ht.reasons.push(li(m.label + ' had a heart or stroke event at ' + m.evAge + '. A first-degree relative affected before 55 (men) or 65 (women) counts as premature family history.', 'guide', 'ACC/AHA'));
+    });
+    famHeart.filter(function (m) { return premature.indexOf(m) < 0 && m.evAge != null; }).forEach(function (m) {
+      ht.reasons.push(li(m.label + ' had a heart or stroke event at ' + m.evAge + ', which is past the premature cut-off. It still matters, but counts for less.', 'guide', 'ACC/AHA'));
+    });
+    if (unknownAge.length) ht.reasons.push(li('Add the age of the first event for ' + names(unknownAge) + '. That age decides whether it counts as premature.', 'general'));
+    if (ownRF.length) ht.reasons.push(li('Your own risk factors: ' + ownRF.join(', ') + '.', 'guide', 'ACC/AHA'));
+    ht.reasons.push(li('South Asian ancestry is listed as a risk-enhancing factor, so a standard calculator may under-estimate your risk.', 'guide', 'ACC/AHA'));
+    ht.reasons.push(li('The Higher, Moderate and Lower grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+    out.cards.push(ht);
+
+    /* heart tests */
+    if (own.cvd) {
+      out.tests.push({ name: 'Cardiology follow-up and lipid profile', when: 'As your cardiologist advises.', why: 'Ongoing care lowers the chance of another event.', kind: 'general' });
+    } else if (premature.length) {
+      out.tests.push({ name: 'Lipid profile (total, LDL, HDL, triglycerides)', when: 'Now, as a baseline.', why: 'Family history of premature heart disease is a reason to know your cholesterol early.', kind: 'guide', src: 'ACC/AHA' });
+      out.tests.push({ name: 'Lipoprotein(a), once in life', when: 'Ask your doctor about it now.', why: 'Several societies advise testing when a close relative had premature heart disease, and some include South Asian ancestry as a reason.', kind: 'guide', src: 'AHA/ACC, AACE' });
+      out.tests.push({ name: 'Formal 10-year heart risk estimate', when: 'At your next visit.', why: 'Your doctor can combine age, BP, cholesterol, sugar and family history. Ask how South Asian background was accounted for.', kind: 'guide', src: 'ACC/AHA' });
+    } else if (ownRF.length || famHeart.length) {
+      out.tests.push({ name: 'Lipid profile (total, LDL, HDL, triglycerides)', when: 'Get a baseline now. Your doctor sets how often to repeat.', why: 'You have ' + (ownRF.length ? ownRF[0] : 'a relative with heart disease or stroke') + '.', kind: 'guide', src: 'ACC/AHA' });
+    } else {
+      out.tests.push({ name: 'Lipid profile (total, LDL, HDL, triglycerides)', when: 'Ask your doctor when to take a baseline.', why: 'South Asian ancestry raises baseline heart risk even with no family history.', kind: 'guide', src: 'ACC/AHA' });
+    }
+
+    /* ===== Blood pressure ===== */
+    var famHTN = firstDeg.filter(function (m) { return m.cond.htn; });
+    var htnRF = [];
+    if (p.age != null && p.age > 50) htnRF.push('age above 50');
+    if (own.dm) htnRF.push('diabetes');
+    if (bmi != null && bmi >= 25) htnRF.push('higher body weight (BMI 25 or more)');
+    if (p.smoke === 'current') htnRF.push('tobacco use');
+    if (own.cvd) htnRF.push('heart disease or stroke');
+    if (famHTN.length) htnRF.push('family history of high blood pressure');
+    var readingHigh = (p.sys != null && p.sys >= 140) || (p.dia != null && p.dia >= 90);
+    var readingSevere = (p.sys != null && p.sys >= 180) || (p.dia != null && p.dia >= 110);
+
+    var bp = { title: 'Blood pressure', reasons: [] };
+    if (own.htn) {
+      bp.level = 'info'; bp.levelText = 'Already diagnosed';
+      bp.headline = 'You already have high blood pressure. Steady control protects the heart, brain and kidneys.';
+    } else if (readingSevere) {
+      bp.level = 'high'; bp.levelText = 'Check today';
+      bp.headline = 'A reading of 180/110 or more needs a doctor the same day.';
+    } else if (readingHigh) {
+      bp.level = 'high'; bp.levelText = 'Confirm it';
+      bp.headline = 'Your reading is 140/90 or above. One reading is not a diagnosis, but it needs repeating and a doctor review.';
+    } else if (htnRF.length >= 2) {
+      bp.level = 'high'; bp.levelText = 'Higher';
+      bp.headline = 'You have ' + htnRF.length + ' of the risk factors the Indian guideline lists for high blood pressure.';
+    } else if (htnRF.length === 1) {
+      bp.level = 'mod'; bp.levelText = 'Moderate';
+      bp.headline = 'You have one of the risk factors the Indian guideline lists for high blood pressure.';
+    } else {
+      bp.level = 'low'; bp.levelText = 'Lower';
+      bp.headline = 'None of the listed risk factors apply right now. Keep getting it measured.';
+    }
+    if (htnRF.length) bp.reasons.push(li('Risk factors present: ' + htnRF.join(', ') + '.', 'guide', 'India MoHFW'));
+    if (famHTN.length) bp.reasons.push(li(cap(names(famHTN)) + (famHTN.length > 1 ? ' have' : ' has') + ' high blood pressure.', 'guide', 'India MoHFW'));
+    if (p.sys != null && p.dia != null && !readingHigh) bp.reasons.push(li('Your reading of ' + p.sys + '/' + p.dia + ' is below 140/90.', 'guide', 'India MoHFW'));
+    bp.reasons.push(li('The count-based grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+    out.cards.push(bp);
+
+    /* BP tests */
+    if (own.htn) {
+      out.tests.push({ name: 'Home and clinic BP readings', when: 'As your doctor advises. Keep a log.', why: 'The Indian guideline sets the usual treatment target below 140/90 for people under 80.', kind: 'guide', src: 'India MoHFW' });
+    } else {
+      out.tests.push({ name: 'Blood pressure measurement', when: htnRF.length ? 'At every doctor visit, and at least once a year.' : 'At every doctor visit.', why: 'High blood pressure usually has no symptoms. The Indian guideline advises measuring all adults over 18 whenever they meet a health worker.', kind: 'guide', src: 'India MoHFW' });
+    }
+
+    /* ===== Care: lifestyle ===== */
+    if (p.diet.salt) out.care.push(li('Cut back on salt: pickles, papad, namkeen and packaged foods. Less salt helps lower blood pressure.', 'guide', 'India MoHFW'));
+    if (p.diet.lowfv) out.care.push(li('Aim for fruit and vegetables every day. More of them, with less salt, can lower blood pressure noticeably.', 'guide', 'India MoHFW'));
+    if (p.diet.sweet) out.care.push(li('Cut sweets and sugary drinks to occasional. This matters more if diabetes runs in your family.', 'general'));
+    if (p.diet.fried) out.care.push(li('Reduce fried and street food. It adds to cholesterol and weight over time.', 'general'));
+    if (p.act === 20 || p.act === 30) out.care.push(li('Build regular movement into the week. WHO suggests at least 150 minutes of moderate activity a week for adults. Check with your doctor first if you have a heart condition.', 'guide', 'WHO'));
+    if (p.waist != null && ((p.sex === 'M' && p.waist >= 90) || (p.sex === 'F' && p.waist >= 80))) out.care.push(li('Your waist is in a range that adds points to the diabetes score. Reducing it is one of the changes within your control.', 'tool', 'IDRS'));
+    if (p.smoke === 'current') out.care.push(li('Stopping tobacco lowers heart and blood pressure risk. Ask your doctor about quit support.', 'guide', 'India MoHFW'));
+    if (!out.care.length) out.care.push(li('Nothing flagged in the habits you entered. Keep the routine and repeat this check once a year.', 'general'));
+
+    /* ===== Plan ahead ===== */
+    out.plan.push(li('Review health insurance while you have no diagnosed condition. Policies usually apply waiting periods to conditions you already have at purchase, so the terms are easier earlier. Compare policies before choosing.', 'general'));
+    var testNames = out.tests.map(function (t) { return t.name; });
+    if (testNames.length) out.plan.push(li('Set aside a small yearly amount for check-ups: ' + testNames.slice(0, 3).join(', ') + '. Routine tests cost far less than late treatment.', 'general'));
+    out.plan.push(li('Keep an emergency reserve for hospital costs. Heart events and complications tend to arrive as sudden bills.', 'general'));
+    out.plan.push(li('Keep every report and prescription in one folder, on paper and on your phone, so any family member can find them quickly.', 'general'));
+    if (fam.some(function (m) { return m.deg === 1 && (m.cond.dm || m.cond.htn || m.cond.cvd || m.cond.stroke || m.cond.chol); })) out.plan.push(li('For relatives already diagnosed, keep a list of their medicines, their doctor and hospital, and their insurance details where family can reach them in an emergency.', 'general'));
+
+    /* ===== Questions for the doctor ===== */
+    premature.forEach(function (m) {
+      out.qs.push('My ' + m.label.toLowerCase() + ' had a heart or stroke event at ' + m.evAge + '. Should I have a lipid profile and Lipoprotein(a) now, and a 10-year heart risk estimate?');
+    });
+    if (fdrDM.length && !own.dm) out.qs.push('Diabetes runs in my family (' + names(fdrDM) + '). Should I take HbA1c or fasting glucose now, and how often after that?');
+    if (famHTN.length && !own.htn) out.qs.push('High blood pressure runs in my family. Should I monitor at home, and with which device?');
+    if (readingHigh && !own.htn) out.qs.push('My reading was ' + p.sys + '/' + p.dia + '. How should we confirm whether this is high blood pressure?');
+    out.qs.push('Given my age, weight and family history, which checks am I missing?');
+    out.qs.push('Are there other conditions that run in my family, such as prostate, kidney or cancer, that I should be screened for?');
+
+    /* ===== Family members already diagnosed ===== */
+    fam.forEach(function (m) {
+      var c = m.cond;
+      var has = COND.filter(function (x) { return c[x[0]]; });
+      if (!has.length) return;
+      var items = [];
+      if (c.dm) items.push(li('Diabetes can affect the heart, kidneys, eyes and the nerves of the feet. Ask the doctor which of these checks are due.', 'general', 'ADA'));
+      if (c.htn) items.push(li('Uncontrolled high blood pressure leads to stroke, heart failure and kidney failure. Regular readings and taking medicines without gaps are the main protection.', 'guide', 'India MoHFW'));
+      if (c.cvd || c.stroke) items.push(li('After a heart event or stroke, the chance of another stays higher. Regular cardiology follow-up and unbroken medicines matter, and so do blood pressure, sugar and cholesterol checks.', 'general'));
+      if (c.chol) items.push(li('High cholesterol needs follow-up tests. The doctor sets how often.', 'general'));
+      if ((c.dm && (c.htn || c.cvd || c.stroke)) || (c.htn && (c.cvd || c.stroke))) items.push(li('Several conditions together raise the risk further, so every one of them needs to be controlled, not only the one that caused the last hospital visit.', 'general'));
+      out.famcare.push({ label: m.label, has: has.map(function (x) { return x[1].toLowerCase(); }), items: items });
+    });
+
+    out.premature = premature;
+    return out;
+  }
+
+  /* ---------- drawing the results ---------- */
+  function cardHTML(c) {
+    return '<article class="risk ' + c.level + '"><header><h3>' + c.title + '</h3><span class="pill ' + c.level + '">' + c.levelText + '</span></header>' +
+      '<p class="headline">' + c.headline + '</p><ul class="items">' + c.reasons.join('') + '</ul></article>';
+  }
+  function testHTML(t) {
+    return '<div class="test"><div class="name">' + t.name + '</div><div class="when">' + t.when + '</div><div class="why">' + t.why + '</div>' + tag(t.kind, t.src) + '</div>';
+  }
+  var lastText = '';
+  var lastOut = null;
+
+  function updateLive(out) {
+    var bar = $('liveBar');
+    bar.hidden = false;
+    bar.innerHTML = out.cards.map(function (c) {
+      return '<span class="pill ' + c.level + '">' + c.title.replace(' and stroke', '') + ': ' + c.levelText + '</span>';
+    }).join('');
+  }
+
+  function render(p, fam, out) {
+    var h = '';
+    h += '<section class="section"><div class="section-head"><h2>Where you stand</h2><p>Three areas where family history and your own numbers matter most.</p></div><div class="cards">' + out.cards.map(cardHTML).join('') + '</div></section>';
+
+    h += '<section class="section"><div class="section-head"><h2>Tests to ask about</h2><p>Bring this list to your doctor. They decide what is right for you.</p></div><div class="tests">' + out.tests.map(testHTML).join('') + '</div></section>';
+
+    h += '<section class="section"><div class="section-head"><h2>What to take care of</h2><p>Based on the habits you entered.</p></div><div class="block"><ul class="items">' + out.care.join('') + '</ul></div></section>';
+
+    h += '<section class="section"><div class="section-head"><h2>Plan ahead</h2><p>General suggestions. This is not financial advice.</p></div><div class="block"><ul class="items">' + out.plan.join('') + '</ul></div></section>';
+
+    if (out.famcare.length) {
+      h += '<section class="section"><div class="section-head"><h2>Looking after family already diagnosed</h2><p>What tends to follow each condition, so nothing arrives as a surprise.</p></div><div class="block">' +
+        out.famcare.map(function (f) { return '<div class="member-out"><h3>' + f.label + ': ' + f.has.join(', ') + '</h3><ul class="items">' + f.items.join('') + '</ul></div>'; }).join('') +
+        '</div></section>';
+    }
+
+    h += '<section class="section"><div class="section-head"><h2>Questions to ask your doctor</h2></div><div class="block"><ul class="items">' + out.qs.map(function (q) { return '<li><span>' + q + '</span></li>'; }).join('') + '</ul></div></section>';
+
+    h += '<div class="emergency"><strong>Get emergency care straight away</strong> for chest pain or pressure, breathlessness, fainting, sudden weakness or numbness on one side, trouble speaking, or a very high blood pressure reading with a severe headache. Do not wait for a test appointment.</div>';
+
+    h += '<section class="section"><div class="actions"><button type="button" class="btn primary" id="copyBtn">Copy summary for my doctor</button><span class="status" id="copyStatus" role="status"></span></div><textarea id="copyBox" readonly hidden aria-label="Summary text"></textarea></section>';
+
+    h += '<details><summary>How this was worked out</summary><div class="inner">';
+    if (out.method.idrs) {
+      var m = out.method.idrs, pa = m.parts;
+      h += '<div><h3>Indian Diabetes Risk Score</h3><div class="scroll-x"><table><thead><tr><th>Part</th><th class="num">Points</th></tr></thead><tbody>' +
+        '<tr><td>Age (under 35: 0, 35 to 49: 20, 50 or more: 30)</td><td class="num">' + pa.age + '</td></tr>' +
+        '<tr><td>Waist (men under 90 cm: 0, 90 to 99: 10, 100 or more: 20. Women under 80: 0, 80 to 89: 10, 90 or more: 20)</td><td class="num">' + pa.waist + '</td></tr>' +
+        '<tr><td>Physical activity (0, 10, 20 or 30)</td><td class="num">' + pa.act + '</td></tr>' +
+        '<tr><td>Parents with diabetes (none: 0, one: 10, both: 20)</td><td class="num">' + pa.fam + '</td></tr>' +
+        '<tr><td><strong>Total</strong> (under 30 lower, 30 to 50 moderate, 60 or more higher)</td><td class="num"><strong>' + m.total + '</strong></td></tr>' +
+        '</tbody></table></div></div>';
+    } else {
+      h += '<p>The diabetes score needs age, waist and activity level.</p>';
+    }
+    h += '<div><h3>What is solid and what is not</h3><ul class="src-list">' +
+      '<li>The diabetes score and its bands come from a published, validated Indian tool.</li>' +
+      '<li>Test timing for diabetes follows American Diabetes Association criteria. Those criteria use a BMI of 23 for Asian populations. Applying that to people in India is a reasonable reading but not an Indian-specific rule.</li>' +
+      '<li>The premature heart disease definition (men under 55, women under 65) and Lipoprotein(a) advice follow ACC/AHA and other society statements.</li>' +
+      '<li>Blood pressure advice follows the Indian Ministry of Health guideline. The yearly frequency is a general suggestion, not a number from the guideline.</li>' +
+      '<li>The Higher, Moderate and Lower groupings for heart and blood pressure are simple rules written for this prototype. A doctor should replace them with a validated calculator.</li>' +
+      '<li>Not covered yet: prostate, urinary problems, kidney disease, cancers, thyroid. If you or a relative have repeated urinary symptoms, mention it to a doctor.</li>' +
+      '</ul></div>';
+    h += '<div><h3>Sources</h3><ul class="src-list">' +
+      '<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6436280" target="_blank" rel="noopener">Indian Diabetes Risk Score table (Madras Diabetes Research Foundation), as used in a published study</a></li>' +
+      '<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10725812/table/T2.4" target="_blank" rel="noopener">ADA criteria for diabetes and prediabetes screening</a></li>' +
+      '<li><a href="https://mdcalc.scholasticahq.com/article/159088-updated-review-of-the-american-diabetes-association-ada-risk-calculator" target="_blank" rel="noopener">ADA 2025 screening summary (age 35, every 3 years)</a></li>' +
+      '<li><a href="https://clinicalestablishments.mohfw.gov.in/sites/default/files/standard-treatment-guidelines/6591.pdf" target="_blank" rel="noopener">Government of India guideline on hypertension in adults</a></li>' +
+      '<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8344373/table/T17" target="_blank" rel="noopener">ACC/AHA risk-enhancing factors, including family history and South Asian ancestry</a></li>' +
+      '<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10945898" target="_blank" rel="noopener">Society recommendations on Lipoprotein(a) testing</a></li>' +
+      '</ul></div>';
+    h += '</div></details>';
+
+    $('results').innerHTML = h;
+
+    lastText = summaryText(p, fam, out);
+    lastOut = out;
+    updateLive(out);
+    var btn = $('copyBtn');
+    if (btn) btn.addEventListener('click', copySummary);
+  }
+
+  function summaryText(p, fam, out) {
+    var L = [];
+    L.push('FAMILY HEALTH SUMMARY (prototype, not clinically reviewed)');
+    L.push('Age ' + p.age + ', ' + (p.sex === 'M' ? 'male' : 'female') + (out.bmi ? ', BMI ' + out.bmi.toFixed(1) : '') + (p.waist ? ', waist ' + p.waist + ' cm' : ''));
+    var ownList = []; Object.keys(p.own).forEach(function (k) { if (p.own[k]) ownList.push({ dm: 'diabetes', predm: 'prediabetes', htn: 'high blood pressure', cvd: 'heart disease or stroke', chol: 'high cholesterol', ckd: 'kidney disease', gdm: 'diabetes in pregnancy' }[k]); });
+    L.push('Own conditions: ' + (ownList.length ? ownList.join(', ') : 'none entered'));
+    L.push('');
+    L.push('Family history:');
+    if (!fam.length) L.push('- none entered');
+    fam.forEach(function (m) {
+      var c = COND.filter(function (x) { return m.cond[x[0]]; }).map(function (x) { return COND_LABEL[x[0]]; });
+      L.push('- ' + m.label + ': ' + (c.length ? c.join(', ') : 'no conditions') + (m.evAge != null && (m.cond.cvd || m.cond.stroke) ? ' (first heart/stroke event at ' + m.evAge + ')' : ''));
+    });
+    L.push('');
+    out.cards.forEach(function (c) { L.push(c.title + ': ' + c.levelText + '. ' + c.headline); });
+    L.push('');
+    L.push('Tests to discuss:');
+    out.tests.forEach(function (t) { L.push('- ' + t.name + ': ' + t.when); });
+    L.push('');
+    L.push('Questions:');
+    out.qs.forEach(function (q) { L.push('- ' + q); });
+    return L.join('\n');
+  }
+
+  function copySummary() {
+    var status = $('copyStatus'), box = $('copyBox');
+    function fallback() {
+      box.hidden = false; box.value = lastText; box.focus(); box.select();
+      status.textContent = 'Select and copy the text below.';
+    }
+    try {
+      navigator.clipboard.writeText(lastText).then(function () {
+        status.textContent = 'Copied.';
+      }, fallback);
+    } catch (e) { fallback(); }
+  }
+
+  /* ---------- main update ---------- */
+  function update() {
+    var p = readProfile();
+    if (p.age == null) {
+      lastOut = null; lastText = '';
+      $('liveBar').hidden = true;
+      $('results').innerHTML = '<div class="empty"><h2>Start with your age</h2><p style="margin-top:8px">Enter your age and sex on the left. Results appear here and update as you type.</p></div>';
+      return;
+    }
+    var fam = famView();
+    render(p, fam, analyse(p, fam));
+  }
+  $('form').addEventListener('input', update);
+  $('form').addEventListener('change', update);
+
+  function goToResults() {
+    var st = $('seeStatus');
+    if (num('age') == null) {
+      st.textContent = 'Enter your age first, then press the button again.';
+      $('age').focus();
+      return;
+    }
+    st.textContent = '';
+    update();
+    var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    $('results').scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+  }
+  $('seeResults').addEventListener('click', goToResults);
+  $('liveBar').addEventListener('click', function () {
+    var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    $('results').scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  /* ---------- example and clear ---------- */
+  function loadExample() {
+    $('age').value = 38; $('sex').value = 'M'; $('height').value = 172; $('weight').value = 78; $('waist').value = 96;
+    $('activity').value = '30'; $('smoke').value = 'never';
+    $('d-salt').checked = true; $('d-sweet').checked = true;
+    family = [];
+    addMember('father', { dm: true, cvd: true }, 52);
+    addMember('mother', { htn: true }, null);
+    renderFamily();
+  }
+  function clearAll() {
+    $('form').reset();
+    $('sex').value = 'M';
+    family = [];
+    renderFamily();
+    setExampleBar(false);
+    update();
+  }
+  var exampleOn = false;
+  function setExampleBar(on) {
+    exampleOn = on;
+    $('exampleBar').hidden = false;
+    $('exampleMsg').textContent = on ? 'Example profile loaded. Change any field, or clear it and enter your own.' : 'Want to see how it works first? Load a sample family.';
+    $('clearExample').textContent = on ? 'Clear example' : 'Load example';
+  }
+  $('clearExample').addEventListener('click', function () {
+    var wasOn = exampleOn;
+    clearAll();
+    if (!wasOn) { loadExample(); setExampleBar(true); update(); }
+  });
+
+  /* ---------- saved profiles (this browser only) ---------- */
+  var STORE_KEY = 'family-health-planner-profiles-v1';
+  var FIELD_IDS = ['age', 'sex', 'height', 'weight', 'waist', 'activity', 'smoke', 'd-salt', 'd-sweet', 'd-fried', 'd-lowfv', 'o-dm', 'o-predm', 'o-htn', 'o-cvd', 'o-chol', 'o-ckd', 'o-gdm', 'sys', 'dia', 'a1c'];
+  function loadStore() {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; } catch (e) { return null; }
+  }
+  function saveStore(o) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(o)); return true; } catch (e) { return false; }
+  }
+  function snapshot() {
+    var v = {};
+    FIELD_IDS.forEach(function (id) {
+      var el = $(id);
+      v[id] = el.type === 'checkbox' ? el.checked : el.value;
+    });
+    return { v: v, family: family.map(function (m) { return { rel: m.rel, cond: m.cond, evAge: m.evAge }; }) };
+  }
+  function applySnapshot(s) {
+    FIELD_IDS.forEach(function (id) {
+      var el = $(id);
+      if (!(id in s.v)) return;
+      if (el.type === 'checkbox') el.checked = !!s.v[id]; else el.value = s.v[id];
+    });
+    family = [];
+    (s.family || []).forEach(function (m) { addMember(m.rel, JSON.parse(JSON.stringify(m.cond || {})), m.evAge); });
+    renderFamily();
+    $('exampleBar').hidden = true;
+    update();
+  }
+  function say(id, msg, isErr) {
+    var el = $(id);
+    el.textContent = msg;
+    el.className = 'status' + (isErr ? ' err' : '');
+  }
+  function refreshProfileList(selected) {
+    var store = loadStore() || {};
+    var sel = $('profileSel');
+    var names = Object.keys(store).sort();
+    sel.innerHTML = '<option value="">Choose a saved profile</option>' + names.map(function (n) {
+      return '<option value="' + encodeURIComponent(n) + '"' + (n === selected ? ' selected' : '') + '>' + n.replace(/</g, '&lt;') + '</option>';
+    }).join('');
+  }
+  var storeOK = loadStore() !== null && saveStore(loadStore());
+  if (!storeOK) {
+    $('profileBar').hidden = true;
+  } else {
+    refreshProfileList();
+    $('profileSave').addEventListener('click', function () {
+      var name = $('profileName').value.trim();
+      if (!name) { say('profileStatus', 'Type a name first, for example Papa.', true); return; }
+      var store = loadStore() || {};
+      store[name] = snapshot();
+      if (saveStore(store)) { refreshProfileList(name); say('profileStatus', 'Saved "' + name + '" on this device.'); }
+      else say('profileStatus', 'Could not save in this browser.', true);
+    });
+    $('profileSel').addEventListener('change', function () {
+      var raw = $('profileSel').value;
+      if (!raw) return;
+      var name = decodeURIComponent(raw);
+      var store = loadStore() || {};
+      if (store[name]) {
+        applySnapshot(store[name]);
+        $('profileName').value = name;
+        say('profileStatus', 'Loaded "' + name + '". Changes are not saved until you press Save.');
+      }
+    });
+    $('profileNew').addEventListener('click', function () {
+      clearAll();
+      $('profileSel').value = '';
+      $('profileName').value = '';
+      say('profileStatus', 'Blank profile ready.');
+    });
+    $('profileDelete').addEventListener('click', function () {
+      var raw = $('profileSel').value;
+      if (!raw) { say('profileStatus', 'Choose a saved profile to delete.', true); return; }
+      var name = decodeURIComponent(raw);
+      var store = loadStore() || {};
+      delete store[name];
+      saveStore(store);
+      refreshProfileList();
+      say('profileStatus', 'Deleted "' + name + '" from this device.');
+    });
+  }
+
+  /* ---------- Claude: explain in your language (optional) ---------- */
+  var sampleFn = null;
+  var ctl = null;
+  function strip(h) {
+    var d = document.createElement('div');
+    d.innerHTML = h;
+    return d.textContent.replace(/\s+/g, ' ').trim();
+  }
+  function factsText() {
+    var o = lastOut, L = [lastText, '', 'Reasons behind each level:'];
+    o.cards.forEach(function (c) {
+      L.push(c.title + ':');
+      c.reasons.forEach(function (r) { L.push('- ' + strip(r)); });
+    });
+    L.push('', 'Tests, with why and when:');
+    o.tests.forEach(function (t) { L.push('- ' + t.name + '. When: ' + t.when + ' Why: ' + t.why); });
+    L.push('', 'Things to take care of:');
+    o.care.forEach(function (x) { L.push('- ' + strip(x)); });
+    L.push('', 'Planning suggestions:');
+    o.plan.forEach(function (x) { L.push('- ' + strip(x)); });
+    o.famcare.forEach(function (f) {
+      L.push('', f.label + ' (' + f.has.join(', ') + '):');
+      f.items.forEach(function (x) { L.push('- ' + strip(x)); });
+    });
+    return L.join('\n');
+  }
+  var RULES = 'You are helping a family understand the output of a health screening tool. Use ONLY the facts given below. Do not add any new risk, test, number, medicine, dose or diagnosis that is not in the facts. Never say the person has or will get a disease. Keep every advice to see a doctor or seek emergency care. If a question cannot be answered from the facts, say so and suggest asking a doctor. Use short sentences and simple words that an older adult can follow. Do not use markdown symbols such as asterisks or hash signs; use plain lines and simple numbering.';
+  function setBusy(b) {
+    $('explainBtn').disabled = b; $('askBtn').disabled = b; $('stopBtn').hidden = !b;
+  }
+  function runSample(task) {
+    var ans = $('answer');
+    ans.hidden = false;
+    if (!lastOut) { ans.textContent = 'Enter your age first, so there are results to explain.'; return; }
+    var prompt = RULES + '\nReply in this language: ' + $('lang').value + '\n\nFACTS:\n' + factsText() + '\n\nTASK: ' + task;
+    ans.textContent = 'Thinking...';
+    setBusy(true);
+    ctl = new AbortController();
+    sampleFn(prompt, { signal: ctl.signal, cache: false, onText: function (e) { ans.textContent = e.text; } }).then(function (r) {
+      ans.textContent = r.text + (r.truncated ? '\n\n(The answer was cut short. Ask a narrower question.)' : '');
+    }).catch(function (e) {
+      var code = e && e.code;
+      if (code === 'cancelled') { ans.textContent = (e.text || '') + '\n\n(Stopped.)'; }
+      else if (code === 'not_granted' || code === 'sampling_disabled' || code === 'not_declared' || code === 'capability_disabled') {
+        ans.textContent = 'Claude is not available for this view. The results above still work.';
+      } else if (code === 'rate_limited') { ans.textContent = 'Too many requests right now. Wait a minute and try again.'; }
+      else { ans.textContent = (e && e.text ? e.text + '\n\n' : '') + 'Something went wrong. Try again in a moment.'; }
+    }).then(function () { setBusy(false); ctl = null; });
+  }
+  $('explainBtn').addEventListener('click', function () {
+    runSample('Explain these results to the person in plain words. Use three short parts: (1) where they stand, (2) which tests to ask the doctor about and why, (3) what to do in the coming month. Mention that a doctor decides what is right for them.');
+  });
+  $('askBtn').addEventListener('click', function () {
+    var q = $('askQ').value.trim();
+    if (!q) { $('answer').hidden = false; $('answer').textContent = 'Type a question first.'; return; }
+    runSample('Answer this question using only the facts above: ' + q);
+  });
+  $('stopBtn').addEventListener('click', function () { if (ctl) ctl.abort(); });
+  try {
+    if (window.claude && window.claude.use) {
+      window.claude.use('sample').then(function (s) {
+        if (typeof s === 'function') { sampleFn = s; $('explainBox').hidden = false; }
+      }).catch(function () {});
+    }
+  } catch (e) {}
+
+  /* ---------- tester feedback (copy and send) ---------- */
+  function feedbackText() {
+    var L = ['FAMILY HEALTH PLANNER: TESTER FEEDBACK (prototype)'];
+    L.push('Tester: ' + ($('fbWho').value.trim() || 'not given'));
+    L.push('Easy to understand: ' + ($('fbClear').value || 'not answered'));
+    L.push('Matched what I know: ' + ($('fbMatch').value || 'not answered'));
+    L.push('Comments: ' + ($('fbText').value.trim() || 'none'));
+    if ($('fbInclude').checked && lastOut) { L.push('', 'RESULTS SUMMARY', lastText); }
+    return L.join('\n');
+  }
+  $('fbWa').addEventListener('click', function () {
+    this.href = 'https://wa.me/?text=' + encodeURIComponent(feedbackText());
+  });
+  $('fbCopy').addEventListener('click', function () {
+    var text = feedbackText(), box = $('fbBox');
+    function fallback() { box.hidden = false; box.value = text; box.focus(); box.select(); say('fbStatus', 'Select and copy the text below.'); }
+    try {
+      navigator.clipboard.writeText(text).then(function () { say('fbStatus', 'Copied. Paste it into a message to send.'); }, fallback);
+    } catch (e) { fallback(); }
+  });
+
+  update();
+})();
+</script>
+
+</body>
+</html>
