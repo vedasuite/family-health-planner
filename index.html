@@ -214,6 +214,11 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .live-bar { cursor: pointer; }
 #seeResults { width: 100%; }
 a.btn { display: inline-flex; align-items: center; text-decoration: none; }
+.grp { margin: 4px 0 -2px; font-size: 15px; color: var(--muted); }
+.ov-box { margin-bottom: 16px; }
+.ov-row { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.ov-row strong { flex: 0 0 110px; min-width: 0; overflow-wrap: anywhere; }
+.ov-pills { display: flex; flex-wrap: wrap; gap: 6px; flex: 1 1 240px; min-width: 0; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 
@@ -233,7 +238,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
   </header>
 
   <div class="notice">
-    <strong>How to read this.</strong> The medical rules here come from named guidelines and a validated Indian risk score, and every result says which. A doctor has not reviewed them yet. Everything you type stays in this browser tab. Nothing is sent or saved.
+    <strong>How to read this.</strong> The medical rules here come from named guidelines and a validated Indian risk score, and every result says which. A doctor has not reviewed them yet. Everything you type stays in this browser. Nothing is sent anywhere.
   </div>
 
   <section class="profile-bar" id="profileBar" aria-label="Saved profiles">
@@ -246,9 +251,15 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     <button type="button" class="btn primary" id="profileSave">Save</button>
     <button type="button" class="btn" id="profileNew">New blank</button>
     <button type="button" class="btn" id="profileDelete">Delete</button>
+    <a class="btn" id="inviteWa" href="https://wa.me/" target="_blank" rel="noopener">Invite family on WhatsApp</a>
     <p class="hint" id="profileHint">Profiles are saved in this browser on this device only. Each family member who opens the link keeps their own.</p>
     <p class="status" id="profileStatus" role="status"></p>
   </section>
+
+  <details id="famOverview" class="ov-box">
+    <summary>Whole family at a glance</summary>
+    <div class="inner" id="ovBody"></div>
+  </details>
 
   <div class="live-bar" id="liveBar" hidden></div>
 
@@ -308,17 +319,40 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
         <label class="chk"><input type="checkbox" id="o-chol"> High cholesterol</label>
         <label class="chk"><input type="checkbox" id="o-ckd"> Kidney disease</label>
         <label class="chk"><input type="checkbox" id="o-gdm"> Diabetes during pregnancy (women)</label>
+        <label class="chk"><input type="checkbox" id="o-thy"> Thyroid disease</label>
+        <label class="chk"><input type="checkbox" id="o-uro"> Prostate or urinary problems, such as an enlarged prostate or repeated urine infections (men)</label>
+        <label class="chk"><input type="checkbox" id="o-usym"> Urinary symptoms now: weak flow, getting up 2 or more times at night, burning, or the bladder not feeling empty (men)</label>
+        <label class="chk"><input type="checkbox" id="o-blood"> Blood in the urine, even once, not yet checked by a doctor</label>
         <p class="hint">Latest readings, if you have them (optional)</p>
         <div class="row3">
           <label class="field"><span>BP top</span><input type="number" id="sys" inputmode="numeric" min="60" max="260" placeholder="e.g. 128"></label>
           <label class="field"><span>BP bottom</span><input type="number" id="dia" inputmode="numeric" min="30" max="160" placeholder="e.g. 82"></label>
           <label class="field"><span>HbA1c (%)</span><input type="number" id="a1c" inputmode="decimal" step="0.1" min="3" max="18" placeholder="e.g. 5.6"></label>
         </div>
+        <div class="row3">
+          <label class="field"><span>LDL (mg/dL)</span><input type="number" id="ldl" inputmode="decimal" min="10" max="500" placeholder="e.g. 118"></label>
+          <label class="field"><span>Creatinine (mg/dL)</span><input type="number" id="creat" inputmode="decimal" step="0.01" min="0.2" max="15" placeholder="e.g. 0.9"></label>
+          <label class="field"><span>TSH (mIU/L)</span><input type="number" id="tsh" inputmode="decimal" step="0.01" min="0.01" max="150" placeholder="e.g. 2.4"></label>
+        </div>
+        <div class="row3">
+          <label class="field"><span>PSA (ng/mL, men)</span><input type="number" id="psa" inputmode="decimal" step="0.01" min="0" max="500" placeholder="e.g. 1.1"></label>
+        </div>
+        <p class="hint">Lab ranges differ a little between labs. A single value is never a diagnosis.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Money planning (optional)</legend>
+        <div class="row2">
+          <label class="field"><span>Household expenses per month (₹)</span><input type="number" id="expm" inputmode="numeric" min="0" max="100000000" placeholder="e.g. 60000"></label>
+          <label class="field"><span>Health cover you have (₹ lakh)</span><input type="number" id="cover" inputmode="decimal" min="0" max="10000" placeholder="e.g. 10"></label>
+        </div>
+        <label class="chk"><input type="checkbox" id="m-emp"> My health cover comes only through my employer</label>
+        <label class="chk"><input type="checkbox" id="m-par"> My parents have no health insurance of their own</label>
       </fieldset>
 
       <fieldset>
         <legend>Family history</legend>
-        <p class="hint">Add parents, brothers, sisters and children first. These count most. Grandparents, uncles and aunts are noted but do not change the scores. For a heart attack, blockage, bypass or stroke, add the age it first happened.</p>
+        <p class="hint">Add parents, brothers, sisters and children first. These count most. Grandparents, uncles and aunts are noted but do not change the scores. For a heart attack, blockage, bypass or stroke, add the age it first happened. For a cancer, add the age it was found.</p>
         <div class="members" id="members"></div>
         <button type="button" class="btn" id="addMember">Add a family member</button>
       </fieldset>
@@ -405,8 +439,10 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     uncle: { label: 'Uncle', sex: 'M', deg: 2 },
     aunt: { label: 'Aunt', sex: 'F', deg: 2 }
   };
-  var COND = [['dm', 'Diabetes'], ['htn', 'High BP'], ['cvd', 'Heart disease'], ['stroke', 'Stroke'], ['chol', 'High cholesterol']];
-  var COND_LABEL = { dm: 'diabetes', htn: 'high blood pressure', cvd: 'heart disease', stroke: 'stroke', chol: 'high cholesterol' };
+  var COND = [['dm', 'Diabetes'], ['htn', 'High BP'], ['cvd', 'Heart disease'], ['stroke', 'Stroke'], ['chol', 'High cholesterol'],
+    ['ckd', 'Kidney disease'], ['thy', 'Thyroid disease'], ['uro', 'Prostate or urinary problems'], ['pros', 'Prostate cancer'], ['crc', 'Colon or rectal cancer'], ['brca', 'Breast or ovarian cancer']];
+  var COND_LABEL = { dm: 'diabetes', htn: 'high blood pressure', cvd: 'heart disease', stroke: 'stroke', chol: 'high cholesterol',
+    ckd: 'kidney disease', thy: 'thyroid disease', uro: 'prostate or urinary problems', pros: 'prostate cancer', crc: 'colon or rectal cancer', brca: 'breast or ovarian cancer' };
 
   var family = [];
   var seq = 0;
@@ -420,19 +456,22 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       return '<label class="chk"><input type="checkbox" id="m' + m.id + '-' + c[0] + '" data-cond="' + c[0] + '"' + (m.cond[c[0]] ? ' checked' : '') + '> ' + c[1] + '</label>';
     }).join('');
     var showAge = m.cond.cvd || m.cond.stroke;
+    var showC = m.cond.pros || m.cond.crc || m.cond.brca;
     return '<div class="member" data-fid="' + m.id + '">' +
       '<div class="member-top"><select id="m' + m.id + '-rel" data-f="rel" aria-label="Relation">' + opts + '</select>' +
       '<button type="button" class="link-btn" data-remove>Remove</button></div>' +
       '<div class="conds">' + conds + '</div>' +
-      '<label class="age-wrap"' + (showAge ? '' : ' hidden') + '>Age at first heart or stroke event' +
+      '<label class="age-wrap" data-wrap="ev"' + (showAge ? '' : ' hidden') + '>Age at first heart or stroke event' +
       '<input type="number" id="m' + m.id + '-age" inputmode="numeric" min="0" max="110" data-f="evAge" value="' + (m.evAge == null ? '' : m.evAge) + '"></label>' +
+      '<label class="age-wrap" data-wrap="c"' + (showC ? '' : ' hidden') + '>Age when the cancer was found' +
+      '<input type="number" id="m' + m.id + '-cage" inputmode="numeric" min="0" max="110" data-f="cAge" value="' + (m.cAge == null ? '' : m.cAge) + '"></label>' +
       '</div>';
   }
   function renderFamily() {
     $('members').innerHTML = family.map(rowHTML).join('');
   }
-  function addMember(rel, cond, evAge) {
-    family.push({ id: ++seq, rel: rel || 'father', cond: cond || {}, evAge: evAge == null ? null : evAge });
+  function addMember(rel, cond, evAge, cAge) {
+    family.push({ id: ++seq, rel: rel || 'father', cond: cond || {}, evAge: evAge == null ? null : evAge, cAge: cAge == null ? null : cAge });
   }
   $('members').addEventListener('input', syncMember);
   $('members').addEventListener('change', syncMember);
@@ -446,7 +485,11 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     var ageInput = row.querySelector('[data-f="evAge"]');
     var v = parseFloat(ageInput.value);
     m.evAge = isFinite(v) ? v : null;
-    row.querySelector('.age-wrap').hidden = !(m.cond.cvd || m.cond.stroke);
+    var cInput = row.querySelector('[data-f="cAge"]');
+    var cv = parseFloat(cInput.value);
+    m.cAge = isFinite(cv) ? cv : null;
+    row.querySelector('[data-wrap="ev"]').hidden = !(m.cond.cvd || m.cond.stroke);
+    row.querySelector('[data-wrap="c"]').hidden = !(m.cond.pros || m.cond.crc || m.cond.brca);
   }
   $('members').addEventListener('click', function (e) {
     if (!e.target.hasAttribute('data-remove')) return;
@@ -464,20 +507,24 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 
   /* ---------- reading the form ---------- */
   function num(id) { var v = parseFloat($(id).value); return isFinite(v) ? v : null; }
-  function readProfile() {
-    var act = $('activity').value;
+  function readProfile(src) {
+    var g = src ? function (id) { return src.v[id]; } : function (id) { var el = $(id); return el.type === 'checkbox' ? el.checked : el.value; };
+    var n = function (id) { var v = parseFloat(g(id)); return isFinite(v) ? v : null; };
+    var b = function (id) { return !!g(id); };
+    var act = g('activity');
     return {
-      age: num('age'), sex: $('sex').value, ht: num('height'), wt: num('weight'), waist: num('waist'),
-      act: act === '' ? null : +act, smoke: $('smoke').value,
-      diet: { salt: $('d-salt').checked, sweet: $('d-sweet').checked, fried: $('d-fried').checked, lowfv: $('d-lowfv').checked },
-      own: { dm: $('o-dm').checked, predm: $('o-predm').checked, htn: $('o-htn').checked, cvd: $('o-cvd').checked, chol: $('o-chol').checked, ckd: $('o-ckd').checked, gdm: $('o-gdm').checked },
-      sys: num('sys'), dia: num('dia'), a1c: num('a1c')
+      age: n('age'), sex: g('sex') === 'F' ? 'F' : 'M', ht: n('height'), wt: n('weight'), waist: n('waist'),
+      act: (act === '' || act == null) ? null : +act, smoke: g('smoke') || 'never',
+      diet: { salt: b('d-salt'), sweet: b('d-sweet'), fried: b('d-fried'), lowfv: b('d-lowfv') },
+      own: { dm: b('o-dm'), predm: b('o-predm'), htn: b('o-htn'), cvd: b('o-cvd'), chol: b('o-chol'), ckd: b('o-ckd'), gdm: b('o-gdm'), thy: b('o-thy'), uro: b('o-uro'), usym: b('o-usym'), blood: b('o-blood') },
+      sys: n('sys'), dia: n('dia'), a1c: n('a1c'), ldl: n('ldl'), creat: n('creat'), tsh: n('tsh'), psa: n('psa'),
+      expm: n('expm'), cover: n('cover'), emp: b('m-emp'), parNoCover: b('m-par')
     };
   }
-  function famView() {
-    return family.map(function (m) {
-      var r = REL[m.rel];
-      return { rel: m.rel, label: r.label, sex: r.sex, deg: r.deg, cond: m.cond, evAge: m.evAge };
+  function famView(list) {
+    return (list || family).map(function (m) {
+      var r = REL[m.rel] || REL.father;
+      return { rel: m.rel, label: r.label, sex: r.sex, deg: r.deg, cond: m.cond || {}, evAge: m.evAge, cAge: m.cAge == null ? null : m.cAge };
     });
   }
 
@@ -666,6 +713,175 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       out.tests.push({ name: 'Blood pressure measurement', when: htnRF.length ? 'At every doctor visit, and at least once a year.' : 'At every doctor visit.', why: 'High blood pressure usually has no symptoms. The Indian guideline advises measuring all adults over 18 whenever they meet a health worker.', kind: 'guide', src: 'India MoHFW' });
     }
 
+    /* ===== Labs on the heart card (LDL) ===== */
+    if (p.ldl != null) {
+      if (p.ldl >= 190) {
+        ht.reasons.push(li('Your LDL of ' + p.ldl + ' mg/dL is 190 or more. Guidelines treat this level as a high-risk group on its own, whatever else is present.', 'guide', 'ACC/AHA'));
+        if (!own.cvd && ht.level !== 'high') { ht.level = 'high'; ht.levelText = 'Higher'; ht.headline = 'Your LDL cholesterol is very high. This needs a doctor, whatever else is going on.'; }
+        out.tests.push({ dom: 'heart', name: 'Doctor review of a very high LDL', when: 'Soon.', why: 'An LDL of 190 mg/dL or more can come from inherited high cholesterol, which also affects close relatives.', kind: 'guide', src: 'ACC/AHA' });
+      } else if (p.ldl >= 160) {
+        ht.reasons.push(li('Your LDL of ' + p.ldl + ' mg/dL is in the 160 to 189 range. A level that stays here counts as a risk-enhancing factor.', 'guide', 'ACC/AHA'));
+      } else if (p.ldl >= 100) {
+        ht.reasons.push(li('Your LDL is ' + p.ldl + ' mg/dL. What counts as a good level depends on your overall risk, so ask your doctor for your own target.', 'general'));
+      } else {
+        ht.reasons.push(li('Your LDL of ' + p.ldl + ' mg/dL is below 100.', 'general'));
+      }
+    }
+
+    /* ===== Kidney ===== */
+    var egfr = null;
+    if (p.creat != null && p.creat > 0 && p.age != null) {
+      var kk = p.sex === 'F' ? 0.7 : 0.9, aa = p.sex === 'F' ? -0.241 : -0.302;
+      egfr = 142 * Math.pow(Math.min(p.creat / kk, 1), aa) * Math.pow(Math.max(p.creat / kk, 1), -1.2) * Math.pow(0.9938, p.age) * (p.sex === 'F' ? 1.012 : 1);
+    }
+    out.egfr = egfr;
+    var famCKD = firstDeg.filter(function (m) { return m.cond.ckd; });
+    var kRF = [];
+    if (own.dm) kRF.push('diabetes');
+    if (own.htn) kRF.push('high blood pressure');
+    if (own.cvd) kRF.push('heart disease or stroke');
+    if (p.age != null && p.age >= 60) kRF.push('age 60 or more');
+    if (famCKD.length) kRF.push('family history of kidney disease');
+    var kd = { title: 'Kidney', key: 'kidney', reasons: [] };
+    var egfrLow = egfr != null && egfr < 60;
+    if (own.ckd) {
+      kd.level = 'info'; kd.levelText = 'Already diagnosed';
+      kd.headline = 'You already have kidney disease. Regular kidney tests and careful use of medicines protect what is left.';
+    } else if (egfrLow) {
+      kd.level = 'high'; kd.levelText = 'See a doctor';
+      kd.headline = 'Your creatinine gives an estimated kidney filtering rate (eGFR) below 60. It counts as kidney disease only if it stays low for 3 months, so it needs repeating and a doctor review.';
+    } else if (kRF.length >= 2) {
+      kd.level = 'high'; kd.levelText = 'Higher';
+      kd.headline = 'You have ' + kRF.length + ' of the factors that make kidney screening worthwhile.';
+    } else if (kRF.length === 1) {
+      kd.level = 'mod'; kd.levelText = 'Moderate';
+      kd.headline = 'You have one of the factors that make kidney screening worthwhile.';
+    } else {
+      kd.level = 'low'; kd.levelText = 'Lower';
+      kd.headline = 'None of the usual kidney screening factors are present. Early kidney damage gives no symptoms, so tell a doctor if that changes.';
+    }
+    if (kRF.length) kd.reasons.push(li('Factors present: ' + kRF.join(', ') + '. Diabetes, high blood pressure, heart disease, age 60 or more and a family history of kidney disease are the usual reasons to check the kidneys.', 'guide', 'AAFP 2023 review'));
+    if (famCKD.length) kd.reasons.push(li(cap(names(famCKD)) + (famCKD.length > 1 ? ' have' : ' has') + ' kidney disease.', 'guide', 'AAFP 2023 review'));
+    if (egfr != null) kd.reasons.push(li('Your creatinine of ' + p.creat + ' mg/dL gives an eGFR of about ' + Math.round(egfr) + '. A value of 60 or more is not low. A normal eGFR can still hide protein leaking in the urine, which is why the urine test is also done.', 'tool', 'CKD-EPI 2021 equation'));
+    kd.reasons.push(li('The count-based grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+    out.cards.push(kd);
+    if (own.ckd) {
+      out.tests.push({ dom: 'kidney', name: 'Kidney follow-up: eGFR and urine albumin-creatinine ratio', when: 'As your kidney doctor advises.', why: 'Shows whether kidney function is steady.', kind: 'general' });
+    } else if (kRF.length || egfrLow) {
+      var kYearly = own.dm || own.htn;
+      out.tests.push({ dom: 'kidney', name: 'eGFR (blood creatinine) and urine albumin-creatinine ratio', when: kYearly ? 'Every year.' : 'Once now as a baseline. Your doctor sets how often after that.', why: 'Early kidney damage causes no symptoms. These two simple tests are how it is found.', kind: 'guide', src: kYearly ? 'ADA, KDIGO' : 'AAFP 2023 review' });
+    }
+    if (own.dm || own.htn || own.ckd || egfrLow || famCKD.length) out.care.push(li('Avoid regular use of painkillers such as diclofenac or ibuprofen without a doctor\'s advice. They can strain the kidneys, more so with diabetes or high blood pressure.', 'general'));
+
+    /* ===== Prostate and urinary (men) ===== */
+    var famPros = firstDeg.filter(function (m) { return m.sex === 'M' && m.cond.pros; });
+    var famUro = firstDeg.filter(function (m) { return m.sex === 'M' && m.cond.uro; });
+    var prosYoung = famPros.filter(function (m) { return m.cAge != null && m.cAge < 65; });
+    var prosOld = famPros.filter(function (m) { return m.cAge != null && m.cAge >= 65; });
+    var uSym = own.usym || own.uro;
+    if (p.sex === 'M') {
+      var pr = { title: 'Prostate and urinary', short: 'Prostate', key: 'pros', reasons: [] };
+      var psaHigh = p.psa != null && p.psa >= 4;
+      if (own.blood) {
+        pr.level = 'high'; pr.levelText = 'See a doctor';
+        pr.headline = 'Blood in the urine, even once, needs a doctor to find the cause. It is often something treatable, but it should not be left.';
+      } else if (psaHigh) {
+        pr.level = 'high'; pr.levelText = 'Confirm it';
+        pr.headline = 'Your PSA is 4 or above. Many things besides cancer raise PSA, such as an enlarged prostate or an infection, so it needs a doctor to review it.';
+      } else if (famPros.length) {
+        pr.level = 'high'; pr.levelText = 'Higher';
+        pr.headline = 'A father, brother or son with prostate cancer raises your own chance. Guidelines advise talking about PSA testing earlier.';
+      } else if (uSym) {
+        pr.level = 'mod'; pr.levelText = 'Moderate';
+        pr.headline = 'Urinary symptoms or repeated urine infections in a man are a reason to see a doctor to find the cause.';
+      } else if (famUro.length) {
+        pr.level = 'mod'; pr.levelText = 'Moderate';
+        pr.headline = 'A close male relative has had prostate or urinary problems. These are common with age and often treatable, but it helps to know the early signs.';
+      } else {
+        pr.level = 'low'; pr.levelText = 'Lower';
+        pr.headline = 'No family or urinary flag entered. ' + (p.age >= 50 ? 'At 50 or more, PSA testing is a choice to talk through with a doctor.' : 'Prostate screening is usually discussed from age 50.');
+      }
+      famPros.forEach(function (m) {
+        pr.reasons.push(li(m.label + ' had prostate cancer' + (m.cAge != null ? ', found at ' + m.cAge : '') + '. ' + (m.cAge != null && m.cAge < 65 ? 'A diagnosis before 65 is the stronger signal.' : m.cAge != null ? 'Found at 65 or later, it counts for less than a younger diagnosis.' : 'Add the age it was found. It decides how often to test.'), 'guide', 'American Cancer Society'));
+      });
+      if (famPros.length) pr.reasons.push(li('The American Cancer Society advises men with a father, brother or son who had prostate cancer to talk about PSA testing from age 45, yearly if the relative was diagnosed before 65 or more than one relative is affected, otherwise every 2 years.', 'guide', 'American Cancer Society'));
+      if (uSym || famUro.length) pr.reasons.push(li('Repeated urine infections or a weak flow in a man can point to a prostate or bladder problem, such as an enlarged or inflamed prostate or a blockage. Studies have looked at a link with prostate cancer, but a cause-and-effect link is not established. The practical point is to find the cause early, because a blockage left alone can strain the bladder and kidneys.', 'general'));
+      if (p.age >= 50 && !famPros.length) pr.reasons.push(li('For men at average risk, the American Cancer Society advises PSA every 2 years from 50 to 69. Other bodies differ on whether to screen, so decide with a doctor after hearing the benefits and the risk of over-treatment.', 'guide', 'American Cancer Society'));
+      if (p.psa != null) pr.reasons.push(li(psaHigh ? 'Your PSA of ' + p.psa + ' ng/mL is at or above 4, the traditional cut-off.' : 'Your PSA of ' + p.psa + ' ng/mL is below 4, the traditional cut-off. Doctors also look at age, prostate size and the trend, so with a family history a lower value can still be followed.', 'general'));
+      pr.reasons.push(li('The Higher, Moderate and Lower grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+      out.cards.push(pr);
+      if (own.blood) {
+        out.tests.push({ dom: 'pros', name: 'Urine test and a doctor visit for the blood in the urine', when: 'Book it now.', why: 'The cause can be a stone, an infection, the prostate or something else. Each is easier to deal with when found early.', kind: 'general' });
+      } else if (uSym) {
+        out.tests.push({ dom: 'pros', name: 'Urine test and a prostate check by a doctor', when: 'At your next visit. Go sooner for fever, burning, or if passing urine becomes hard.', why: 'Repeated infections or a weak flow should have a cause found.', kind: 'general' });
+      }
+      if (famPros.length) {
+        var psaWhen;
+        if (p.age < 45) psaWhen = 'Ask about starting at 45. Some guidelines allow the talk at 40 when several relatives are affected.';
+        else if (famPros.length > 1 || prosYoung.length) psaWhen = 'Talk to a doctor now. The advice is a PSA test every year until 69.';
+        else if (prosOld.length) psaWhen = 'Talk to a doctor now. The advice is a PSA test every 2 years until 69.';
+        else psaWhen = 'Talk to a doctor now. Add the age your relative was diagnosed above, because it decides between yearly and every 2 years.';
+        out.tests.push({ dom: 'pros', name: 'PSA blood test', when: psaWhen, why: 'A father, brother or son with prostate cancer raises your own chance.', kind: 'guide', src: 'American Cancer Society' });
+      } else if (p.age >= 50 || psaHigh) {
+        out.tests.push({ dom: 'pros', name: 'PSA blood test', when: psaHigh ? 'Repeat it with a doctor.' : 'Talk it through with a doctor. The American Cancer Society suggests every 2 years from 50 to 69 for average risk.', why: 'It is a shared decision, because PSA can lead to extra tests that were not needed.', kind: 'guide', src: 'American Cancer Society' });
+      }
+    }
+
+    /* ===== Thyroid ===== */
+    var famThy = firstDeg.filter(function (m) { return m.cond.thy; });
+    var tshOut = p.tsh != null && (p.tsh < 0.4 || p.tsh > 4.0);
+    var th = { title: 'Thyroid', key: 'thy', reasons: [] };
+    if (own.thy) {
+      th.level = 'info'; th.levelText = 'Already diagnosed';
+      th.headline = 'You already have a thyroid condition. Take the medicine as advised and repeat the TSH test on the schedule your doctor sets.';
+    } else if (tshOut) {
+      th.level = 'high'; th.levelText = 'Confirm it';
+      th.headline = 'Your TSH is outside the commonly used range. One value is not a diagnosis, so it needs repeating and a doctor review.';
+    } else if (famThy.length) {
+      th.level = 'mod'; th.levelText = 'Moderate';
+      th.headline = 'A close relative has thyroid disease. Thyroid problems often run in families and are common, especially in women.';
+    } else {
+      th.level = 'low'; th.levelText = 'Lower';
+      th.headline = 'No family or personal thyroid flag entered. No rule asks everyone to be screened.';
+    }
+    if (famThy.length) th.reasons.push(li(cap(names(famThy)) + (famThy.length > 1 ? ' have' : ' has') + ' thyroid disease.', 'general'));
+    if (p.tsh != null) th.reasons.push(li(tshOut ? 'Your TSH of ' + p.tsh + ' mIU/L is outside 0.4 to 4.0, a commonly used range. Labs use slightly different ranges.' : 'Your TSH of ' + p.tsh + ' mIU/L is inside 0.4 to 4.0, a commonly used range. Labs use slightly different ranges.', 'general'));
+    th.reasons.push(li('There is no single rule that everyone should be screened. Many doctors check TSH when there is a family history, symptoms, or another autoimmune condition, so ask yours.', 'general'));
+    th.reasons.push(li('Tell a doctor about unexplained tiredness, weight change that diet does not explain, feeling unusually cold or hot, hair fall, constipation, a racing heart, or swelling at the front of the neck.', 'general'));
+    out.cards.push(th);
+    if (own.thy) {
+      out.tests.push({ dom: 'thy', name: 'TSH follow-up', when: 'As your doctor advises.', why: 'Shows whether the medicine dose is right.', kind: 'general' });
+    } else if (famThy.length || tshOut) {
+      out.tests.push({ dom: 'thy', name: 'TSH blood test', when: tshOut ? 'Repeat it with a doctor.' : 'Ask for a baseline at your next blood test. Your doctor sets how often after that.', why: 'A relative with thyroid disease is a common reason to check once.', kind: 'general' });
+    }
+
+    /* ===== Cancer in the family ===== */
+    var famCRC = firstDeg.filter(function (m) { return m.cond.crc; });
+    var famBR = firstDeg.filter(function (m) { return m.cond.brca; });
+    var cancerRel = firstDeg.filter(function (m) { return m.cond.crc || m.cond.brca || m.cond.pros; });
+    if (famCRC.length || famBR.length || (p.sex === 'F' && famPros.length)) {
+      var ca = { title: 'Cancer in the family', short: 'Cancer', key: 'cancer', reasons: [] };
+      var crcYoung = famCRC.filter(function (m) { return m.cAge != null && m.cAge < 60; });
+      var brYoung = famBR.filter(function (m) { return m.cAge != null && m.cAge < 50; });
+      if (cancerRel.length >= 2 || crcYoung.length || brYoung.length) {
+        ca.level = 'high'; ca.levelText = 'Higher';
+        ca.headline = 'The pattern in your family, more than one close relative or a cancer found young, is the kind doctors look at more closely.';
+      } else {
+        ca.level = 'mod'; ca.levelText = 'Moderate';
+        ca.headline = 'A close relative has had cancer. This can mean earlier or more frequent screening for you.';
+      }
+      famCRC.concat(famBR).forEach(function (m) {
+        var what = m.cond.crc && !m.cond.brca ? 'colon or rectal cancer' : m.cond.brca && !m.cond.crc ? 'breast or ovarian cancer' : 'cancer';
+        ca.reasons.push(li(m.label + ' had ' + what + (m.cAge != null ? ', found at ' + m.cAge : '') + '.', 'general'));
+      });
+      if (famCRC.concat(famBR).some(function (m) { return m.cAge == null; })) ca.reasons.push(li('Add the age each cancer was found. A cancer found young counts for more.', 'general'));
+      ca.reasons.push(li('In some families, prostate, breast, ovarian and colon cancers share an inherited cause. When more than one of them appears, ask a doctor about genetic counselling.', 'general'));
+      ca.reasons.push(li('The grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+      out.cards.push(ca);
+      if (famCRC.length) out.tests.push({ dom: 'cancer', name: 'Ask about colon screening earlier than usual', when: 'Ask your doctor when to start. Commonly cited advice is to start at 40, or 10 years before the age your relative was diagnosed, whichever is earlier.', why: 'A close relative with colon or rectal cancer raises your own chance.', kind: 'general' });
+      if (famBR.length) out.tests.push({ dom: 'cancer', name: 'Ask about earlier breast screening and genetic counselling', when: 'Ask your doctor, especially if the cancer was found before 50 or more than one relative had it.', why: 'A close relative with breast or ovarian cancer can change when screening should start.', kind: 'general' });
+    }
+
     /* ===== Care: lifestyle ===== */
     if (p.diet.salt) out.care.push(li('Cut back on salt: pickles, papad, namkeen and packaged foods. Less salt helps lower blood pressure.', 'guide', 'India MoHFW'));
     if (p.diet.lowfv) out.care.push(li('Aim for fruit and vegetables every day. More of them, with less salt, can lower blood pressure noticeably.', 'guide', 'India MoHFW'));
@@ -676,13 +892,19 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     if (p.smoke === 'current') out.care.push(li('Stopping tobacco lowers heart and blood pressure risk. Ask your doctor about quit support.', 'guide', 'India MoHFW'));
     if (!out.care.length) out.care.push(li('Nothing flagged in the habits you entered. Keep the routine and repeat this check once a year.', 'general'));
 
-    /* ===== Plan ahead ===== */
-    out.plan.push(li('Review health insurance while you have no diagnosed condition. Policies usually apply waiting periods to conditions you already have at purchase, so the terms are easier earlier. Compare policies before choosing.', 'general'));
-    var testNames = out.tests.map(function (t) { return t.name; });
-    if (testNames.length) out.plan.push(li('Set aside a small yearly amount for check-ups: ' + testNames.slice(0, 3).join(', ') + '. Routine tests cost far less than late treatment.', 'general'));
-    out.plan.push(li('Keep an emergency reserve for hospital costs. Heart events and complications tend to arrive as sudden bills.', 'general'));
+    /* ===== Plan ahead (money) ===== */
+    var rupee = function (x) { return '₹' + Math.round(x).toLocaleString('en-IN'); };
+    out.plan.push(li('Review health insurance while no condition is diagnosed. Under the IRDAI rules in force since April 2024, a waiting period for conditions you already have when you buy can be at most 3 years, and after 5 years of continuous cover an insurer cannot reject a claim over non-disclosure, except for fraud. Declare every condition honestly.', 'guide', 'IRDAI 2024 rules, as summarised by PolicyBazaar'));
+    if (p.emp) out.plan.push(li('Your cover depends on your job. It usually ends when the job does, and a new policy bought later, at an older age and with new conditions, costs more and brings waiting periods. Consider a personal policy as well.', 'general'));
+    if (p.parNoCover) out.plan.push(li('Parents who already have diabetes, heart disease or high blood pressure can still be insured, usually with waiting periods and higher premiums. IRDAI removed the upper age limit for buying a policy in April 2024. Compare policies and read the waiting period for each existing condition.', 'guide', 'IRDAI 2024 rules, as summarised by PolicyBazaar'));
+    if (p.expm != null && p.expm > 0) out.plan.push(li('A common rule of thumb is to keep 6 months of household expenses in an easy-to-reach reserve. For you that is about ' + rupee(p.expm * 6) + '. With a long-term condition in the family, some planners suggest more.', 'general'));
+    else out.plan.push(li('Add your monthly household expenses in the Money planning section to see a reserve figure. A common rule of thumb is 6 months of expenses, kept where you can reach it fast.', 'general'));
+    if (p.cover != null && p.cover > 0) out.plan.push(li('You entered ₹' + p.cover + ' lakh of cover. No rule gives the right amount. Ask an insurer or adviser to check it against hospital costs in your city, and whether it is one amount for each person or one amount shared by the whole family.', 'general'));
+    if (out.tests.length) out.plan.push(li(out.tests.length + ' tests or check-ups are flagged to ask about. Ask a lab for a package price and put it in the yearly budget, so the checks are not skipped for cost.', 'general'));
+    out.plan.push(li('Under the old income tax regime, Section 80D allows up to ₹5,000 for preventive health check-ups, counted within the overall health deduction limit. It is not available under the new regime. Ask a tax adviser how it applies to you.', 'guide', 'Income Tax Act s.80D, as summarised by ClearTax'));
+    out.plan.push(li('Check whether you or your parents qualify for government cover such as Ayushman Bharat (PM-JAY), and keep the card or number with the family papers.', 'general'));
     out.plan.push(li('Keep every report and prescription in one folder, on paper and on your phone, so any family member can find them quickly.', 'general'));
-    if (fam.some(function (m) { return m.deg === 1 && (m.cond.dm || m.cond.htn || m.cond.cvd || m.cond.stroke || m.cond.chol); })) out.plan.push(li('For relatives already diagnosed, keep a list of their medicines, their doctor and hospital, and their insurance details where family can reach them in an emergency.', 'general'));
+    if (fam.some(function (m) { return m.deg === 1 && COND.some(function (x) { return m.cond[x[0]]; }); })) out.plan.push(li('For relatives already diagnosed, keep a list of their medicines, their doctor and hospital, and their insurance details where family can reach them in an emergency.', 'general'));
 
     /* ===== Questions for the doctor ===== */
     premature.forEach(function (m) {
@@ -692,7 +914,14 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     if (famHTN.length && !own.htn) out.qs.push('High blood pressure runs in my family. Should I monitor at home, and with which device?');
     if (readingHigh && !own.htn) out.qs.push('My reading was ' + p.sys + '/' + p.dia + '. How should we confirm whether this is high blood pressure?');
     out.qs.push('Given my age, weight and family history, which checks am I missing?');
-    out.qs.push('Are there other conditions that run in my family, such as prostate, kidney or cancer, that I should be screened for?');
+    if (famPros.length) out.qs.push('A close relative had prostate cancer. Should I have a PSA test now, and how often after that?');
+    if (p.sex === 'M' && (uSym || famUro.length)) out.qs.push('Urinary problems or repeated urine infections run in my family' + (uSym ? ' and I have symptoms' : '') + '. Should I have a urine test and a prostate check?');
+    if (own.blood) out.qs.push('I have seen blood in my urine. What tests will find the cause?');
+    if (kRF.length && !own.ckd) out.qs.push('Should I have an eGFR and a urine albumin-creatinine test, and how often?');
+    if (famThy.length && !own.thy) out.qs.push('Thyroid disease runs in my family. Should I have a TSH test?');
+    if (famCRC.length) out.qs.push('A close relative had colon or rectal cancer. At what age should I start colon screening?');
+    if (famBR.length) out.qs.push('A close relative had breast or ovarian cancer. Should I start screening earlier, and is genetic counselling useful?');
+    out.qs.push('Is there anything else in my family history that I should be screened for?');
 
     /* ===== Family members already diagnosed ===== */
     fam.forEach(function (m) {
@@ -704,10 +933,30 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       if (c.htn) items.push(li('Uncontrolled high blood pressure leads to stroke, heart failure and kidney failure. Regular readings and taking medicines without gaps are the main protection.', 'guide', 'India MoHFW'));
       if (c.cvd || c.stroke) items.push(li('After a heart event or stroke, the chance of another stays higher. Regular cardiology follow-up and unbroken medicines matter, and so do blood pressure, sugar and cholesterol checks.', 'general'));
       if (c.chol) items.push(li('High cholesterol needs follow-up tests. The doctor sets how often.', 'general'));
+      if (c.ckd) items.push(li('Kidney disease needs regular eGFR and urine tests. Blood pressure and sugar should stay controlled, painkillers such as diclofenac or ibuprofen should be avoided unless the doctor says otherwise, and every doctor should be told about the kidney problem before new medicines.', 'general'));
+      if (c.thy) items.push(li('Thyroid disease needs a TSH test now and then and medicine taken regularly as advised.', 'general'));
+      if (c.uro) items.push(li('A weak flow, repeated infections or getting up often at night should be assessed. A blockage left alone can strain the bladder and kidneys.', 'general'));
+      if (c.pros) items.push(li('After prostate cancer, the urologist sets follow-up PSA tests. Brothers and sons should ask about PSA testing from age 45.', 'guide', 'American Cancer Society'));
+      if (c.crc) items.push(li('Brothers, sisters and children of someone with colon or rectal cancer should ask about earlier colon screening.', 'general'));
+      if (c.brca) items.push(li('Sisters, daughters and sometimes brothers of someone with breast or ovarian cancer should ask about earlier screening and genetic counselling.', 'general'));
       if ((c.dm && (c.htn || c.cvd || c.stroke)) || (c.htn && (c.cvd || c.stroke))) items.push(li('Several conditions together raise the risk further, so every one of them needs to be controlled, not only the one that caused the last hospital visit.', 'general'));
       out.famcare.push({ label: m.label, has: has.map(function (x) { return x[1].toLowerCase(); }), items: items });
     });
 
+    dm.key = 'dm'; ht.key = 'heart'; bp.key = 'bp';
+    var domOf = function (t) {
+      if (t.dom) return t.dom;
+      if (/HbA1c|glucose|Kidney, eye/.test(t.name)) return 'dm';
+      if (/Lipid|Cardiology|Lipoprotein|heart risk/.test(t.name)) return 'heart';
+      if (/Blood pressure|BP readings/.test(t.name)) return 'bp';
+      return 'other';
+    };
+    out.tests.forEach(function (t) {
+      var d = domOf(t);
+      var card = out.cards.filter(function (c) { return c.key === d; })[0];
+      var lvl = card ? card.level : 'low';
+      t.pri = lvl === 'high' ? 1 : lvl === 'mod' ? 2 : 3;
+    });
     out.premature = premature;
     return out;
   }
@@ -727,15 +976,20 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     var bar = $('liveBar');
     bar.hidden = false;
     bar.innerHTML = out.cards.map(function (c) {
-      return '<span class="pill ' + c.level + '">' + c.title.replace(' and stroke', '') + ': ' + c.levelText + '</span>';
+      return '<span class="pill ' + c.level + '">' + (c.short || c.title.replace(' and stroke', '')) + ': ' + c.levelText + '</span>';
     }).join('');
   }
 
   function render(p, fam, out) {
     var h = '';
-    h += '<section class="section"><div class="section-head"><h2>Where you stand</h2><p>Three areas where family history and your own numbers matter most.</p></div><div class="cards">' + out.cards.map(cardHTML).join('') + '</div></section>';
+    h += '<section class="section"><div class="section-head"><h2>Where you stand</h2><p>The areas where your family history and your own numbers matter most.</p></div><div class="cards">' + out.cards.map(cardHTML).join('') + '</div></section>';
 
-    h += '<section class="section"><div class="section-head"><h2>Tests to ask about</h2><p>Bring this list to your doctor. They decide what is right for you.</p></div><div class="tests">' + out.tests.map(testHTML).join('') + '</div></section>';
+    var groups = [[1, 'Do these first'], [2, 'This year'], [3, 'Ongoing or routine']];
+    h += '<section class="section"><div class="section-head"><h2>Tests to ask about, in order</h2><p>Bring this list to your doctor. They decide what is right for you. The order follows the levels above and is a simple rule used in this prototype.</p></div>' +
+      groups.map(function (g) {
+        var list = out.tests.filter(function (t) { return t.pri === g[0]; });
+        return list.length ? '<h3 class="grp">' + g[1] + '</h3><div class="tests">' + list.map(testHTML).join('') + '</div>' : '';
+      }).join('') + '</section>';
 
     h += '<section class="section"><div class="section-head"><h2>What to take care of</h2><p>Based on the habits you entered.</p></div><div class="block"><ul class="items">' + out.care.join('') + '</ul></div></section>';
 
@@ -749,7 +1003,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 
     h += '<section class="section"><div class="section-head"><h2>Questions to ask your doctor</h2></div><div class="block"><ul class="items">' + out.qs.map(function (q) { return '<li><span>' + q + '</span></li>'; }).join('') + '</ul></div></section>';
 
-    h += '<div class="emergency"><strong>Get emergency care straight away</strong> for chest pain or pressure, breathlessness, fainting, sudden weakness or numbness on one side, trouble speaking, or a very high blood pressure reading with a severe headache. Do not wait for a test appointment.</div>';
+    h += '<div class="emergency"><strong>Get emergency care straight away</strong> for chest pain or pressure, breathlessness, fainting, sudden weakness or numbness on one side, trouble speaking, being unable to pass urine, or a very high blood pressure reading with a severe headache. Do not wait for a test appointment.</div>';
 
     h += '<section class="section"><div class="actions"><button type="button" class="btn primary" id="copyBtn">Copy summary for my doctor</button><span class="status" id="copyStatus" role="status"></span></div><textarea id="copyBox" readonly hidden aria-label="Summary text"></textarea></section>';
 
@@ -772,7 +1026,12 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       '<li>The premature heart disease definition (men under 55, women under 65) and Lipoprotein(a) advice follow ACC/AHA and other society statements.</li>' +
       '<li>Blood pressure advice follows the Indian Ministry of Health guideline. The yearly frequency is a general suggestion, not a number from the guideline.</li>' +
       '<li>The Higher, Moderate and Lower groupings for heart and blood pressure are simple rules written for this prototype. A doctor should replace them with a validated calculator.</li>' +
-      '<li>Not covered yet: prostate, urinary problems, kidney disease, cancers, thyroid. If you or a relative have repeated urinary symptoms, mention it to a doctor.</li>' +
+      '<li>Kidney screening factors follow a 2023 clinical review. The eGFR is worked out with the CKD-EPI 2021 equation, which has no race term. The count-based grouping is a prototype rule.</li>' +
+      '<li>PSA ages and how often follow the American Cancer Society. Guidelines differ on whether to screen men at average risk, which is why it is framed as a decision with a doctor.</li>' +
+      '<li>Repeated urine infections in men are a reason to look for a prostate or bladder cause. A cause-and-effect link with prostate cancer is not established.</li>' +
+      '<li>The thyroid, colon and breast advice is general advice, not a single guideline. The TSH range of 0.4 to 4.0 and the PSA cut-off of 4 are commonly used values that labs and doctors adjust.</li>' +
+      '<li>Insurance and tax points follow IRDAI rules from April 2024 and Section 80D as summarised by two consumer sites, not the original texts. The 6-month reserve is a rule of thumb, not financial advice.</li>' +
+      '<li>Not covered yet: lung, liver, skin and other cancers, mental health, bone health, women\'s health beyond what is listed, and children. Reports cannot be uploaded yet, so values are typed in.</li>' +
       '</ul></div>';
     h += '<div><h3>Sources</h3><ul class="src-list">' +
       '<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6436280" target="_blank" rel="noopener">Indian Diabetes Risk Score table (Madras Diabetes Research Foundation), as used in a published study</a></li>' +
@@ -781,6 +1040,10 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       '<li><a href="https://clinicalestablishments.mohfw.gov.in/sites/default/files/standard-treatment-guidelines/6591.pdf" target="_blank" rel="noopener">Government of India guideline on hypertension in adults</a></li>' +
       '<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8344373/table/T17" target="_blank" rel="noopener">ACC/AHA risk-enhancing factors, including family history and South Asian ancestry</a></li>' +
       '<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10945898" target="_blank" rel="noopener">Society recommendations on Lipoprotein(a) testing</a></li>' +
+      '<li><a href="https://www.aafp.org/pubs/afp/issues/2023/1200/chronic-kidney-disease.html" target="_blank" rel="noopener">Chronic kidney disease review, American Family Physician 2023</a></li>' +
+      '<li><a href="https://www.cancer.org/latest-news/prostate-cancer-screening-faq.html" target="_blank" rel="noopener">American Cancer Society prostate screening advice</a></li>' +
+      '<li><a href="https://www.policybazaar.com/health-insurance/articles/new-irdai-health-insurance-guidelines-you-must-know" target="_blank" rel="noopener">IRDAI health insurance rules from April 2024, summary</a></li>' +
+      '<li><a href="https://cleartax.in/s/medical-insurance" target="_blank" rel="noopener">Section 80D deduction limits, summary</a></li>' +
       '</ul></div>';
     h += '</div></details>';
 
@@ -797,20 +1060,28 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     var L = [];
     L.push('FAMILY HEALTH SUMMARY (prototype, not clinically reviewed)');
     L.push('Age ' + p.age + ', ' + (p.sex === 'M' ? 'male' : 'female') + (out.bmi ? ', BMI ' + out.bmi.toFixed(1) : '') + (p.waist ? ', waist ' + p.waist + ' cm' : ''));
-    var ownList = []; Object.keys(p.own).forEach(function (k) { if (p.own[k]) ownList.push({ dm: 'diabetes', predm: 'prediabetes', htn: 'high blood pressure', cvd: 'heart disease or stroke', chol: 'high cholesterol', ckd: 'kidney disease', gdm: 'diabetes in pregnancy' }[k]); });
+    var ownList = []; Object.keys(p.own).forEach(function (k) { if (p.own[k]) ownList.push({ dm: 'diabetes', predm: 'prediabetes', htn: 'high blood pressure', cvd: 'heart disease or stroke', chol: 'high cholesterol', ckd: 'kidney disease', gdm: 'diabetes in pregnancy', thy: 'thyroid disease', uro: 'prostate or urinary problems', usym: 'current urinary symptoms', blood: 'blood in urine, not yet checked' }[k]); });
     L.push('Own conditions: ' + (ownList.length ? ownList.join(', ') : 'none entered'));
+    var rd = [];
+    if (p.sys != null && p.dia != null) rd.push('BP ' + p.sys + '/' + p.dia);
+    if (p.a1c != null) rd.push('HbA1c ' + p.a1c + '%');
+    if (p.ldl != null) rd.push('LDL ' + p.ldl + ' mg/dL');
+    if (p.creat != null) rd.push('creatinine ' + p.creat + ' mg/dL' + (out.egfr != null ? ' (eGFR about ' + Math.round(out.egfr) + ')' : ''));
+    if (p.tsh != null) rd.push('TSH ' + p.tsh + ' mIU/L');
+    if (p.psa != null) rd.push('PSA ' + p.psa + ' ng/mL');
+    if (rd.length) L.push('Readings: ' + rd.join(', '));
     L.push('');
     L.push('Family history:');
     if (!fam.length) L.push('- none entered');
     fam.forEach(function (m) {
       var c = COND.filter(function (x) { return m.cond[x[0]]; }).map(function (x) { return COND_LABEL[x[0]]; });
-      L.push('- ' + m.label + ': ' + (c.length ? c.join(', ') : 'no conditions') + (m.evAge != null && (m.cond.cvd || m.cond.stroke) ? ' (first heart/stroke event at ' + m.evAge + ')' : ''));
+      L.push('- ' + m.label + ': ' + (c.length ? c.join(', ') : 'no conditions') + (m.evAge != null && (m.cond.cvd || m.cond.stroke) ? ' (first heart/stroke event at ' + m.evAge + ')' : '') + (m.cAge != null && (m.cond.pros || m.cond.crc || m.cond.brca) ? ' (cancer found at ' + m.cAge + ')' : ''));
     });
     L.push('');
     out.cards.forEach(function (c) { L.push(c.title + ': ' + c.levelText + '. ' + c.headline); });
     L.push('');
     L.push('Tests to discuss:');
-    out.tests.forEach(function (t) { L.push('- ' + t.name + ': ' + t.when); });
+    out.tests.forEach(function (t) { L.push('- ' + (t.pri === 1 ? '[first] ' : '') + t.name + ': ' + t.when); });
     L.push('');
     L.push('Questions:');
     out.qs.forEach(function (q) { L.push('- ' + q); });
@@ -869,8 +1140,8 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     $('activity').value = '30'; $('smoke').value = 'never';
     $('d-salt').checked = true; $('d-sweet').checked = true;
     family = [];
-    addMember('father', { dm: true, cvd: true }, 52);
-    addMember('mother', { htn: true }, null);
+    addMember('father', { dm: true, cvd: true, uro: true }, 52);
+    addMember('mother', { htn: true, thy: true }, null);
     renderFamily();
   }
   function clearAll() {
@@ -896,7 +1167,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 
   /* ---------- saved profiles (this browser only) ---------- */
   var STORE_KEY = 'family-health-planner-profiles-v1';
-  var FIELD_IDS = ['age', 'sex', 'height', 'weight', 'waist', 'activity', 'smoke', 'd-salt', 'd-sweet', 'd-fried', 'd-lowfv', 'o-dm', 'o-predm', 'o-htn', 'o-cvd', 'o-chol', 'o-ckd', 'o-gdm', 'sys', 'dia', 'a1c'];
+  var FIELD_IDS = ['age', 'sex', 'height', 'weight', 'waist', 'activity', 'smoke', 'd-salt', 'd-sweet', 'd-fried', 'd-lowfv', 'o-dm', 'o-predm', 'o-htn', 'o-cvd', 'o-chol', 'o-ckd', 'o-gdm', 'o-thy', 'o-uro', 'o-usym', 'o-blood', 'sys', 'dia', 'a1c', 'ldl', 'creat', 'tsh', 'psa', 'expm', 'cover', 'm-emp', 'm-par'];
   function loadStore() {
     try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; } catch (e) { return null; }
   }
@@ -909,7 +1180,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       var el = $(id);
       v[id] = el.type === 'checkbox' ? el.checked : el.value;
     });
-    return { v: v, family: family.map(function (m) { return { rel: m.rel, cond: m.cond, evAge: m.evAge }; }) };
+    return { v: v, family: family.map(function (m) { return { rel: m.rel, cond: m.cond, evAge: m.evAge, cAge: m.cAge }; }) };
   }
   function applySnapshot(s) {
     FIELD_IDS.forEach(function (id) {
@@ -918,7 +1189,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       if (el.type === 'checkbox') el.checked = !!s.v[id]; else el.value = s.v[id];
     });
     family = [];
-    (s.family || []).forEach(function (m) { addMember(m.rel, JSON.parse(JSON.stringify(m.cond || {})), m.evAge); });
+    (s.family || []).forEach(function (m) { addMember(m.rel, JSON.parse(JSON.stringify(m.cond || {})), m.evAge, m.cAge); });
     renderFamily();
     $('exampleBar').hidden = true;
     update();
@@ -928,6 +1199,23 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     el.textContent = msg;
     el.className = 'status' + (isErr ? ' err' : '');
   }
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  function renderOverview() {
+    var body = $('ovBody');
+    if (!body) return;
+    var store = loadStore() || {};
+    var names = Object.keys(store).sort();
+    if (!names.length) { body.innerHTML = '<p class="hint">Save a profile for each family member (Papa, Mom, Me) and their levels appear here side by side.</p>'; return; }
+    body.innerHTML = names.map(function (n) {
+      var sn = store[n], p = readProfile(sn), pills;
+      if (p.age == null) pills = '<span class="hint">Age missing</span>';
+      else {
+        var o = analyse(p, famView(sn.family || []));
+        pills = o.cards.map(function (c) { return '<span class="pill ' + c.level + '">' + (c.short || c.title.replace(' and stroke', '')) + ': ' + c.levelText + '</span>'; }).join('');
+      }
+      return '<div class="ov-row"><strong>' + esc(n) + '</strong><div class="ov-pills">' + pills + '</div><button type="button" class="link-btn" data-open="' + encodeURIComponent(n) + '">Open</button></div>';
+    }).join('') + '<p class="hint">This list shows only the profiles saved in this browser.</p>';
+  }
   function refreshProfileList(selected) {
     var store = loadStore() || {};
     var sel = $('profileSel');
@@ -935,11 +1223,21 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     sel.innerHTML = '<option value="">Choose a saved profile</option>' + names.map(function (n) {
       return '<option value="' + encodeURIComponent(n) + '"' + (n === selected ? ' selected' : '') + '>' + n.replace(/</g, '&lt;') + '</option>';
     }).join('');
+    renderOverview();
   }
   var storeOK = loadStore() !== null && saveStore(loadStore());
   if (!storeOK) {
     $('profileBar').hidden = true;
+    $('famOverview').hidden = true;
   } else {
+    $('ovBody').addEventListener('click', function (e) {
+      var raw = e.target.getAttribute && e.target.getAttribute('data-open');
+      if (!raw) return;
+      $('profileSel').value = raw;
+      $('profileSel').dispatchEvent(new Event('change'));
+      var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      $('profileBar').scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+    });
     refreshProfileList();
     $('profileSave').addEventListener('click', function () {
       var name = $('profileName').value.trim();
@@ -1043,6 +1341,12 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       }).catch(function () {});
     }
   } catch (e) {}
+
+  $('inviteWa').addEventListener('click', function () {
+    var url = (location.href || '').split('#')[0];
+    var msg = 'Try this family health planner. Enter age, habits and what runs in the family, and it shows which checks to ask a doctor about and what to plan for. It is a test version, not a diagnosis. ' + url;
+    this.href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+  });
 
   /* ---------- tester feedback (copy and send) ---------- */
   function feedbackText() {
