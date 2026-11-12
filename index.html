@@ -160,6 +160,7 @@ ul.items li { display: flex; flex-direction: column; gap: 4px; font-size: 14px; 
 .tag { align-self: flex-start; font-size: 11.5px; font-weight: 600; color: var(--muted); background: var(--surface-2); border-radius: 6px; padding: 2px 8px; }
 .tag.guide { color: var(--accent); background: var(--accent-soft); }
 .tag.tool { color: var(--info); background: var(--info-bg); }
+.tag a { color: inherit; text-decoration: underline; }
 .tag.proto { color: var(--mod); background: var(--mod-bg); }
 
 .block { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; min-width: 0; }
@@ -530,7 +531,30 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 
   /* ---------- helpers for output ---------- */
   var TAGNAME = { guide: 'Guideline', tool: 'Scored tool', general: 'General advice', proto: 'Prototype rule' };
-  function tag(kind, src) { return '<span class="tag ' + kind + '">' + TAGNAME[kind] + (src ? ' · ' + src : '') + '</span>'; }
+  var SRCURL = {
+    'ICMR STW T2DM': 'https://icmr.gov.in/icmrobject/uploads/STWs/1726567245_diabetes_mellitus_type_2.pdf',
+    'ICMR STW CKD': 'https://www.icmr.gov.in/icmrobject/uploads/STWs/1784807342_nephrology_all.pdf',
+    'ICMR-NIN 2024': 'https://www.nin.res.in/dietaryguidelines/pdfjs/locale/DGI24thJune2024fin.pdf',
+    'MoHFW NP-NCD': 'https://main.mohfw.gov.in/sites/default/files/Operational%20Guidelines%20on%20Prevention%2C%20Screening%20and%20Control%20of%20Common%20NCDs_1.pdf',
+    'India MoHFW': 'https://clinicalestablishments.mohfw.gov.in/sites/default/files/standard-treatment-guidelines/6591.pdf',
+    'CSI 2023': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC11019331',
+    'IDRS': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6436280',
+    'IDRS, Madras Diabetes Research Foundation': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC6436280',
+    'ADA': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10725812/table/T2.4',
+    'ADA 2025': 'https://mdcalc.scholasticahq.com/article/159088-updated-review-of-the-american-diabetes-association-ada-risk-calculator',
+    'ACC/AHA': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8344373/table/T17',
+    'Lp(a) society statements': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10945898',
+    'AAFP 2023 review': 'https://www.aafp.org/pubs/afp/issues/2023/1200/chronic-kidney-disease.html',
+    'American Cancer Society': 'https://www.cancer.org/latest-news/prostate-cancer-screening-faq.html',
+    'IRDAI 2024 rules, as summarised by PolicyBazaar': 'https://www.policybazaar.com/health-insurance/articles/new-irdai-health-insurance-guidelines-you-must-know',
+    'Income Tax Act s.80D, as summarised by ClearTax': 'https://cleartax.in/s/medical-insurance'
+  };
+  function tag(kind, src) {
+    var inner = (src ? src.split('; ') : []).map(function (n) {
+      return SRCURL[n] ? '<a href="' + SRCURL[n] + '" target="_blank" rel="noopener">' + n + '</a>' : n;
+    }).join(', ');
+    return '<span class="tag ' + kind + '">' + TAGNAME[kind] + (inner ? ' · ' + inner : '') + '</span>';
+  }
   function li(text, kind, src) { return '<li><span>' + text + '</span>' + tag(kind, src) + '</li>'; }
   function names(list) {
     var l = list.map(function (m) { return m.label.toLowerCase(); });
@@ -583,10 +607,10 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     if (idrs != null) dm.reasons.push(li('Score built from age, waist, activity and whether parents have diabetes. Breakdown is at the bottom of the page.', 'tool', 'IDRS, Madras Diabetes Research Foundation'));
     if (parentsDM.length) dm.reasons.push(li(cap(names(parentsDM)) + (parentsDM.length > 1 ? ' have' : ' has') + ' diabetes. Having a parent with diabetes adds points to the score.', 'tool', 'IDRS'));
     var sibKids = fdrDM.filter(function (m) { return m.rel !== 'father' && m.rel !== 'mother'; });
-    if (sibKids.length) dm.reasons.push(li('A ' + names(sibKids) + ' with diabetes counts as a first-degree relative for testing advice, although the score itself counts parents only.', 'guide', 'ADA'));
+    if (sibKids.length) dm.reasons.push(li('A ' + names(sibKids) + ' with diabetes counts as a first-degree relative for testing advice, although the score itself counts parents only.', 'guide', 'ICMR STW T2DM; ADA'));
     if (secondDeg.some(function (m) { return m.cond.dm; })) dm.reasons.push(li('Diabetes in grandparents, uncles or aunts is noted but does not change the score.', 'general'));
-    if (bmi != null) dm.reasons.push(li('Your BMI is ' + bmi.toFixed(1) + '. Guidelines use 23 or more as the point to consider testing for people of Asian origin.', 'guide', 'ADA'));
-    if (a1cState === 'norm') dm.reasons.push(li('Your last HbA1c (' + p.a1c + '%) is below 5.7%, the normal range.', 'guide', 'ADA'));
+    if (bmi != null) dm.reasons.push(li('Your BMI is ' + bmi.toFixed(1) + '. Guidelines use 23 or more as the point to consider testing for people of Asian origin.', 'guide', 'ICMR STW T2DM; ADA'));
+    if (a1cState === 'norm') dm.reasons.push(li('Your last HbA1c (' + p.a1c + '%) is below 5.7%, the normal range.', 'guide', 'ICMR STW T2DM; ADA'));
     out.cards.push(dm);
 
     /* diabetes tests */
@@ -606,9 +630,11 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     } else if (own.gdm) {
       out.tests.push({ name: 'HbA1c or fasting glucose', when: 'At least every 3 years, for life.', why: 'Diabetes during pregnancy raises the lifelong chance of type 2 diabetes.', kind: 'guide', src: 'ADA' });
     } else if (p.age != null && p.age >= 35) {
-      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Now, if you have not had one in the last 3 years. Then at least every 3 years if normal.', why: 'Screening is advised for all adults from age 35.', kind: 'guide', src: 'ADA 2025' });
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Now, if you have not had one in the last 3 years. Then at least every 3 years if normal.', why: 'The American Diabetes Association advises screening all adults from age 35. India\'s national NCD programme goes further and screens everyone from 30, every year.', kind: 'guide', src: 'ADA 2025; MoHFW NP-NCD' });
+    } else if (p.age != null && p.age >= 30) {
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Ask for one now. Then as your doctor advises, or yearly if you have risk factors.', why: 'India\'s national NCD programme screens everyone from 30, and ICMR lists age over 30 with overweight and a risk factor as a reason to test. The American Diabetes Association starts at 35.', kind: 'guide', src: 'MoHFW NP-NCD; ICMR STW T2DM; ADA' });
     } else if (bmi != null && bmi >= 23 && adaRF.length) {
-      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Worth doing now. Then at least every 3 years if normal.', why: 'BMI of 23 or more plus ' + adaRF[0] + ' meets the testing criteria.', kind: 'guide', src: 'ADA' });
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Worth doing now. Then at least every 3 years if normal.', why: 'BMI of 23 or more plus ' + adaRF[0] + ' meets the testing criteria.', kind: 'guide', src: 'ICMR STW T2DM; ADA' });
     } else if (bmi == null && adaRF.length) {
       out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Add height and weight to check the criteria. Ask your doctor in any case.', why: 'You have ' + adaRF[0] + ', which is a recognised risk factor.', kind: 'guide', src: 'ADA' });
     } else if (p.age != null) {
@@ -650,6 +676,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       ht.reasons.push(li(m.label + ' had a heart or stroke event at ' + m.evAge + ', which is past the premature cut-off. It still matters, but counts for less.', 'guide', 'ACC/AHA'));
     });
     if (unknownAge.length) ht.reasons.push(li('Add the age of the first event for ' + names(unknownAge) + '. That age decides whether it counts as premature.', 'general'));
+    if (famHeart.some(function (m) { return m.sex === 'F'; })) ht.reasons.push(li('Definitions differ a little. ACC/AHA calls a woman\'s event before 65 premature, and the Cardiological Society of India uses 60. This tool uses 65 so that nobody is missed.', 'guide', 'ACC/AHA; CSI 2023'));
     if (ownRF.length) ht.reasons.push(li('Your own risk factors: ' + ownRF.join(', ') + '.', 'guide', 'ACC/AHA'));
     ht.reasons.push(li('South Asian ancestry is listed as a risk-enhancing factor, so a standard calculator may under-estimate your risk.', 'guide', 'ACC/AHA'));
     ht.reasons.push(li('The Higher, Moderate and Lower grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
@@ -660,12 +687,12 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       out.tests.push({ name: 'Cardiology follow-up and lipid profile', when: 'As your cardiologist advises.', why: 'Ongoing care lowers the chance of another event.', kind: 'general' });
     } else if (premature.length) {
       out.tests.push({ name: 'Lipid profile (total, LDL, HDL, triglycerides)', when: 'Now, as a baseline.', why: 'Family history of premature heart disease is a reason to know your cholesterol early.', kind: 'guide', src: 'ACC/AHA' });
-      out.tests.push({ name: 'Lipoprotein(a), once in life', when: 'Ask your doctor about it now.', why: 'Several societies advise testing when a close relative had premature heart disease, and some include South Asian ancestry as a reason.', kind: 'guide', src: 'AHA/ACC, AACE' });
+      out.tests.push({ name: 'Lipoprotein(a), once in life', when: 'Ask your doctor about it now.', why: 'The Cardiological Society of India advises measuring it at least once in life, and testing relatives when someone in the family had premature heart disease. Other societies agree.', kind: 'guide', src: 'CSI 2023; Lp(a) society statements' });
       out.tests.push({ name: 'Formal 10-year heart risk estimate', when: 'At your next visit.', why: 'Your doctor can combine age, BP, cholesterol, sugar and family history. Ask how South Asian background was accounted for.', kind: 'guide', src: 'ACC/AHA' });
     } else if (ownRF.length || famHeart.length) {
       out.tests.push({ name: 'Lipid profile (total, LDL, HDL, triglycerides)', when: 'Get a baseline now. Your doctor sets how often to repeat.', why: 'You have ' + (ownRF.length ? ownRF[0] : 'a relative with heart disease or stroke') + '.', kind: 'guide', src: 'ACC/AHA' });
     } else {
-      out.tests.push({ name: 'Lipid profile (total, LDL, HDL, triglycerides)', when: 'Ask your doctor when to take a baseline.', why: 'South Asian ancestry raises baseline heart risk even with no family history.', kind: 'guide', src: 'ACC/AHA' });
+      out.tests.push({ name: 'Lipid profile (total, LDL, HDL, triglycerides)', when: 'Ask your doctor when to take a baseline. The Cardiological Society of India advises everyone to have a lipid profile by age 18.', why: 'South Asian ancestry raises baseline heart risk even with no family history.', kind: 'guide', src: 'CSI 2023; ACC/AHA' });
     }
 
     /* ===== Blood pressure ===== */
@@ -710,7 +737,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     if (own.htn) {
       out.tests.push({ name: 'Home and clinic BP readings', when: 'As your doctor advises. Keep a log.', why: 'The Indian guideline sets the usual treatment target below 140/90 for people under 80.', kind: 'guide', src: 'India MoHFW' });
     } else {
-      out.tests.push({ name: 'Blood pressure measurement', when: htnRF.length ? 'At every doctor visit, and at least once a year.' : 'At every doctor visit.', why: 'High blood pressure usually has no symptoms. The Indian guideline advises measuring all adults over 18 whenever they meet a health worker.', kind: 'guide', src: 'India MoHFW' });
+      out.tests.push({ name: 'Blood pressure measurement', when: (htnRF.length || (p.age != null && p.age >= 30)) ? 'At every doctor visit, and at least once a year.' : 'At every doctor visit.', why: 'High blood pressure usually has no symptoms. The Indian guideline advises measuring all adults over 18 whenever they meet a health worker, and the national NCD programme screens everyone from 30 every year.', kind: 'guide', src: 'India MoHFW; MoHFW NP-NCD' });
     }
 
     /* ===== Labs on the heart card (LDL) ===== */
@@ -722,9 +749,9 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       } else if (p.ldl >= 160) {
         ht.reasons.push(li('Your LDL of ' + p.ldl + ' mg/dL is in the 160 to 189 range. A level that stays here counts as a risk-enhancing factor.', 'guide', 'ACC/AHA'));
       } else if (p.ldl >= 100) {
-        ht.reasons.push(li('Your LDL is ' + p.ldl + ' mg/dL. What counts as a good level depends on your overall risk, so ask your doctor for your own target.', 'general'));
+        ht.reasons.push(li('Your LDL is ' + p.ldl + ' mg/dL. Indian guidance sets the target at below 100 for low and moderate risk, below 70 for high risk and below 55 for very high risk. Ask your doctor which group you are in.', 'guide', 'CSI 2023'));
       } else {
-        ht.reasons.push(li('Your LDL of ' + p.ldl + ' mg/dL is below 100.', 'general'));
+        ht.reasons.push(li('Your LDL of ' + p.ldl + ' mg/dL is below 100, which meets the Indian target for low and moderate risk. People at higher risk are given lower targets.', 'guide', 'CSI 2023'));
       }
     }
 
@@ -760,18 +787,18 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       kd.level = 'low'; kd.levelText = 'Lower';
       kd.headline = 'None of the usual kidney screening factors are present. Early kidney damage gives no symptoms, so tell a doctor if that changes.';
     }
-    if (kRF.length) kd.reasons.push(li('Factors present: ' + kRF.join(', ') + '. Diabetes, high blood pressure, heart disease, age 60 or more and a family history of kidney disease are the usual reasons to check the kidneys.', 'guide', 'AAFP 2023 review'));
-    if (famCKD.length) kd.reasons.push(li(cap(names(famCKD)) + (famCKD.length > 1 ? ' have' : ' has') + ' kidney disease.', 'guide', 'AAFP 2023 review'));
-    if (egfr != null) kd.reasons.push(li('Your creatinine of ' + p.creat + ' mg/dL gives an eGFR of about ' + Math.round(egfr) + '. A value of 60 or more is not low. A normal eGFR can still hide protein leaking in the urine, which is why the urine test is also done.', 'tool', 'CKD-EPI 2021 equation'));
+    if (kRF.length) kd.reasons.push(li('Factors present: ' + kRF.join(', ') + '. Diabetes, high blood pressure, heart disease, age 60 or more and a family history of kidney disease are the usual reasons to check the kidneys.', 'guide', 'ICMR STW CKD; AAFP 2023 review'));
+    if (famCKD.length) kd.reasons.push(li(cap(names(famCKD)) + (famCKD.length > 1 ? ' have' : ' has') + ' kidney disease.', 'guide', 'ICMR STW CKD; AAFP 2023 review'));
+    if (egfr != null) kd.reasons.push(li('Your creatinine of ' + p.creat + ' mg/dL gives an eGFR of about ' + Math.round(egfr) + '. A value of 60 or more is not low. A normal eGFR can still hide protein leaking in the urine, which is why the urine test is also done.', 'tool', 'CKD-EPI 2021; ICMR STW CKD'));
     kd.reasons.push(li('The count-based grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
     out.cards.push(kd);
     if (own.ckd) {
       out.tests.push({ dom: 'kidney', name: 'Kidney follow-up: eGFR and urine albumin-creatinine ratio', when: 'As your kidney doctor advises.', why: 'Shows whether kidney function is steady.', kind: 'general' });
     } else if (kRF.length || egfrLow) {
       var kYearly = own.dm || own.htn;
-      out.tests.push({ dom: 'kidney', name: 'eGFR (blood creatinine) and urine albumin-creatinine ratio', when: kYearly ? 'Every year.' : 'Once now as a baseline. Your doctor sets how often after that.', why: 'Early kidney damage causes no symptoms. These two simple tests are how it is found.', kind: 'guide', src: kYearly ? 'ADA, KDIGO' : 'AAFP 2023 review' });
+      out.tests.push({ dom: 'kidney', name: 'eGFR (blood creatinine) and urine albumin-creatinine ratio', when: kYearly ? 'Every year.' : 'Once now as a baseline. Your doctor sets how often after that.', why: 'Early kidney damage causes no symptoms. These two simple tests are how it is found.', kind: 'guide', src: kYearly ? 'ADA; KDIGO' : 'ICMR STW CKD; AAFP 2023 review' });
     }
-    if (own.dm || own.htn || own.ckd || egfrLow || famCKD.length) out.care.push(li('Avoid regular use of painkillers such as diclofenac or ibuprofen without a doctor\'s advice. They can strain the kidneys, more so with diabetes or high blood pressure.', 'general'));
+    if (own.dm || own.htn || own.ckd || egfrLow || famCKD.length) out.care.push(li('Avoid regular use of painkillers such as diclofenac or ibuprofen, and long-term herbal or home remedies, without a doctor\'s advice. Long-term use of either is on the ICMR list of reasons to check the kidneys, and the risk is higher with diabetes or high blood pressure.', 'guide', 'ICMR STW CKD'));
 
     /* ===== Prostate and urinary (men) ===== */
     var famPros = firstDeg.filter(function (m) { return m.sex === 'M' && m.cond.pros; });
@@ -883,11 +910,11 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     }
 
     /* ===== Care: lifestyle ===== */
-    if (p.diet.salt) out.care.push(li('Cut back on salt: pickles, papad, namkeen and packaged foods. Less salt helps lower blood pressure.', 'guide', 'India MoHFW'));
-    if (p.diet.lowfv) out.care.push(li('Aim for fruit and vegetables every day. More of them, with less salt, can lower blood pressure noticeably.', 'guide', 'India MoHFW'));
-    if (p.diet.sweet) out.care.push(li('Cut sweets and sugary drinks to occasional. This matters more if diabetes runs in your family.', 'general'));
-    if (p.diet.fried) out.care.push(li('Reduce fried and street food. It adds to cholesterol and weight over time.', 'general'));
-    if (p.act === 20 || p.act === 30) out.care.push(li('Build regular movement into the week. WHO suggests at least 150 minutes of moderate activity a week for adults. Check with your doctor first if you have a heart condition.', 'guide', 'WHO'));
+    if (p.diet.salt) out.care.push(li('Cut back on salt: pickles, papad, namkeen and packaged foods. The ICMR-NIN dietary guidelines advise no more than 5 g of salt a day, about one teaspoon, and less salt helps lower blood pressure.', 'guide', 'ICMR-NIN 2024; India MoHFW'));
+    if (p.diet.lowfv) out.care.push(li('Aim for fruit and vegetables every day. More of them, with less salt, can lower blood pressure noticeably. The ICMR-NIN plate for a 2,000 calorie diet has about 400 g of vegetables and 100 g of fruit a day.', 'guide', 'ICMR-NIN 2024; India MoHFW'));
+    if (p.diet.sweet) out.care.push(li('Cut sweets and sugary drinks to occasional. ICMR-NIN advises keeping sugar below 5% of daily energy. This matters more if diabetes runs in your family.', 'guide', 'ICMR-NIN 2024'));
+    if (p.diet.fried) out.care.push(li('Reduce fried and street food. It adds to cholesterol and weight over time. ICMR-NIN suggests 25 to 30 g of cooking oil a day for an adult.', 'guide', 'ICMR-NIN 2024'));
+    if (p.act === 20 || p.act === 30) out.care.push(li('Build regular movement into the week. ICMR-NIN advises 30 to 60 minutes of moderate activity on at least 5 days a week, which is 150 minutes or more. Check with your doctor first if you have a heart condition.', 'guide', 'ICMR-NIN 2024'));
     if (p.waist != null && ((p.sex === 'M' && p.waist >= 90) || (p.sex === 'F' && p.waist >= 80))) out.care.push(li('Your waist is in a range that adds points to the diabetes score. Reducing it is one of the changes within your control.', 'tool', 'IDRS'));
     if (p.smoke === 'current') out.care.push(li('Stopping tobacco lowers heart and blood pressure risk. Ask your doctor about quit support.', 'guide', 'India MoHFW'));
     if (!out.care.length) out.care.push(li('Nothing flagged in the habits you entered. Keep the routine and repeat this check once a year.', 'general'));
@@ -1021,29 +1048,41 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       h += '<p>The diabetes score needs age, waist and activity level.</p>';
     }
     h += '<div><h3>What is solid and what is not</h3><ul class="src-list">' +
+      '<li>Indian sources come first wherever one exists: ICMR, the Ministry of Health, ICMR-NIN and the Cardiological Society of India. International guidelines fill the gaps and are always named in the tag.</li>' +
       '<li>The diabetes score and its bands come from a published, validated Indian tool.</li>' +
-      '<li>Test timing for diabetes follows American Diabetes Association criteria. Those criteria use a BMI of 23 for Asian populations. Applying that to people in India is a reasonable reading but not an Indian-specific rule.</li>' +
-      '<li>The premature heart disease definition (men under 55, women under 65) and Lipoprotein(a) advice follow ACC/AHA and other society statements.</li>' +
-      '<li>Blood pressure advice follows the Indian Ministry of Health guideline. The yearly frequency is a general suggestion, not a number from the guideline.</li>' +
-      '<li>The Higher, Moderate and Lower groupings for heart and blood pressure are simple rules written for this prototype. A doctor should replace them with a validated calculator.</li>' +
-      '<li>Kidney screening factors follow a 2023 clinical review. The eGFR is worked out with the CKD-EPI 2021 equation, which has no race term. The count-based grouping is a prototype rule.</li>' +
-      '<li>PSA ages and how often follow the American Cancer Society. Guidelines differ on whether to screen men at average risk, which is why it is framed as a decision with a doctor.</li>' +
+      '<li>Diabetes testing: India\'s national programme screens everyone from 30, and ICMR lists age over 30 with overweight and a risk factor as a reason to test. The American Diabetes Association starts at 35 and repeats every 3 years. Where they differ, the page shows both and the earlier one is the safer reading.</li>' +
+      '<li>Blood pressure advice follows the Indian Ministry of Health guideline and national programme. The yearly frequency for people with risk factors is a general suggestion.</li>' +
+      '<li>Heart: the Indian cholesterol targets and the advice to test Lipoprotein(a) once come from the Cardiological Society of India. The premature heart disease age for women is 65 in ACC/AHA and 60 in the Indian guideline, and this tool uses 65.</li>' +
+      '<li>Food and activity advice follows the ICMR-NIN Dietary Guidelines for Indians 2024.</li>' +
+      '<li>Kidney: the checks follow an ICMR workflow and a 2023 clinical review. The eGFR is worked out with the CKD-EPI equation, which the ICMR workflow names.</li>' +
+      '<li>PSA ages and how often follow the American Cancer Society. I did not find an Indian guideline for routine PSA testing that I could read, so this one is international. Guidelines differ on whether to screen men at average risk, which is why it is framed as a decision with a doctor.</li>' +
       '<li>Repeated urine infections in men are a reason to look for a prostate or bladder cause. A cause-and-effect link with prostate cancer is not established.</li>' +
       '<li>The thyroid, colon and breast advice is general advice, not a single guideline. The TSH range of 0.4 to 4.0 and the PSA cut-off of 4 are commonly used values that labs and doctors adjust.</li>' +
       '<li>Insurance and tax points follow IRDAI rules from April 2024 and Section 80D as summarised by two consumer sites, not the original texts. The 6-month reserve is a rule of thumb, not financial advice.</li>' +
+      '<li>The Higher, Moderate and Lower groupings and the order of tests are simple rules written for this prototype. A doctor should replace them with validated calculators.</li>' +
       '<li>Not covered yet: lung, liver, skin and other cancers, mental health, bone health, women\'s health beyond what is listed, and children. Reports cannot be uploaded yet, so values are typed in.</li>' +
       '</ul></div>';
-    h += '<div><h3>Sources</h3><ul class="src-list">' +
-      '<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6436280" target="_blank" rel="noopener">Indian Diabetes Risk Score table (Madras Diabetes Research Foundation), as used in a published study</a></li>' +
-      '<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10725812/table/T2.4" target="_blank" rel="noopener">ADA criteria for diabetes and prediabetes screening</a></li>' +
-      '<li><a href="https://mdcalc.scholasticahq.com/article/159088-updated-review-of-the-american-diabetes-association-ada-risk-calculator" target="_blank" rel="noopener">ADA 2025 screening summary (age 35, every 3 years)</a></li>' +
-      '<li><a href="https://clinicalestablishments.mohfw.gov.in/sites/default/files/standard-treatment-guidelines/6591.pdf" target="_blank" rel="noopener">Government of India guideline on hypertension in adults</a></li>' +
-      '<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8344373/table/T17" target="_blank" rel="noopener">ACC/AHA risk-enhancing factors, including family history and South Asian ancestry</a></li>' +
-      '<li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10945898" target="_blank" rel="noopener">Society recommendations on Lipoprotein(a) testing</a></li>' +
-      '<li><a href="https://www.aafp.org/pubs/afp/issues/2023/1200/chronic-kidney-disease.html" target="_blank" rel="noopener">Chronic kidney disease review, American Family Physician 2023</a></li>' +
-      '<li><a href="https://www.cancer.org/latest-news/prostate-cancer-screening-faq.html" target="_blank" rel="noopener">American Cancer Society prostate screening advice</a></li>' +
-      '<li><a href="https://www.policybazaar.com/health-insurance/articles/new-irdai-health-insurance-guidelines-you-must-know" target="_blank" rel="noopener">IRDAI health insurance rules from April 2024, summary</a></li>' +
-      '<li><a href="https://cleartax.in/s/medical-insurance" target="_blank" rel="noopener">Section 80D deduction limits, summary</a></li>' +
+    var L = function (u, t) { return '<li><a href="' + u + '" target="_blank" rel="noopener">' + t + '</a></li>'; };
+    h += '<div><h3>Sources: Indian</h3><ul class="src-list">' +
+      L(SRCURL['ICMR STW T2DM'], 'ICMR Standard Treatment Workflow: Type 2 Diabetes Mellitus (2022)') +
+      L(SRCURL['ICMR STW CKD'], 'ICMR Standard Treatment Workflow: Chronic Kidney Disease') +
+      L(SRCURL['ICMR-NIN 2024'], 'ICMR-NIN Dietary Guidelines for Indians (2024)') +
+      L(SRCURL['MoHFW NP-NCD'], 'Ministry of Health: Operational Guidelines on Prevention, Screening and Control of Hypertension, Diabetes and Common Cancers') +
+      L(SRCURL['India MoHFW'], 'Government of India standard treatment guideline: Hypertension in adults') +
+      L(SRCURL['CSI 2023'], 'Cardiological Society of India: dyslipidemia guidelines, executive summary (Indian Heart Journal, 2023)') +
+      L(SRCURL['IDRS'], 'Indian Diabetes Risk Score table (Madras Diabetes Research Foundation), as used in a published study') +
+      '</ul></div>';
+    h += '<div><h3>Sources: international</h3><ul class="src-list">' +
+      L(SRCURL['ADA'], 'ADA criteria for diabetes and prediabetes screening') +
+      L(SRCURL['ADA 2025'], 'ADA 2025 screening summary (age 35, every 3 years)') +
+      L(SRCURL['ACC/AHA'], 'ACC/AHA risk-enhancing factors, including family history and South Asian ancestry') +
+      L(SRCURL['Lp(a) society statements'], 'Society recommendations on Lipoprotein(a) testing') +
+      L(SRCURL['AAFP 2023 review'], 'Chronic kidney disease review, American Family Physician 2023') +
+      L(SRCURL['American Cancer Society'], 'American Cancer Society prostate screening advice') +
+      '</ul></div>';
+    h += '<div><h3>Sources: money</h3><ul class="src-list">' +
+      L(SRCURL['IRDAI 2024 rules, as summarised by PolicyBazaar'], 'IRDAI health insurance rules from April 2024, summary') +
+      L(SRCURL['Income Tax Act s.80D, as summarised by ClearTax'], 'Section 80D deduction limits, summary') +
       '</ul></div>';
     h += '</div></details>';
 
