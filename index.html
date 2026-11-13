@@ -215,6 +215,24 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .live-bar { cursor: pointer; }
 #seeResults { width: 100%; }
 a.btn { display: inline-flex; align-items: center; text-decoration: none; }
+.card-preview { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface-2); border: 1px dashed var(--line); border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+.lang-bar { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 13.5px; margin-bottom: 14px; }
+.lang-bar a { margin-right: 4px; }
+.foot { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
+#privacyBox, #changelog { margin-top: 0; }
+#ecBox { width: 100%; min-height: 120px; }
+#printArea { display: none; }
+@media print {
+  body.printing > :not(#printArea) { display: none !important; }
+  body.printing #printArea { display: block; background: #fff; color: #000; font: 12pt/1.45 system-ui, sans-serif; }
+  body.printing { background: #fff !important; padding: 0; }
+  #printArea h1 { font-size: 18pt; margin: 0 0 4px; }
+  #printArea h2 { font-size: 13pt; margin: 14px 0 4px; border-bottom: 1px solid #999; padding-bottom: 2px; }
+  #printArea table { width: 100%; border-collapse: collapse; font-size: 11pt; }
+  #printArea th, #printArea td { border: 1px solid #bbb; padding: 4px 6px; text-align: left; vertical-align: top; }
+  #printArea .note { font-size: 10pt; color: #333; }
+  #printArea ul { margin: 4px 0 0 18px; padding: 0; }
+}
 .grp { margin: 4px 0 -2px; font-size: 15px; color: var(--muted); }
 .ov-box { margin-bottom: 16px; }
 .ov-row { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
@@ -240,6 +258,11 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 
   <div class="notice">
     <strong>How to read this.</strong> The medical rules here come from named guidelines and a validated Indian risk score, and every result says which. A doctor has not reviewed them yet. Everything you type stays in this browser. Nothing is sent anywhere.
+  </div>
+
+  <div class="lang-bar" id="langBar" hidden>
+    <span>Read this page in:</span> <span id="langLinks"></span>
+    <span class="hint">Machine translation by Google. Medical wording may be off, so check anything important with a doctor.</span>
   </div>
 
   <section class="profile-bar" id="profileBar" aria-label="Saved profiles">
@@ -301,6 +324,14 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
             <option value="current">Use now (smoking or chewing)</option>
           </select>
         </label>
+        <label class="field"><span>Alcohol</span>
+          <select id="alcohol">
+            <option value="never">Never</option>
+            <option value="rare">A few times a year</option>
+            <option value="weekly">Most weeks</option>
+            <option value="daily">Most days</option>
+          </select>
+        </label>
       </fieldset>
 
       <fieldset>
@@ -309,6 +340,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
         <label class="chk"><input type="checkbox" id="d-sweet"> Sweets or sugary drinks most days</label>
         <label class="chk"><input type="checkbox" id="d-fried"> Fried or street food several times a week</label>
         <label class="chk"><input type="checkbox" id="d-lowfv"> Fruit and vegetables less than once a day</label>
+        <label class="chk"><input type="checkbox" id="d-veg"> Vegetarian or vegan</label>
       </fieldset>
 
       <fieldset>
@@ -324,6 +356,17 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
         <label class="chk"><input type="checkbox" id="o-uro"> Prostate or urinary problems, such as an enlarged prostate or repeated urine infections (men)</label>
         <label class="chk"><input type="checkbox" id="o-usym"> Urinary symptoms now: weak flow, getting up 2 or more times at night, burning, or the bladder not feeling empty (men)</label>
         <label class="chk"><input type="checkbox" id="o-blood"> Blood in the urine, even once, not yet checked by a doctor</label>
+        <label class="chk"><input type="checkbox" id="o-liver"> Fatty liver or other liver disease</label>
+        <label class="chk"><input type="checkbox" id="o-pcos"> PCOS (women)</label>
+        <label class="chk"><input type="checkbox" id="o-metf"> I take metformin</label>
+        <p class="hint">Cancer you have had in the past, if any</p>
+        <label class="chk"><input type="checkbox" id="o-pros"> Prostate cancer (men)</label>
+        <label class="chk"><input type="checkbox" id="o-crc"> Colon or rectal cancer</label>
+        <label class="chk"><input type="checkbox" id="o-brca"> Breast or ovarian cancer</label>
+        <div class="row2">
+          <label class="field"><span>Age when the cancer was found</span><input type="number" id="o-cage" inputmode="numeric" min="0" max="110"></label>
+          <label class="field"><span>Age at first heart or stroke event</span><input type="number" id="o-evage" inputmode="numeric" min="0" max="110"></label>
+        </div>
         <p class="hint">Latest readings, if you have them (optional)</p>
         <div class="row3">
           <label class="field"><span>BP top</span><input type="number" id="sys" inputmode="numeric" min="60" max="260" placeholder="e.g. 128"></label>
@@ -337,6 +380,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
         </div>
         <div class="row3">
           <label class="field"><span>PSA (ng/mL, men)</span><input type="number" id="psa" inputmode="decimal" step="0.01" min="0" max="500" placeholder="e.g. 1.1"></label>
+          <label class="field"><span>Haemoglobin (g/dL)</span><input type="number" id="hb" inputmode="decimal" step="0.1" min="2" max="25" placeholder="e.g. 13.5"></label>
         </div>
         <p class="hint">Lab ranges differ a little between labs. A single value is never a diagnosis.</p>
       </fieldset>
@@ -353,7 +397,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 
       <fieldset>
         <legend>Family history</legend>
-        <p class="hint">Add parents, brothers, sisters and children first. These count most. Grandparents, uncles and aunts are noted but do not change the scores. For a heart attack, blockage, bypass or stroke, add the age it first happened. For a cancer, add the age it was found.</p>
+        <p class="hint">Add parents, brothers, sisters and children first. These count most. Grandparents, uncles and aunts are noted but do not change the scores. For a heart attack, blockage, bypass or stroke, add the age it first happened. For a cancer, add the age it was found. If a relative has their own saved profile on this device, link it so you enter their details only once.</p>
         <div class="members" id="members"></div>
         <button type="button" class="btn" id="addMember">Add a family member</button>
       </fieldset>
@@ -367,6 +411,32 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 
     <main class="results-col">
       <div class="results" id="results" aria-live="polite"></div>
+
+      <section class="block stack" id="cardBox">
+        <div>
+          <h2>Emergency health card</h2>
+          <p class="hint">For you, or for a parent you look after. Fill it once, keep a copy on the phone and a printed one in the wallet or on the fridge. It stays on this device. Only what you copy or print leaves it. Do not enter bank, card or Aadhaar numbers.</p>
+        </div>
+        <div class="row2">
+          <label class="field"><span>Name</span><input type="text" id="ec-name" maxlength="60"></label>
+          <label class="field"><span>Blood group</span>
+            <select id="ec-blood"><option value="">Not known</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select>
+          </label>
+        </div>
+        <label class="field"><span>Allergies</span><input type="text" id="ec-allergy" maxlength="120" placeholder="e.g. penicillin, or none known"></label>
+        <label class="field"><span>Regular medicines (name and dose)</span><textarea id="ec-meds" maxlength="600" placeholder="e.g. Metformin 500 mg twice a day"></textarea></label>
+        <div class="row2">
+          <label class="field"><span>Doctor (name and phone)</span><input type="text" id="ec-doc" maxlength="100"></label>
+          <label class="field"><span>Preferred hospital</span><input type="text" id="ec-hosp" maxlength="100"></label>
+        </div>
+        <div class="row2">
+          <label class="field"><span>Health insurance (company and policy number)</span><input type="text" id="ec-ins" maxlength="100"></label>
+          <label class="field"><span>Emergency contact (name and phone)</span><input type="text" id="ec-contact" maxlength="100"></label>
+        </div>
+        <div class="card-preview" id="ecPreview" aria-live="polite"></div>
+        <div class="actions"><button type="button" class="btn primary" id="ecCopy">Copy card text</button><button type="button" class="btn" id="ecPrint">Print card</button><span class="status" id="ecStatus" role="status"></span></div>
+        <textarea id="ecBox" readonly hidden aria-label="Card text"></textarea>
+      </section>
 
       <section class="block stack" id="explainBox" hidden>
         <div>
@@ -420,9 +490,28 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
         <div class="actions"><a class="btn primary" id="fbWa" href="https://wa.me/" target="_blank" rel="noopener">Send on WhatsApp</a><button type="button" class="btn" id="fbCopy">Copy feedback</button><span class="status" id="fbStatus" role="status"></span></div>
         <textarea id="fbBox" readonly hidden aria-label="Feedback text"></textarea>
       </section>
+      <details id="privacyBox">
+        <summary>Privacy and your data</summary>
+        <div class="inner">
+          <ul class="src-list">
+            <li>There is no account and no server that stores what you type. Saved profiles and the emergency card are kept in this browser, on this device only. Anyone who uses the same browser can open them.</li>
+            <li>Nothing leaves your device unless you press Copy, Print, Invite or a WhatsApp button. On the Claude version, pressing the explain button sends your results summary to Claude.</li>
+            <li>Like any website, the web host keeps ordinary access logs, such as your IP address. This page has no analytics and no ads.</li>
+            <li>Health details are sensitive. If this ever becomes a service that stores data, it will need your consent and a privacy policy under India's Digital Personal Data Protection Act.</li>
+          </ul>
+          <div class="actions"><button type="button" class="btn" id="wipeBtn">Delete everything saved on this device</button><span class="status" id="wipeStatus" role="status"></span></div>
+        </div>
+      </details>
+
+      <details id="changelog">
+        <summary>What changed</summary>
+        <div class="inner" id="changeBody"></div>
+      </details>
     </main>
   </div>
+  <footer class="foot" id="foot"></footer>
 </div>
+<div id="printArea" aria-hidden="true"></div>
 
 <script>
 (function () {
@@ -449,18 +538,32 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
   var seq = 0;
 
   /* ---------- family rows ---------- */
+  function savedNames() {
+    var st = loadStore() || {};
+    var cur = $('profileName') ? $('profileName').value.trim() : '';
+    return Object.keys(st).filter(function (n) { return n !== cur; }).sort();
+  }
   function rowHTML(m) {
     var opts = Object.keys(REL).map(function (k) {
       return '<option value="' + k + '"' + (k === m.rel ? ' selected' : '') + '>' + REL[k].label + '</option>';
     }).join('');
+    var st = loadStore() || {};
+    var names = savedNames();
+    var linked = !!(m.link && st[m.link]);
+    var linkSel = names.length ? '<label class="field"><span>Link to a saved profile</span><select data-f="link" id="m' + m.id + '-link"><option value="">Enter details here</option>' +
+      names.map(function (n) { return '<option value="' + esc(n) + '"' + (n === m.link ? ' selected' : '') + '>' + esc(n) + '</option>'; }).join('') + '</select></label>' : '';
+    var top = '<div class="member-top"><select id="m' + m.id + '-rel" data-f="rel" aria-label="Relation">' + opts + '</select>' +
+      '<button type="button" class="link-btn" data-remove>Remove</button></div>' + linkSel;
+    if (linked) {
+      return '<div class="member" data-fid="' + m.id + '">' + top +
+        '<p class="hint">Using ' + esc(m.link) + '\'s saved profile. Change and save that profile, and this updates by itself.</p></div>';
+    }
     var conds = COND.map(function (c) {
       return '<label class="chk"><input type="checkbox" id="m' + m.id + '-' + c[0] + '" data-cond="' + c[0] + '"' + (m.cond[c[0]] ? ' checked' : '') + '> ' + c[1] + '</label>';
     }).join('');
     var showAge = m.cond.cvd || m.cond.stroke;
     var showC = m.cond.pros || m.cond.crc || m.cond.brca;
-    return '<div class="member" data-fid="' + m.id + '">' +
-      '<div class="member-top"><select id="m' + m.id + '-rel" data-f="rel" aria-label="Relation">' + opts + '</select>' +
-      '<button type="button" class="link-btn" data-remove>Remove</button></div>' +
+    return '<div class="member" data-fid="' + m.id + '">' + top +
       '<div class="conds">' + conds + '</div>' +
       '<label class="age-wrap" data-wrap="ev"' + (showAge ? '' : ' hidden') + '>Age at first heart or stroke event' +
       '<input type="number" id="m' + m.id + '-age" inputmode="numeric" min="0" max="110" data-f="evAge" value="' + (m.evAge == null ? '' : m.evAge) + '"></label>' +
@@ -471,8 +574,8 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
   function renderFamily() {
     $('members').innerHTML = family.map(rowHTML).join('');
   }
-  function addMember(rel, cond, evAge, cAge) {
-    family.push({ id: ++seq, rel: rel || 'father', cond: cond || {}, evAge: evAge == null ? null : evAge, cAge: cAge == null ? null : cAge });
+  function addMember(rel, cond, evAge, cAge, link) {
+    family.push({ id: ++seq, rel: rel || 'father', cond: cond || {}, evAge: evAge == null ? null : evAge, cAge: cAge == null ? null : cAge, link: link || '' });
   }
   $('members').addEventListener('input', syncMember);
   $('members').addEventListener('change', syncMember);
@@ -482,6 +585,13 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     var m = family.filter(function (x) { return x.id === +row.getAttribute('data-fid'); })[0];
     if (!m) return;
     m.rel = row.querySelector('[data-f="rel"]').value;
+    var ls = row.querySelector('[data-f="link"]');
+    var newLink = ls ? ls.value : (m.link || '');
+    var linkChanged = newLink !== (m.link || '');
+    m.link = newLink;
+    if (linkChanged) { renderFamily(); return; }
+    var condBoxes = row.querySelectorAll('[data-cond]');
+    if (!condBoxes.length) return;
     COND.forEach(function (c) { m.cond[c[0]] = row.querySelector('[data-cond="' + c[0] + '"]').checked; });
     var ageInput = row.querySelector('[data-f="evAge"]');
     var v = parseFloat(ageInput.value);
@@ -515,17 +625,28 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     var act = g('activity');
     return {
       age: n('age'), sex: g('sex') === 'F' ? 'F' : 'M', ht: n('height'), wt: n('weight'), waist: n('waist'),
-      act: (act === '' || act == null) ? null : +act, smoke: g('smoke') || 'never',
-      diet: { salt: b('d-salt'), sweet: b('d-sweet'), fried: b('d-fried'), lowfv: b('d-lowfv') },
-      own: { dm: b('o-dm'), predm: b('o-predm'), htn: b('o-htn'), cvd: b('o-cvd'), chol: b('o-chol'), ckd: b('o-ckd'), gdm: b('o-gdm'), thy: b('o-thy'), uro: b('o-uro'), usym: b('o-usym'), blood: b('o-blood') },
-      sys: n('sys'), dia: n('dia'), a1c: n('a1c'), ldl: n('ldl'), creat: n('creat'), tsh: n('tsh'), psa: n('psa'),
+      act: (act === '' || act == null) ? null : +act, smoke: g('smoke') || 'never', alcohol: g('alcohol') || 'never',
+      diet: { salt: b('d-salt'), sweet: b('d-sweet'), fried: b('d-fried'), lowfv: b('d-lowfv'), veg: b('d-veg') },
+      own: { dm: b('o-dm'), predm: b('o-predm'), htn: b('o-htn'), cvd: b('o-cvd'), chol: b('o-chol'), ckd: b('o-ckd'), gdm: b('o-gdm'), thy: b('o-thy'), uro: b('o-uro'), usym: b('o-usym'), blood: b('o-blood'), liver: b('o-liver'), pcos: b('o-pcos'), metf: b('o-metf'), pros: b('o-pros'), crc: b('o-crc'), brca: b('o-brca') },
+      cage: n('o-cage'), evage: n('o-evage'),
+      sys: n('sys'), dia: n('dia'), a1c: n('a1c'), ldl: n('ldl'), creat: n('creat'), tsh: n('tsh'), psa: n('psa'), hb: n('hb'),
       expm: n('expm'), cover: n('cover'), emp: b('m-emp'), parNoCover: b('m-par')
     };
   }
+  function condOf(lp) {
+    var o = lp.own;
+    return { dm: o.dm, htn: o.htn, cvd: o.cvd, stroke: false, chol: o.chol, ckd: o.ckd, thy: o.thy, uro: o.uro, pros: o.pros, crc: o.crc, brca: o.brca };
+  }
   function famView(list) {
+    var st = loadStore() || {};
     return (list || family).map(function (m) {
       var r = REL[m.rel] || REL.father;
-      return { rel: m.rel, label: r.label, sex: r.sex, deg: r.deg, cond: m.cond || {}, evAge: m.evAge, cAge: m.cAge == null ? null : m.cAge };
+      var cond = m.cond || {}, evAge = m.evAge, cAge = m.cAge == null ? null : m.cAge, linked = false;
+      if (m.link && st[m.link] && st[m.link].v) {
+        var lp = readProfile(st[m.link]);
+        cond = condOf(lp); evAge = lp.evage; cAge = lp.cage; linked = true;
+      }
+      return { rel: m.rel, label: r.label, sex: r.sex, deg: r.deg, cond: cond, evAge: evAge, cAge: cAge, linked: linked, linkName: m.link || '' };
     });
   }
 
@@ -547,7 +668,8 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     'AAFP 2023 review': 'https://www.aafp.org/pubs/afp/issues/2023/1200/chronic-kidney-disease.html',
     'American Cancer Society': 'https://www.cancer.org/latest-news/prostate-cancer-screening-faq.html',
     'IRDAI 2024 rules, as summarised by PolicyBazaar': 'https://www.policybazaar.com/health-insurance/articles/new-irdai-health-insurance-guidelines-you-must-know',
-    'Income Tax Act s.80D, as summarised by ClearTax': 'https://cleartax.in/s/medical-insurance'
+    'Income Tax Act s.80D, as summarised by ClearTax': 'https://cleartax.in/s/medical-insurance',
+    'MASLD diabetes guideline, summary': 'https://www.medboundtimes.com/medbound-blog/india-new-guidelines-diabetes-liver-health'
   };
   function tag(kind, src) {
     var inner = (src ? src.split('; ') : []).map(function (n) {
@@ -620,6 +742,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     if (own.cvd) adaRF.push('heart disease');
     if (own.chol) adaRF.push('high cholesterol');
     if (p.act === 30) adaRF.push('low physical activity');
+    if (own.pcos) adaRF.push('polycystic ovary syndrome (PCOS)');
     if (own.dm) {
       out.tests.push({ name: 'HbA1c', when: 'As often as your doctor sets it.', why: 'Shows average sugar control over about three months.', kind: 'general' });
       out.tests.push({ name: 'Kidney, eye and foot checks', when: 'Ask your doctor which are due.', why: 'Diabetes can affect kidneys, eyes and nerves in the feet. Regular checks catch changes early.', kind: 'general', src: 'ADA' });
@@ -809,7 +932,10 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     if (p.sex === 'M') {
       var pr = { title: 'Prostate and urinary', short: 'Prostate', key: 'pros', reasons: [] };
       var psaHigh = p.psa != null && p.psa >= 4;
-      if (own.blood) {
+      if (own.pros) {
+        pr.level = 'info'; pr.levelText = 'Already diagnosed';
+        pr.headline = 'You have had prostate cancer. Follow-up PSA tests are set by your urologist.';
+      } else if (own.blood) {
         pr.level = 'high'; pr.levelText = 'See a doctor';
         pr.headline = 'Blood in the urine, even once, needs a doctor to find the cause. It is often something treatable, but it should not be left.';
       } else if (psaHigh) {
@@ -907,6 +1033,93 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       out.cards.push(ca);
       if (famCRC.length) out.tests.push({ dom: 'cancer', name: 'Ask about colon screening earlier than usual', when: 'Ask your doctor when to start. Commonly cited advice is to start at 40, or 10 years before the age your relative was diagnosed, whichever is earlier.', why: 'A close relative with colon or rectal cancer raises your own chance.', kind: 'general' });
       if (famBR.length) out.tests.push({ dom: 'cancer', name: 'Ask about earlier breast screening and genetic counselling', when: 'Ask your doctor, especially if the cancer was found before 50 or more than one relative had it.', why: 'A close relative with breast or ovarian cancer can change when screening should start.', kind: 'general' });
+    }
+
+    /* ===== Own past cancer and PCOS touches ===== */
+    if (own.pcos) { dm.reasons.push(li('PCOS is on the ICMR list of reasons to test for diabetes.', 'guide', 'ICMR STW T2DM')); }
+
+    /* ===== Alcohol ===== */
+    var drinksDaily = p.alcohol === 'daily', drinksWeekly = p.alcohol === 'weekly';
+    if (drinksDaily) bp.reasons.push(li('ICMR-NIN says regular alcohol above two measures a day raises the risk of high blood pressure and stroke.', 'guide', 'ICMR-NIN 2024'));
+    if (drinksDaily || drinksWeekly) out.care.push(li('ICMR-NIN advises avoiding alcohol. It links alcohol to fatty liver, cirrhosis, high blood pressure, stroke and cancers of the mouth, throat, food pipe and breast, and the prostate is on its list too. Ask your doctor for help if cutting down is hard.', 'guide', 'ICMR-NIN 2024'));
+
+    /* ===== Liver ===== */
+    var liverRF = [];
+    if (own.dm) liverRF.push('diabetes');
+    if (bmi != null && bmi >= 23) liverRF.push('BMI 23 or more');
+    if (p.waist != null && ((p.sex === 'M' && p.waist >= 90) || (p.sex === 'F' && p.waist >= 80))) liverRF.push('a larger waist');
+    if (own.htn) liverRF.push('high blood pressure');
+    if (own.chol) liverRF.push('high cholesterol');
+    var lv = { title: 'Liver', key: 'liver', reasons: [] };
+    if (own.liver) {
+      lv.level = 'info'; lv.levelText = 'Already diagnosed';
+      lv.headline = 'You already have a liver condition. Follow your doctor\'s plan and avoid alcohol unless told otherwise.';
+    } else if (drinksDaily || liverRF.length >= 2) {
+      lv.level = 'high'; lv.levelText = 'Higher';
+      lv.headline = drinksDaily ? 'Drinking most days is a clear risk for the liver, and for blood pressure and some cancers.' : 'You have ' + liverRF.length + ' factors that are linked with fatty liver. It is common in India and usually has no symptoms.';
+    } else if (liverRF.length === 1 || drinksWeekly) {
+      lv.level = 'mod'; lv.levelText = 'Moderate';
+      lv.headline = 'There is at least one factor linked with fatty liver. It usually has no symptoms.';
+    } else {
+      lv.level = 'low'; lv.levelText = 'Lower';
+      lv.headline = 'No liver risk factor entered. Fatty liver has no symptoms, so keep weight and alcohol in check.';
+    }
+    if (liverRF.length) lv.reasons.push(li('Factors present: ' + liverRF.join(', ') + '. Diabetes, extra weight around the waist and related conditions go with fatty liver.', 'general'));
+    if (own.dm) lv.reasons.push(li('An Indian guideline for people with type 2 diabetes advises regular screening for fatty liver (MASLD), especially with obesity or related conditions, and non-invasive checks such as the FIB-4 score or a liver stiffness scan for scarring.', 'guide', 'MASLD diabetes guideline, summary'));
+    if (drinksDaily || drinksWeekly) lv.reasons.push(li('ICMR-NIN links alcohol with fatty liver and cirrhosis and advises avoiding alcohol.', 'guide', 'ICMR-NIN 2024'));
+    lv.reasons.push(li('The grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+    out.cards.push(lv);
+    if (own.liver) {
+      out.tests.push({ dom: 'liver', name: 'Liver follow-up', when: 'As your doctor advises.', why: 'Shows whether the liver is steady.', kind: 'general' });
+    } else if (liverRF.length || drinksDaily || drinksWeekly) {
+      out.tests.push({ dom: 'liver', name: 'Liver enzymes (SGPT/ALT, SGOT/AST) and a liver ultrasound', when: own.dm ? 'Ask at your next check-up. Your doctor decides whether a scarring check (FIB-4 or a liver stiffness scan) is needed.' : 'Ask for the enzymes at your next blood test, and for an ultrasound if they are high or you have several of these factors.', why: 'Fatty liver is common and usually silent. Simple tests find it early, when changes help most.', kind: own.dm ? 'guide' : 'general', src: own.dm ? 'MASLD diabetes guideline, summary' : undefined });
+    }
+
+    /* ===== Blood and vitamins ===== */
+    var hbLow = p.hb != null && p.hb < (p.sex === 'F' ? 12 : 13);
+    var b12Risk = p.diet.veg || own.metf;
+    var bl = { title: 'Blood and vitamins', short: 'Blood', key: 'blood', reasons: [] };
+    if (hbLow) {
+      bl.level = 'high'; bl.levelText = 'Confirm it';
+      bl.headline = 'Your haemoglobin is below the commonly used cut-off (13 for men, 12 for women). One value is not a diagnosis, but low haemoglobin needs a doctor to find the cause.';
+    } else if (b12Risk) {
+      bl.level = 'mod'; bl.levelText = 'Moderate';
+      bl.headline = 'A vegetarian diet and long-term metformin can both lower vitamin B12. A test is worth asking about.';
+    } else {
+      bl.level = 'low'; bl.levelText = 'Lower';
+      bl.headline = 'No blood or vitamin flag entered.';
+    }
+    if (p.hb != null) bl.reasons.push(li(hbLow ? 'Your haemoglobin of ' + p.hb + ' g/dL is low for your sex.' : 'Your haemoglobin of ' + p.hb + ' g/dL is not low for your sex. The commonly used cut-off is 13 for men and 12 for women.', 'general'));
+    if (hbLow) bl.reasons.push(li('Tea and coffee reduce iron absorption. ICMR-NIN advises keeping them an hour away from meals.', 'guide', 'ICMR-NIN 2024'));
+    if (p.diet.veg) bl.reasons.push(li('Vitamin B12 comes mainly from animal foods and milk products, so people who eat none or few can run low.', 'general'));
+    if (own.metf) bl.reasons.push(li('Long-term metformin can lower vitamin B12. Doctors often check it from time to time.', 'general'));
+    bl.reasons.push(li('Low vitamin D is common in India. No rule asks everyone to be tested, so ask your doctor if you have bone pain or muscle weakness.', 'general'));
+    bl.reasons.push(li('The grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+    out.cards.push(bl);
+    if (hbLow) out.tests.push({ dom: 'blood', name: 'Haemoglobin repeat and iron studies', when: 'Soon, with a doctor.', why: 'Low haemoglobin has several causes, and iron lack is only one of them.', kind: 'general' });
+    if (b12Risk) out.tests.push({ dom: 'blood', name: 'Vitamin B12 blood test', when: 'Ask at your next blood test.', why: p.diet.veg && own.metf ? 'A vegetarian diet and metformin both lower B12.' : p.diet.veg ? 'A vegetarian diet can lower B12.' : 'Long-term metformin can lower B12.', kind: 'general' });
+
+    /* ===== Cancer screening for your age (national programme) ===== */
+    if (p.age >= 30) {
+      var tobaccoNow = p.smoke === 'current';
+      var cs = { title: 'Cancer screening for your age', short: 'Cancer screening', key: 'screen', reasons: [] };
+      cs.level = tobaccoNow ? 'mod' : 'info';
+      cs.levelText = tobaccoNow ? 'Moderate' : 'Routine';
+      cs.headline = tobaccoNow ? 'You use tobacco, a leading cause of mouth cancer. Do not wait the full 5 years between mouth checks.' : 'India\'s national programme screens everyone from 30 for mouth cancer, and women for breast and cervical cancer.';
+      cs.reasons.push(li('Mouth (oral) cancer: everyone aged 30 and above, once every 5 years.', 'guide', 'MoHFW NP-NCD'));
+      if (p.sex === 'F') {
+        cs.reasons.push(li('Breast cancer: women aged 30 and above, a clinical breast examination once every 5 years. The guideline notes that the yield is higher after 40.', 'guide', 'MoHFW NP-NCD'));
+        cs.reasons.push(li('Cervical cancer: women aged 30 and above, once every 5 years.', 'guide', 'MoHFW NP-NCD'));
+      }
+      if (drinksDaily || drinksWeekly) cs.reasons.push(li('ICMR-NIN links alcohol with cancers of the mouth, larynx, food pipe and breast.', 'guide', 'ICMR-NIN 2024'));
+      if (own.pros || own.crc || own.brca) cs.reasons.push(li('You noted a past cancer. Follow-up for that is set by your cancer doctor, not by this list.', 'general'));
+      cs.reasons.push(li('Raising the level for tobacco use is a simple rule used in this prototype.', 'proto'));
+      out.cards.push(cs);
+      out.tests.push({ dom: 'screen', name: 'Mouth (oral) cancer check', when: tobaccoNow ? 'Ask for one now, then at least every 5 years. See a doctor at once for a white or red patch, or an ulcer that does not heal.' : 'Once every 5 years from age 30.', why: 'A quick look by a trained health worker or dentist.', kind: 'guide', src: 'MoHFW NP-NCD' });
+      if (p.sex === 'F') {
+        out.tests.push({ dom: 'screen', name: 'Clinical breast examination', when: 'Once every 5 years from age 30. Ask earlier if breast or ovarian cancer runs in the family.', why: 'Examined by a trained doctor or nurse.', kind: 'guide', src: 'MoHFW NP-NCD' });
+        out.tests.push({ dom: 'screen', name: 'Cervical screening test', when: 'Once every 5 years from age 30. Your doctor chooses the test.', why: 'Cervical cancer can be prevented when changes are found early.', kind: 'guide', src: 'MoHFW NP-NCD' });
+      }
     }
 
     /* ===== Care: lifestyle ===== */
@@ -1018,6 +1231,8 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
         return list.length ? '<h3 class="grp">' + g[1] + '</h3><div class="tests">' + list.map(testHTML).join('') + '</div>' : '';
       }).join('') + '</section>';
 
+    h += planHTML(out);
+
     h += '<section class="section"><div class="section-head"><h2>What to take care of</h2><p>Based on the habits you entered.</p></div><div class="block"><ul class="items">' + out.care.join('') + '</ul></div></section>';
 
     h += '<section class="section"><div class="section-head"><h2>Plan ahead</h2><p>General suggestions. This is not financial advice.</p></div><div class="block"><ul class="items">' + out.plan.join('') + '</ul></div></section>';
@@ -1032,7 +1247,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 
     h += '<div class="emergency"><strong>Get emergency care straight away</strong> for chest pain or pressure, breathlessness, fainting, sudden weakness or numbness on one side, trouble speaking, being unable to pass urine, or a very high blood pressure reading with a severe headache. Do not wait for a test appointment.</div>';
 
-    h += '<section class="section"><div class="actions"><button type="button" class="btn primary" id="copyBtn">Copy summary for my doctor</button><span class="status" id="copyStatus" role="status"></span></div><textarea id="copyBox" readonly hidden aria-label="Summary text"></textarea></section>';
+    h += '<section class="section"><div class="actions"><button type="button" class="btn primary" id="copyBtn">Copy summary for my doctor</button><button type="button" class="btn" id="docPrint"' + (inFrame ? ' hidden' : '') + '>Print doctor sheet</button><span class="status" id="copyStatus" role="status"></span></div><textarea id="copyBox" readonly hidden aria-label="Summary text"></textarea></section>';
 
     h += '<details><summary>How this was worked out</summary><div class="inner">';
     if (out.method.idrs) {
@@ -1060,7 +1275,8 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       '<li>The thyroid, colon and breast advice is general advice, not a single guideline. The TSH range of 0.4 to 4.0 and the PSA cut-off of 4 are commonly used values that labs and doctors adjust.</li>' +
       '<li>Insurance and tax points follow IRDAI rules from April 2024 and Section 80D as summarised by two consumer sites, not the original texts. The 6-month reserve is a rule of thumb, not financial advice.</li>' +
       '<li>The Higher, Moderate and Lower groupings and the order of tests are simple rules written for this prototype. A doctor should replace them with validated calculators.</li>' +
-      '<li>Not covered yet: lung, liver, skin and other cancers, mental health, bone health, women\'s health beyond what is listed, and children. Reports cannot be uploaded yet, so values are typed in.</li>' +
+      '<li>Alcohol, food and anaemia tips follow ICMR-NIN. Cancer screening for your age follows the national programme. The fatty liver advice for people with diabetes comes from a news summary of an Indian guideline, not the guideline text. Haemoglobin cut-offs, the B12 and vitamin D points are general advice.</li>' +
+      '<li>Not covered yet: lung and skin cancers, mental health, bone health, pregnancy, children, adult vaccines, and eyes, hearing and falls in older people. Reports cannot be uploaded yet, so values are typed in.</li>' +
       '</ul></div>';
     var L = function (u, t) { return '<li><a href="' + u + '" target="_blank" rel="noopener">' + t + '</a></li>'; };
     h += '<div><h3>Sources: Indian</h3><ul class="src-list">' +
@@ -1079,6 +1295,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       L(SRCURL['Lp(a) society statements'], 'Society recommendations on Lipoprotein(a) testing') +
       L(SRCURL['AAFP 2023 review'], 'Chronic kidney disease review, American Family Physician 2023') +
       L(SRCURL['American Cancer Society'], 'American Cancer Society prostate screening advice') +
+      L(SRCURL['MASLD diabetes guideline, summary'], 'Indian guideline on fatty liver (MASLD) in type 2 diabetes, news summary') +
       '</ul></div>';
     h += '<div><h3>Sources: money</h3><ul class="src-list">' +
       L(SRCURL['IRDAI 2024 rules, as summarised by PolicyBazaar'], 'IRDAI health insurance rules from April 2024, summary') +
@@ -1093,13 +1310,14 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     updateLive(out);
     var btn = $('copyBtn');
     if (btn) btn.addEventListener('click', copySummary);
+    bindResultButtons();
   }
 
   function summaryText(p, fam, out) {
     var L = [];
     L.push('FAMILY HEALTH SUMMARY (prototype, not clinically reviewed)');
     L.push('Age ' + p.age + ', ' + (p.sex === 'M' ? 'male' : 'female') + (out.bmi ? ', BMI ' + out.bmi.toFixed(1) : '') + (p.waist ? ', waist ' + p.waist + ' cm' : ''));
-    var ownList = []; Object.keys(p.own).forEach(function (k) { if (p.own[k]) ownList.push({ dm: 'diabetes', predm: 'prediabetes', htn: 'high blood pressure', cvd: 'heart disease or stroke', chol: 'high cholesterol', ckd: 'kidney disease', gdm: 'diabetes in pregnancy', thy: 'thyroid disease', uro: 'prostate or urinary problems', usym: 'current urinary symptoms', blood: 'blood in urine, not yet checked' }[k]); });
+    var ownList = []; Object.keys(p.own).forEach(function (k) { if (p.own[k]) ownList.push({ dm: 'diabetes', predm: 'prediabetes', htn: 'high blood pressure', cvd: 'heart disease or stroke', chol: 'high cholesterol', ckd: 'kidney disease', gdm: 'diabetes in pregnancy', thy: 'thyroid disease', uro: 'prostate or urinary problems', usym: 'current urinary symptoms', blood: 'blood in urine, not yet checked', liver: 'fatty liver or liver disease', pcos: 'PCOS', metf: 'takes metformin', pros: 'past prostate cancer', crc: 'past colon or rectal cancer', brca: 'past breast or ovarian cancer' }[k]); });
     L.push('Own conditions: ' + (ownList.length ? ownList.join(', ') : 'none entered'));
     var rd = [];
     if (p.sys != null && p.dia != null) rd.push('BP ' + p.sys + '/' + p.dia);
@@ -1108,13 +1326,14 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     if (p.creat != null) rd.push('creatinine ' + p.creat + ' mg/dL' + (out.egfr != null ? ' (eGFR about ' + Math.round(out.egfr) + ')' : ''));
     if (p.tsh != null) rd.push('TSH ' + p.tsh + ' mIU/L');
     if (p.psa != null) rd.push('PSA ' + p.psa + ' ng/mL');
+    if (p.hb != null) rd.push('haemoglobin ' + p.hb + ' g/dL');
     if (rd.length) L.push('Readings: ' + rd.join(', '));
     L.push('');
     L.push('Family history:');
     if (!fam.length) L.push('- none entered');
     fam.forEach(function (m) {
       var c = COND.filter(function (x) { return m.cond[x[0]]; }).map(function (x) { return COND_LABEL[x[0]]; });
-      L.push('- ' + m.label + ': ' + (c.length ? c.join(', ') : 'no conditions') + (m.evAge != null && (m.cond.cvd || m.cond.stroke) ? ' (first heart/stroke event at ' + m.evAge + ')' : '') + (m.cAge != null && (m.cond.pros || m.cond.crc || m.cond.brca) ? ' (cancer found at ' + m.cAge + ')' : ''));
+      L.push('- ' + m.label + (m.linked ? ' (' + m.linkName + ')' : '') + ': ' + (c.length ? c.join(', ') : 'no conditions') + (m.evAge != null && (m.cond.cvd || m.cond.stroke) ? ' (first heart/stroke event at ' + m.evAge + ')' : '') + (m.cAge != null && (m.cond.pros || m.cond.crc || m.cond.brca) ? ' (cancer found at ' + m.cAge + ')' : ''));
     });
     L.push('');
     out.cards.forEach(function (c) { L.push(c.title + ': ' + c.levelText + '. ' + c.headline); });
@@ -1143,6 +1362,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
   /* ---------- main update ---------- */
   function update() {
     var p = readProfile();
+    renderCard();
     if (p.age == null) {
       lastOut = null; lastText = '';
       $('liveBar').hidden = true;
@@ -1185,6 +1405,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
   }
   function clearAll() {
     $('form').reset();
+    EC_IDS.forEach(function (id) { $(id).value = ''; });
     $('sex').value = 'M';
     family = [];
     renderFamily();
@@ -1206,7 +1427,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 
   /* ---------- saved profiles (this browser only) ---------- */
   var STORE_KEY = 'family-health-planner-profiles-v1';
-  var FIELD_IDS = ['age', 'sex', 'height', 'weight', 'waist', 'activity', 'smoke', 'd-salt', 'd-sweet', 'd-fried', 'd-lowfv', 'o-dm', 'o-predm', 'o-htn', 'o-cvd', 'o-chol', 'o-ckd', 'o-gdm', 'o-thy', 'o-uro', 'o-usym', 'o-blood', 'sys', 'dia', 'a1c', 'ldl', 'creat', 'tsh', 'psa', 'expm', 'cover', 'm-emp', 'm-par'];
+  var FIELD_IDS = ['ec-name', 'ec-blood', 'ec-allergy', 'ec-meds', 'ec-doc', 'ec-hosp', 'ec-ins', 'ec-contact', 'age', 'sex', 'height', 'weight', 'waist', 'activity', 'smoke', 'd-salt', 'd-sweet', 'd-fried', 'd-lowfv', 'o-dm', 'o-predm', 'o-htn', 'o-cvd', 'o-chol', 'o-ckd', 'o-gdm', 'o-thy', 'o-uro', 'o-usym', 'o-blood', 'o-liver', 'o-pcos', 'o-metf', 'o-pros', 'o-crc', 'o-brca', 'o-cage', 'o-evage', 'alcohol', 'd-veg', 'hb', 'sys', 'dia', 'a1c', 'ldl', 'creat', 'tsh', 'psa', 'expm', 'cover', 'm-emp', 'm-par'];
   function loadStore() {
     try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; } catch (e) { return null; }
   }
@@ -1219,7 +1440,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       var el = $(id);
       v[id] = el.type === 'checkbox' ? el.checked : el.value;
     });
-    return { v: v, family: family.map(function (m) { return { rel: m.rel, cond: m.cond, evAge: m.evAge, cAge: m.cAge }; }) };
+    return { v: v, family: family.map(function (m) { return { rel: m.rel, cond: m.cond, evAge: m.evAge, cAge: m.cAge, link: m.link || '' }; }) };
   }
   function applySnapshot(s) {
     FIELD_IDS.forEach(function (id) {
@@ -1228,7 +1449,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       if (el.type === 'checkbox') el.checked = !!s.v[id]; else el.value = s.v[id];
     });
     family = [];
-    (s.family || []).forEach(function (m) { addMember(m.rel, JSON.parse(JSON.stringify(m.cond || {})), m.evAge, m.cAge); });
+    (s.family || []).forEach(function (m) { addMember(m.rel, JSON.parse(JSON.stringify(m.cond || {})), m.evAge, m.cAge, m.link); });
     renderFamily();
     $('exampleBar').hidden = true;
     update();
@@ -1263,6 +1484,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       return '<option value="' + encodeURIComponent(n) + '"' + (n === selected ? ' selected' : '') + '>' + n.replace(/</g, '&lt;') + '</option>';
     }).join('');
     renderOverview();
+    renderFamily();
   }
   var storeOK = loadStore() !== null && saveStore(loadStore());
   if (!storeOK) {
@@ -1406,6 +1628,195 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     try {
       navigator.clipboard.writeText(text).then(function () { say('fbStatus', 'Copied. Paste it into a message to send.'); }, fallback);
     } catch (e) { fallback(); }
+  });
+
+  /* ---------- version, changes, environment ---------- */
+  var APP_VERSION = '0.6.0', RULES_DATE = '13 Nov 2026';
+  var CHANGES = [
+    ['0.6.0 · 13 Nov 2026', [
+      'New cards: prostate and urinary, kidney, thyroid, liver, blood and vitamins, cancer in the family, cancer screening for your age',
+      'New inputs: alcohol, lab values (LDL, creatinine, TSH, PSA, haemoglobin), PCOS, past cancers, vegetarian diet, metformin',
+      'Indian sources first (ICMR, ICMR-NIN, Health Ministry, Cardiological Society of India), every tag links to its source',
+      'Money plan with IRDAI and tax points, ordered test list, 12-month plan with calendar file',
+      'Link a relative to their own saved profile, emergency health card, printable doctor sheet, privacy controls'
+    ]],
+    ['0.5.0 · earlier', ['First shareable version: diabetes, heart and blood pressure with family history, saved profiles, tester feedback by WhatsApp']]
+  ];
+  var inFrame = (function () { try { return window.top !== window.self; } catch (e) { return true; } })();
+  $('foot').innerHTML = 'Family Health Planner · version ' + APP_VERSION + ' · rules updated ' + RULES_DATE + ' · doctor review: not done yet' +
+    (inFrame ? '' : ' · <a href="review.html">Review sheet for doctors</a>');
+  $('changeBody').innerHTML = CHANGES.map(function (c) { return '<div><h3>' + c[0] + '</h3><ul class="src-list">' + c[1].map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>'; }).join('');
+
+  (function () {
+    var host = location.hostname;
+    if (inFrame || location.protocol !== 'https:' || /^(localhost|127\.)/.test(host)) return;
+    var base = location.origin + location.pathname;
+    var L = [['hi', 'हिन्दी'], ['kn', 'ಕನ್ನಡ'], ['ta', 'தமிழ்'], ['te', 'తెలుగు'], ['ml', 'മലയാളം'], ['mr', 'मराठी'], ['bn', 'বাংলা'], ['gu', 'ગુજરાતી']];
+    $('langLinks').innerHTML = L.map(function (x) { return '<a href="https://translate.google.com/translate?sl=en&tl=' + x[0] + '&u=' + encodeURIComponent(base) + '" target="_blank" rel="noopener">' + x[1] + '</a>'; }).join(' ');
+    $('langBar').hidden = false;
+  })();
+
+  /* ---------- generic copy ---------- */
+  function copyText(text, statusId, boxId) {
+    function fallback() { var b = $(boxId); b.hidden = false; b.value = text; b.focus(); b.select(); say(statusId, 'Select and copy the text below.'); }
+    try { navigator.clipboard.writeText(text).then(function () { say(statusId, 'Copied.'); }, fallback); } catch (e) { fallback(); }
+  }
+
+  /* ---------- printing ---------- */
+  function printHTML(html) {
+    var a = $('printArea');
+    a.innerHTML = html;
+    document.body.classList.add('printing');
+    setTimeout(function () { try { window.print(); } catch (e) {} }, 60);
+  }
+  window.addEventListener('afterprint', function () { document.body.classList.remove('printing'); $('printArea').innerHTML = ''; });
+  function today() { return new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); }
+
+  /* ---------- emergency card ---------- */
+  var EC_IDS = ['ec-name', 'ec-blood', 'ec-allergy', 'ec-meds', 'ec-doc', 'ec-hosp', 'ec-ins', 'ec-contact'];
+  var OWN_LABEL = { dm: 'diabetes', predm: 'prediabetes', htn: 'high blood pressure', cvd: 'heart disease or stroke', chol: 'high cholesterol', ckd: 'kidney disease', gdm: 'diabetes in pregnancy', thy: 'thyroid disease', uro: 'prostate or urinary problems', liver: 'fatty liver or liver disease', pcos: 'PCOS', pros: 'prostate cancer (past)', crc: 'colon or rectal cancer (past)', brca: 'breast or ovarian cancer (past)' };
+  function ownList(p) { return Object.keys(OWN_LABEL).filter(function (k) { return p.own[k]; }).map(function (k) { return OWN_LABEL[k]; }); }
+  function cardRows() {
+    var p = readProfile();
+    var name = $('ec-name').value.trim() || $('profileName').value.trim();
+    var conds = ownList(p);
+    return [
+      ['Name', name || '-'],
+      ['Age and sex', (p.age != null ? p.age : '-') + ', ' + (p.sex === 'F' ? 'female' : 'male')],
+      ['Blood group', $('ec-blood').value || 'not known'],
+      ['Known conditions', conds.length ? conds.join(', ') : 'none entered'],
+      ['Allergies', $('ec-allergy').value.trim() || '-'],
+      ['Regular medicines', $('ec-meds').value.trim() || '-'],
+      ['Doctor', $('ec-doc').value.trim() || '-'],
+      ['Preferred hospital', $('ec-hosp').value.trim() || '-'],
+      ['Health insurance', $('ec-ins').value.trim() || '-'],
+      ['Emergency contact', $('ec-contact').value.trim() || '-']
+    ];
+  }
+  function cardText() {
+    return 'EMERGENCY HEALTH CARD (not a medical record)\n' + cardRows().map(function (r) { return r[0] + ': ' + r[1]; }).join('\n') + '\nUpdated: ' + today();
+  }
+  function renderCard() { var el = $('ecPreview'); if (el) el.textContent = cardText(); }
+  $('cardBox').addEventListener('input', renderCard);
+  $('cardBox').addEventListener('change', renderCard);
+  $('ecCopy').addEventListener('click', function () { copyText(cardText(), 'ecStatus', 'ecBox'); });
+  $('ecPrint').hidden = inFrame;
+  $('ecPrint').addEventListener('click', function () {
+    printHTML('<h1>Emergency health card</h1><p class="note">Keep a copy in the wallet and on the phone. Not a medical record.</p><table>' +
+      cardRows().map(function (r) { return '<tr><th style="width:32%">' + esc(r[0]) + '</th><td>' + esc(r[1]).replace(/\n/g, '<br>') + '</td></tr>'; }).join('') + '</table><p class="note">Updated ' + today() + '</p>');
+  });
+
+  /* ---------- doctor sheet ---------- */
+  function sheetHTML(p, fam, out) {
+    var name = $('ec-name').value.trim() || $('profileName').value.trim();
+    var h = '<h1>Health summary for the doctor</h1><p class="note">Made with Family Health Planner, version ' + APP_VERSION + '. A prototype that has not been reviewed by a doctor. It is not a diagnosis. ' + today() + '</p>';
+    h += '<h2>About the patient</h2><p>' + esc((name ? name + ', ' : '') + 'age ' + p.age + ', ' + (p.sex === 'F' ? 'female' : 'male') + (out.bmi ? ', BMI ' + out.bmi.toFixed(1) : '') + (p.waist ? ', waist ' + p.waist + ' cm' : '')) + '</p>';
+    var rd = [];
+    if (p.sys != null && p.dia != null) rd.push('BP ' + p.sys + '/' + p.dia);
+    if (p.a1c != null) rd.push('HbA1c ' + p.a1c + '%');
+    if (p.ldl != null) rd.push('LDL ' + p.ldl + ' mg/dL');
+    if (p.creat != null) rd.push('creatinine ' + p.creat + ' mg/dL' + (out.egfr != null ? ' (eGFR about ' + Math.round(out.egfr) + ')' : ''));
+    if (p.tsh != null) rd.push('TSH ' + p.tsh + ' mIU/L');
+    if (p.psa != null) rd.push('PSA ' + p.psa + ' ng/mL');
+    if (p.hb != null) rd.push('haemoglobin ' + p.hb + ' g/dL');
+    h += '<p><strong>Own conditions:</strong> ' + esc(ownList(p).join(', ') || 'none entered') + '</p>';
+    h += '<p><strong>Latest readings:</strong> ' + esc(rd.join(', ') || 'none entered') + '</p>';
+    h += '<p><strong>Habits:</strong> tobacco ' + esc(p.smoke) + ', alcohol ' + esc({ never: 'never', rare: 'a few times a year', weekly: 'most weeks', daily: 'most days' }[p.alcohol] || p.alcohol) + (p.diet.veg ? ', vegetarian' : '') + '</p>';
+    h += '<h2>Family history</h2>';
+    if (!fam.length) h += '<p>None entered.</p>';
+    else h += '<table><tr><th>Relative</th><th>Conditions</th><th>Ages</th></tr>' + fam.map(function (m) {
+      var c = COND.filter(function (x) { return m.cond[x[0]]; }).map(function (x) { return x[1]; });
+      var ages = [];
+      if (m.evAge != null && (m.cond.cvd || m.cond.stroke)) ages.push('heart or stroke event at ' + m.evAge);
+      if (m.cAge != null && (m.cond.pros || m.cond.crc || m.cond.brca)) ages.push('cancer found at ' + m.cAge);
+      return '<tr><td>' + esc(m.label) + '</td><td>' + esc(c.join(', ') || 'none') + '</td><td>' + esc(ages.join('; ') || '-') + '</td></tr>';
+    }).join('') + '</table>';
+    h += '<h2>Where the tool places the patient</h2><ul>' + out.cards.map(function (c) { return '<li><strong>' + esc(c.title) + ': ' + esc(c.levelText) + '.</strong> ' + esc(c.headline) + '</li>'; }).join('') + '</ul>';
+    h += '<h2>Tests to discuss</h2>';
+    [[1, 'First'], [2, 'This year'], [3, 'Ongoing or routine']].forEach(function (g) {
+      var list = out.tests.filter(function (t) { return t.pri === g[0]; });
+      if (list.length) h += '<p><strong>' + g[1] + '</strong></p><ul>' + list.map(function (t) { return '<li>' + esc(t.name) + '. ' + esc(t.when) + ' ' + esc(t.why) + (t.src ? ' <em>(' + esc(t.src.replace(/; /g, ', ')) + ')</em>' : '') + '</li>'; }).join('') + '</ul>';
+    });
+    h += '<h2>Questions the patient would like to ask</h2><ul>' + out.qs.map(function (q) { return '<li>' + esc(q) + '</li>'; }).join('') + '</ul>';
+    h += '<p class="note">Levels such as Higher, Moderate and Lower are simple rules written for this prototype. Sources for each test are listed in the app under How this was worked out. The doctor decides what is right for the patient.</p>';
+    return h;
+  }
+
+  /* ---------- 12-month plan and calendar ---------- */
+  function fmtDate(d) { return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); }
+  function planGroups(out) {
+    var G = [[1, 'Within 2 weeks', 14], [2, 'Within 3 months', 90], [3, 'Within 12 months', 365]];
+    var now = new Date();
+    return G.map(function (g) {
+      return { label: g[1], by: fmtDate(new Date(now.getTime() + g[2] * 86400000)), tests: out.tests.filter(function (t) { return t.pri === g[0]; }) };
+    }).filter(function (g) { return g.tests.length; });
+  }
+  function planHTML(out) {
+    var groups = planGroups(out);
+    if (!groups.length) return '';
+    return '<section class="section"><div class="section-head"><h2>Your 12-month plan</h2><p>Dates count from today. They are a suggested pace, not a medical deadline.</p></div><div class="block">' +
+      groups.map(function (g) { return '<div class="member-out"><h3>' + g.label + ' (by ' + g.by + ')</h3><ul class="items">' + g.tests.map(function (t) { return '<li><span>' + t.name + '</span></li>'; }).join('') + '</ul></div>'; }).join('') +
+      '<div class="actions" style="margin-top:14px"><button type="button" class="btn" id="planCopy">Copy plan</button><button type="button" class="btn" id="planIcs"' + (inFrame ? ' hidden' : '') + '>Add to calendar (.ics file)</button><a class="btn" id="planWa" href="https://wa.me/" target="_blank" rel="noopener">Send plan on WhatsApp</a><span class="status" id="planStatus" role="status"></span></div>' +
+      '<textarea id="planBox" readonly hidden aria-label="Plan text"></textarea></div></section>';
+  }
+  function planText(out) {
+    var L = ['MY 12-MONTH HEALTH PLAN (prototype guidance, not a diagnosis)'];
+    planGroups(out).forEach(function (g) { L.push('', g.label + ' (by ' + g.by + '):'); g.tests.forEach(function (t) { L.push('- ' + t.name); }); });
+    return L.join('\n');
+  }
+  function icsEsc(t) { return String(t).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n'); }
+  function icsFold(line) { var o = []; while (line.length > 74) { o.push(line.slice(0, 74)); line = ' ' + line.slice(74); } o.push(line); return o.join('\r\n'); }
+  function icsDay(d) { function z(n) { return (n < 10 ? '0' : '') + n; } return d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate()); }
+  function buildIcs(out) {
+    var now = new Date(), stamp = now.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    var L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Family Health Planner//EN', 'CALSCALE:GREGORIAN'];
+    out.tests.forEach(function (t, i) {
+      var days = t.pri === 1 ? 14 : t.pri === 2 ? 90 : 365;
+      var due = new Date(now.getTime() + days * 86400000), end = new Date(due.getTime() + 86400000);
+      L.push('BEGIN:VEVENT', 'UID:fhp-' + now.getTime() + '-' + i + '@family-health-planner', 'DTSTAMP:' + stamp,
+        'DTSTART;VALUE=DATE:' + icsDay(due), 'DTEND;VALUE=DATE:' + icsDay(end),
+        'SUMMARY:' + icsEsc('Health check: ' + t.name),
+        'DESCRIPTION:' + icsEsc(t.when + ' ' + t.why + ' (Prototype guidance, not a diagnosis. Your doctor decides.)'));
+      if (/every year|yearly/i.test(t.when)) L.push('RRULE:FREQ=YEARLY');
+      L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:Health check due', 'TRIGGER:-P1D', 'END:VALARM', 'END:VEVENT');
+    });
+    L.push('END:VCALENDAR');
+    return L.map(icsFold).join('\r\n') + '\r\n';
+  }
+  function downloadIcs() {
+    if (!lastOut) return;
+    try {
+      var blob = new Blob([buildIcs(lastOut)], { type: 'text/calendar' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = 'health-plan.ics';
+      document.body.appendChild(a); a.click(); a.remove();
+      say('planStatus', 'Calendar file created. Open it to add the reminders.');
+    } catch (e) { say('planStatus', 'Could not create the file. Use Copy plan instead.', true); }
+  }
+  function bindResultButtons() {
+    var pc = $('planCopy'); if (pc) pc.addEventListener('click', function () { copyText(planText(lastOut), 'planStatus', 'planBox'); });
+    var pi = $('planIcs'); if (pi) pi.addEventListener('click', downloadIcs);
+    var pw = $('planWa'); if (pw) pw.addEventListener('click', function () { this.href = 'https://wa.me/?text=' + encodeURIComponent(planText(lastOut)); });
+    var dp = $('docPrint'); if (dp) dp.addEventListener('click', function () { if (lastOut) printHTML(sheetHTML(readProfile(), famView(), lastOut)); });
+  }
+
+  /* ---------- delete everything ---------- */
+  var wipeArmed = false, wipeTimer = null;
+  function disarmWipe() { wipeArmed = false; $('wipeBtn').textContent = 'Delete everything saved on this device'; }
+  $('wipeBtn').addEventListener('click', function () {
+    if (!wipeArmed) {
+      wipeArmed = true;
+      this.textContent = 'Tap again to confirm';
+      say('wipeStatus', 'This removes every saved profile and the card details from this browser.');
+      wipeTimer = setTimeout(disarmWipe, 6000);
+      return;
+    }
+    clearTimeout(wipeTimer); disarmWipe();
+    try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+    clearAll();
+    $('profileSel').value = ''; $('profileName').value = '';
+    refreshProfileList();
+    say('wipeStatus', 'Deleted. Nothing is saved on this device now.');
   });
 
   update();
