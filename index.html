@@ -7,7 +7,7 @@
 <title>Family Health Planner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: a form panel on the left, live results on the right; stacks to one column on phones. */
 :root {
@@ -252,15 +252,304 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 .ov-row strong { flex: 0 0 110px; min-width: 0; overflow-wrap: anywhere; }
 .ov-pills { display: flex; flex-wrap: wrap; gap: 6px; flex: 1 1 240px; min-width: 0; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* ===================== v0.8 design layer: calm, warm, high-trust ===================== */
+:root {
+  --bg: #FAF9F6;
+  --surface: #FEFDFB;
+  --surface-2: #F3F1EC;
+  --fg: #0F172A;
+  --muted: #475569;
+  --line: #E2E8F0;
+  --accent: #0F5E5A;
+  --accent-fg: #F8FAF9;
+  --accent-hover: #0B4B48;
+  --accent-soft: #DDEFEA;
+  --sage: #E6EEE7;
+  --peach: #FBEBDD;
+  --lav: #ECEAF8;
+  --high: #B3261E; --high-bg: #FCE9E6;
+  --mod: #8A5200; --mod-bg: #FBF0D8;
+  --low: #1E6B42; --low-bg: #E3F2E8;
+  --info: #2B5C8F; --info-bg: #E6EEF8;
+  --glass: rgba(250, 249, 246, 0.74);
+  --sh1: 0 1px 2px rgba(15, 23, 42, 0.04), 0 6px 20px rgba(15, 23, 42, 0.05);
+  --sh2: 0 2px 4px rgba(15, 23, 42, 0.05), 0 16px 36px rgba(15, 23, 42, 0.11);
+  --foot-bg: #0F172A; --foot-fg: #CBD5E1; --foot-head: #F1F5F9; --foot-line: #263248;
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, "Noto Serif Devanagari", serif;
+  --font-body: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, "Segoe UI", "Noto Sans Devanagari", sans-serif;
+  --r-sm: 12px; --r-md: 16px; --r-lg: 20px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1626; --surface: #142034; --surface-2: #1B2A41; --fg: #E8EDF5; --muted: #A6B3C6; --line: #263650;
+    --accent: #5FCDBE; --accent-fg: #06302B; --accent-hover: #7BDACD; --accent-soft: #16403F;
+    --sage: #17302F; --peach: #3A2B20; --lav: #25254A;
+    --high: #FF9F96; --high-bg: #3B1F22; --mod: #F2BC63; --mod-bg: #3A2E14; --low: #7FD9A0; --low-bg: #173626; --info: #9CC3F5; --info-bg: #182C46;
+    --glass: rgba(14, 22, 38, 0.72);
+    --sh1: 0 1px 2px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.22);
+    --sh2: 0 2px 4px rgba(0, 0, 0, 0.3), 0 16px 36px rgba(0, 0, 0, 0.35);
+    --foot-bg: #0A1120; --foot-fg: #B4C0D2; --foot-head: #F1F5F9; --foot-line: #22314A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1626; --surface: #142034; --surface-2: #1B2A41; --fg: #E8EDF5; --muted: #A6B3C6; --line: #263650;
+  --accent: #5FCDBE; --accent-fg: #06302B; --accent-hover: #7BDACD; --accent-soft: #16403F;
+  --sage: #17302F; --peach: #3A2B20; --lav: #25254A;
+  --high: #FF9F96; --high-bg: #3B1F22; --mod: #F2BC63; --mod-bg: #3A2E14; --low: #7FD9A0; --low-bg: #173626; --info: #9CC3F5; --info-bg: #182C46;
+  --glass: rgba(14, 22, 38, 0.72);
+  --sh1: 0 1px 2px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.22);
+  --sh2: 0 2px 4px rgba(0, 0, 0, 0.3), 0 16px 36px rgba(0, 0, 0, 0.35);
+  --foot-bg: #0A1120; --foot-fg: #B4C0D2; --foot-head: #F1F5F9; --foot-line: #22314A;
+  color-scheme: dark;
+}
+html { scroll-behavior: smooth; scroll-padding-top: 92px; }
+body { font-size: 16px; line-height: 1.6; padding-block: 12px 40px; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { letter-spacing: -0.02em; }
+h1 { font-size: clamp(34px, 5.4vw, 56px); font-weight: 600; line-height: 1.08; letter-spacing: -0.03em; }
+h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 600; line-height: 1.15; }
+h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+.eyebrow { font-size: 12.5px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); }
+.lead { font-size: 18px; line-height: 1.65; color: var(--muted); max-width: 58ch; }
+.sec { margin-top: clamp(64px, 9vw, 112px); }
+.sec-head { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; max-width: 62ch; }
+
+/* sticky glass navigation */
+.nav { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 8px); z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 12px 10px 18px; border: 1px solid var(--line); border-radius: 999px; background: var(--glass);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px); backdrop-filter: saturate(1.4) blur(14px); box-shadow: var(--sh1); transition: box-shadow .2s ease, border-color .2s ease; }
+.nav.scrolled { box-shadow: var(--sh2); }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 600; font-size: 18px; letter-spacing: -0.02em; color: var(--fg); text-decoration: none; min-width: 0; }
+.brand svg { flex: none; }
+.brand span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-links { display: flex; gap: 4px; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-weight: 500; font-size: 15px; padding: 8px 14px; border-radius: 999px; transition: all .2s ease; }
+.nav-links a:hover { color: var(--fg); background: var(--surface-2); }
+.nav .btn.primary { border-radius: 999px; padding: 10px 20px; flex: none; }
+@media (max-width: 820px) { .nav-links { display: none; } .nav { padding-left: 14px; } }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr); gap: clamp(32px, 5vw, 64px); align-items: center; padding-block: clamp(40px, 7vw, 88px) 0; }
+@media (max-width: 940px) { .hero { grid-template-columns: minmax(0, 1fr); } }
+.hero-copy { display: flex; flex-direction: column; gap: 22px; align-items: flex-start; }
+.hero-copy h1 em { font-style: italic; color: var(--accent); font-weight: 500; }
+.pill-note { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 13.5px; font-weight: 600; }
+.pill-note i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-left: 6px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn.lg { min-height: 52px; padding: 13px 26px; font-size: 16px; border-radius: 14px; }
+.trust-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 20px; margin-top: 6px; padding: 0; list-style: none; max-width: 560px; }
+.trust-row li { display: flex; gap: 10px; align-items: flex-start; font-size: 14.5px; color: var(--muted); line-height: 1.45; }
+.trust-row svg { flex: none; margin-top: 1px; color: var(--accent); }
+.trust-row .pending svg { color: var(--mod); }
+@media (max-width: 520px) { .trust-row { grid-template-columns: minmax(0, 1fr); } }
+
+.hero-card { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 24px; padding: 22px; box-shadow: var(--sh2); display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.hero-card::before { content: ""; position: absolute; inset: -18px -18px auto auto; width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, var(--accent-soft), transparent 70%); z-index: -1; }
+.hero-card .cap { font-size: 12.5px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.mini { border: 1px solid var(--line); border-radius: var(--r-md); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; background: var(--bg); }
+.mini header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.mini h3 { font-size: 16px; }
+.mini p { font-size: 14.5px; color: var(--muted); }
+.mini-tests { display: flex; flex-wrap: wrap; gap: 8px; }
+.mini-tests span { font-size: 13.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; background: var(--sage); color: var(--fg); }
+
+/* steps */
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; counter-reset: st; padding: 0; list-style: none; }
+@media (max-width: 820px) { .steps { grid-template-columns: minmax(0, 1fr); } }
+.steps li { counter-increment: st; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 24px; display: flex; flex-direction: column; gap: 8px; box-shadow: var(--sh1); }
+.steps li::before { content: counter(st); width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-family: var(--font-display); }
+.steps p { color: var(--muted); font-size: 15.5px; }
+
+/* bento */
+.bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 26px; display: flex; flex-direction: column; gap: 10px; min-width: 0; box-shadow: var(--sh1); transition: all .2s ease; }
+.tile:hover { transform: translateY(-3px) scale(1.01); box-shadow: var(--sh2); border-color: color-mix(in srgb, var(--accent) 30%, var(--line)); }
+.tile p { color: var(--muted); font-size: 15.5px; }
+.tile .ico { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
+.tile.big { grid-column: span 4; grid-row: span 2; background: linear-gradient(160deg, var(--sage), var(--surface) 70%); }
+.tile.big h3 { font-family: var(--font-display); font-size: clamp(22px, 2.6vw, 28px); }
+.tile.s2 { grid-column: span 2; } .tile.s3 { grid-column: span 3; }
+.tile.peach .ico { background: var(--peach); color: var(--mod); } .tile.lav .ico { background: var(--lav); color: var(--info); }
+.area-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 10px; }
+.area-chips span { font-size: 14px; font-weight: 600; padding: 7px 13px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
+.tag-demo { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+@media (max-width: 1000px) { .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tile.big, .tile.s2, .tile.s3 { grid-column: span 2; grid-row: auto; } .tile.s2 { grid-column: span 1; } }
+@media (max-width: 620px) { .bento { grid-template-columns: minmax(0, 1fr); } .tile.big, .tile.s2, .tile.s3 { grid-column: auto; } }
+
+/* trust */
+.trust { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 820px) { .trust { grid-template-columns: minmax(0, 1fr); } }
+.trust > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 28px; box-shadow: var(--sh1); }
+.trust ul { list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-direction: column; gap: 12px; }
+.trust li { display: flex; gap: 12px; font-size: 15.5px; line-height: 1.5; }
+.trust li svg { flex: none; margin-top: 2px; }
+.trust .yes svg { color: var(--low); } .trust .no svg { color: var(--mod); }
+
+/* tool section */
+.tool-sec { margin-top: clamp(64px, 9vw, 112px); }
+.top { margin-bottom: 24px; align-items: flex-end; }
+.top h2 { font-size: clamp(28px, 3.6vw, 40px); }
+.top .sub { font-size: 17px; max-width: 60ch; }
+.chip { border-radius: 999px; padding: 6px 12px; font-weight: 600; text-transform: none; letter-spacing: 0; font-size: 13px; background: var(--surface); }
+.notice { border-radius: var(--r-md); padding: 16px 18px; font-size: 15px; line-height: 1.55; margin-bottom: 24px; }
+.layout { gap: 32px; }
+.panel { border-radius: var(--r-lg); padding: 26px; gap: 28px; box-shadow: var(--sh1); background: var(--surface); }
+legend { font-size: 18px; padding-bottom: 12px; }
+fieldset { gap: 16px; }
+.field > span, .age-wrap { font-size: 14px; }
+input[type="number"], input[type="text"], select, textarea { border-radius: var(--r-sm); min-height: 46px; padding: 10px 14px; background: var(--surface-2); font-size: 16px; transition: border-color .2s ease, box-shadow .2s ease, background .2s ease; }
+input[type="number"]:hover, input[type="text"]:hover, select:hover, textarea:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+input[type="number"]:focus-visible, input[type="text"]:focus-visible, select:focus-visible, textarea:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent); background: var(--surface); }
+button:focus-visible, .chk input:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 3px; border-radius: 10px; }
+.chk { font-size: 15.5px; }
+.chk input { width: 20px; height: 20px; margin-top: 2px; }
+.btn { border-radius: var(--r-sm); min-height: 46px; padding: 10px 18px; font-size: 15px; background: var(--surface); transition: all .2s ease; }
+.btn:hover { filter: none; background: var(--surface-2); transform: translateY(-1px); box-shadow: var(--sh1); }
+.btn.primary { background: var(--accent); color: var(--accent-fg); box-shadow: 0 1px 2px rgba(15, 94, 90, 0.25), 0 6px 16px rgba(15, 94, 90, 0.18); }
+.btn.primary:hover { background: var(--accent-hover); box-shadow: 0 2px 4px rgba(15, 94, 90, 0.3), 0 10px 24px rgba(15, 94, 90, 0.22); }
+.btn:active { transform: translateY(0) scale(0.99); }
+.member { border-radius: var(--r-md); padding: 16px; background: var(--surface-2); }
+.profile-bar, details { border-radius: var(--r-md); background: var(--surface); padding: 16px 20px; box-shadow: var(--sh1); transition: box-shadow .2s ease; }
+.profile-bar { margin-bottom: 16px; }
+details summary { font-size: 17px; padding-block: 2px; }
+details .inner { font-size: 15.5px; }
+details[open] { box-shadow: var(--sh2); }
+.results, .results-col { gap: 32px; }
+.section { gap: 16px; }
+.section-head h2 { font-size: 24px; }
+.section-head p { font-size: 15px; }
+.cards { gap: 16px; }
+.risk { border-radius: var(--r-md); padding: 20px; gap: 12px; box-shadow: var(--sh1); transition: all .2s ease; }
+.risk:hover { transform: translateY(-2px); box-shadow: var(--sh2); }
+.risk.high { border-top-width: 4px; } .risk.mod { border-top-width: 4px; } .risk.low { border-top-width: 4px; } .risk.info { border-top-width: 4px; }
+.risk .headline { font-size: 16px; line-height: 1.5; font-weight: 500; }
+.pill { font-size: 12.5px; padding: 5px 12px; }
+ul.items { gap: 14px; }
+ul.items li { font-size: 15px; line-height: 1.55; }
+.tag { font-size: 12px; padding: 3px 10px; border-radius: 999px; }
+.block { border-radius: var(--r-md); padding: 22px; box-shadow: var(--sh1); }
+.tests { gap: 16px; }
+.test { border-radius: var(--r-md); padding: 18px; gap: 8px; background: var(--bg); transition: all .2s ease; }
+.test:hover { transform: translateY(-2px); box-shadow: var(--sh1); border-color: color-mix(in srgb, var(--accent) 30%, var(--line)); }
+.test .name { font-size: 16.5px; } .test .when { font-size: 15px; } .test .why { font-size: 14px; }
+.emergency { border-radius: var(--r-md); padding: 18px 20px; font-size: 15px; }
+.empty { border-radius: var(--r-lg); padding: 44px 28px; font-size: 16px; background: var(--surface); }
+.example-bar { border-radius: var(--r-sm); }
+.care-grid > div { border-radius: var(--r-md); padding: 16px; background: var(--bg); transition: all .2s ease; }
+.care-grid > div:hover { transform: translateY(-2px); box-shadow: var(--sh1); }
+.care-grid h3 { font-size: 16px; } .care-grid p { font-size: 15px; }
+.who-table { font-size: 15px; }
+.warnbox { border-radius: var(--r-md); }
+.live-bar { top: calc(env(safe-area-inset-top, 0px) + 72px); }
+#results { scroll-margin-top: 96px; }
+.lang-bar { font-size: 14.5px; }
+
+/* reassuring footer */
+.site-foot { margin-top: clamp(64px, 9vw, 112px); background: var(--foot-bg); color: var(--foot-fg); border-radius: 28px; padding: clamp(28px, 5vw, 56px); display: flex; flex-direction: column; gap: 32px; }
+.foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; }
+@media (max-width: 820px) { .foot-grid { grid-template-columns: minmax(0, 1fr); } }
+.site-foot h3 { color: var(--foot-head); font-size: 22px; margin-bottom: 8px; }
+.site-foot h4 { color: var(--foot-head); font-size: 13px; letter-spacing: 0.09em; text-transform: uppercase; margin: 0 0 10px; font-weight: 700; }
+.site-foot p, .site-foot li { font-size: 15.5px; line-height: 1.6; }
+.site-foot ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.site-foot a { color: var(--foot-head); text-underline-offset: 3px; }
+.site-foot a:hover { text-decoration-thickness: 2px; }
+.site-foot .foot { margin: 0; padding-top: 20px; border-top: 1px solid var(--foot-line); color: var(--foot-fg); font-size: 13.5px; line-height: 1.6; }
+.site-foot .help-num { color: var(--foot-head); font-weight: 700; }
+.wrap { overflow-x: clip; }
+.cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 1080px) and (min-width: 881px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+@media print { .nav, .site-foot { display: none; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .tile:hover, .risk:hover, .test:hover, .btn:hover, .care-grid > div:hover { transform: none !important; } }
 </style>
 
 </head>
 <body>
 <div class="wrap">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="#top" id="top"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="10" fill="var(--accent)"/><path d="M16 24.5c-5.5-3.6-8-6.7-8-10a4.6 4.6 0 018-3 4.6 4.6 0 018 3c0 3.3-2.5 6.4-8 10z" fill="none" stroke="var(--accent-fg)" stroke-width="1.9" stroke-linejoin="round"/><path d="M11.5 15h2.2l1.2-2.4 2 4.6 1.2-2.2h2.4" fill="none" stroke="var(--accent-fg)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family Health Planner</span></a>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#what">What you get</a>
+      <a href="#trust">Why trust it</a>
+    </div>
+    <a class="btn primary" href="#tool" data-go="tool">Get started</a>
+  </nav>
+
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="hero-copy">
+      <span class="pill-note"><i></i>Free &middot; No account &middot; Made for Indian families</span>
+      <h1 id="heroTitle">Know what runs in your family, <em>before</em> it becomes urgent.</h1>
+      <p class="lead">Tell us your age, your habits, and what your parents and siblings have had. In a few minutes you see what to be aware of, which checks to ask your doctor about, and what to plan for.</p>
+      <div class="hero-cta">
+        <a class="btn primary lg" href="#tool" data-go="tool">Start with your age</a>
+        <button type="button" class="btn lg" id="heroSample">See a sample family</button>
+      </div>
+      <ul class="trust-row" aria-label="Why you can trust it">
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg><span>Built on ICMR, MoHFW, CSI and USI guidelines, not guesses</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><span>Stays on your device. No account, no ads, nothing stored on a server</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2V5z"/><path d="M8 7h7"/></svg><span>Every line shows the source it came from</span></li>
+        <li class="pending"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Doctor review: not done yet. We say so openly</span></li>
+      </ul>
+    </div>
+    <figure class="hero-card" style="margin:0">
+      <div class="cap"><strong>Example result</strong><span>Sample values, not real data</span></div>
+      <div class="mini"><header><h3>Diabetes</h3><span class="pill high">Higher</span></header><p>Your father had diabetes and your waist is 96 cm. Risk score 70 out of 100.</p><span class="tag guide">Scored tool &middot; IDRS</span></div>
+      <div class="mini"><header><h3>Blood pressure</h3><span class="pill mod">Moderate</span></header><p>Mother has high blood pressure. Get it checked at least once a year.</p><span class="tag guide">Guideline &middot; MoHFW</span></div>
+      <div class="mini"><header><h3>Kidney</h3><span class="pill low">Lower</span></header><p>No kidney risk factors entered right now.</p></div>
+      <div><strong style="font-size:14px">Ask your doctor for</strong><div class="mini-tests" style="margin-top:8px"><span>HbA1c &middot; do first</span><span>Lipid profile &middot; this year</span><span>Eye check &middot; routine</span></div></div>
+    </figure>
+  </section>
+
+  <section class="sec" id="how" aria-labelledby="howT">
+    <div class="sec-head"><span class="eyebrow">How it works</span><h2 id="howT">Three calm steps. About five minutes.</h2><p class="lead">No sign-up and nothing to download. You can stop at any step and still get useful answers.</p></div>
+    <ol class="steps">
+      <li><h3>Tell us about you</h3><p>Age, sex, habits, and any condition you already have. Add readings from a recent report if you have one.</p></li>
+      <li><h3>Add your family</h3><p>Who had diabetes, heart trouble, cancer or kidney problems, and at what age. That age matters a lot.</p></li>
+      <li><h3>Get your plan</h3><p>See what to watch, which tests to ask for first, and how to plan the cost. Take a summary to your doctor.</p></li>
+    </ol>
+  </section>
+
+  <section class="sec" id="what" aria-labelledby="whatT">
+    <div class="sec-head"><span class="eyebrow">What you get</span><h2 id="whatT">Everything in one place, written in plain words.</h2></div>
+    <div class="bento">
+      <article class="tile big"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="M12 7.2V12M12 12L6 15.8M12 12l6 3.8"/></svg></span><h3>See what runs in your family</h3><p>Your own risk and your relatives' history are looked at together, across nine areas. Each one comes with a level, the reason for it, and what to do next.</p><div class="area-chips"><span>Diabetes</span><span>Heart and stroke</span><span>Blood pressure</span><span>Kidney</span><span>Prostate and urinary</span><span>Thyroid</span><span>Liver</span><span>Blood and vitamins</span><span>Cancer screening</span></div></article>
+      <article class="tile s2 peach"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg></span><h3>Tests, in the right order</h3><p>Do first, this year, or routine. So you know what to ask for at the lab.</p></article>
+      <article class="tile s2 lav"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg></span><h3>Sources on every line</h3><p>Guideline, scored tool, general advice, or prototype rule, each one labelled and linked.</p><div class="tag-demo"><span class="tag guide">Guideline</span><span class="tag tool">Scored tool</span><span class="tag">General advice</span></div></article>
+      <article class="tile s2"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M7 10h4M7 14h2"/><path d="M16 9v4M14 11h4"/></svg></span><h3>Emergency health card</h3><p>Blood group, allergies, medicines and contacts, ready to print for the wallet or the fridge.</p></article>
+      <article class="tile s2"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><h3>12-month plan</h3><p>A simple schedule you can add to your calendar, so checks do not slip.</p></article>
+      <article class="tile s2"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.5-1-1.5-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1 0-2-.5-2.5-1.5M12 6.5V8M12 16v1.5"/></svg></span><h3>Money and insurance</h3><p>A cost plan with the current IRDAI rules in plain language.</p></article>
+      <article class="tile s3"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></span><h3>Paste a lab report</h3><p>The values are found on your device and you confirm each one. Nothing is uploaded.</p></article>
+      <article class="tile s3"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h9M8.5 4v2M6 6c0 4 3 7 6 8M12 6c-.5 3-3 6-7 8"/><path d="M13 20l4-9 4 9M14.5 17h5"/></svg></span><h3>Find care without a doctor</h3><p>Free tele-consultation, the Tele-MANAS helpline, emergency numbers, and which specialist to see for what.</p></article>
+    </div>
+  </section>
+
+  <section class="sec" id="trust" aria-labelledby="trustT">
+    <div class="sec-head"><span class="eyebrow">Why trust it</span><h2 id="trustT">Honest about what it is, and what it is not.</h2><p class="lead">Health tools earn trust by showing their working. Here is ours.</p></div>
+    <div class="trust">
+      <div class="yes"><h3>What it does</h3><ul>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg><span>Uses fixed, published rules. No AI decides your risk.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg><span>Shows the source for every point, with Indian guidelines first.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg><span>Keeps what you type on your own device. You can delete it any time.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg><span>Publishes every rule so a doctor can check it.</span></li>
+      </ul></div>
+      <div class="no"><h3>What it will not do</h3><ul>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Diagnose anything, or tell you to start or stop a medicine.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Replace a doctor. A normal result does not mean you are healthy.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Claim a doctor has approved it. That review has not happened yet.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Cover children, pregnancy, vaccines or mental health in depth.</span></li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section id="tool" class="tool-sec" aria-labelledby="toolTitle">
   <header class="top">
     <div>
-      <h1>Family Health Planner</h1>
-      <p class="sub">See what runs in your family, which checks to ask about, and what to plan for, before something becomes urgent.</p>
+      <span class="eyebrow">The tool</span>
+      <h2 id="toolTitle">Your family health check</h2>
+      <p class="sub">Fill in what you know. Leave the rest blank. Results update as you type.</p>
     </div>
     <div class="chips">
       <span class="chip warn">Prototype</span>
@@ -569,9 +858,43 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       </details>
     </main>
   </div>
-  <footer class="foot" id="foot"></footer>
+  </section>
+  <div class="site-foot">
+    <div class="foot-grid">
+      <div><h3>Family Health Planner</h3><p>Awareness, not diagnosis. It helps you ask better questions, earlier. It never replaces a doctor, and it never stores what you type on a server.</p></div>
+      <div><h4>Explore</h4><ul><li><a href="#how">How it works</a></li><li><a href="#what">What you get</a></li><li><a href="#trust">Why trust it</a></li><li><a href="#tool">Start the check</a></li></ul></div>
+      <div><h4>If you need help now</h4><ul><li>Emergency: <span class="help-num">112</span> or ambulance <span class="help-num">108</span></li><li>Stress, low mood: Tele-MANAS <span class="help-num">14416</span>, free, 24 hours</li><li>Free doctor by phone or video: eSanjeevani</li></ul></div>
+    </div>
+    <footer class="foot" id="foot"></footer>
+  </div>
 </div>
 <div id="printArea" aria-hidden="true"></div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var calm = false;
+  try { calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  function goTool(e) {
+    var t = $('tool'); if (!t) return;
+    if (e) e.preventDefault();
+    t.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+    setTimeout(function () { var a = $('age'); if (a) { try { a.focus({ preventScroll: true }); } catch (x) { a.focus(); } } }, calm ? 0 : 450);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-go="tool"]'), function (a) { a.addEventListener('click', goTool); });
+  var hs = $('heroSample');
+  if (hs) hs.addEventListener('click', function () {
+    var b = $('clearExample');
+    if (b && /load example/i.test(b.textContent)) b.click();
+    goTool();
+  });
+  var nav = document.querySelector('.nav');
+  if (nav) {
+    var onScroll = function () { nav.classList.toggle('scrolled', window.scrollY > 8); };
+    window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  }
+})();
+</script>
 
 <script>
 (function () {
@@ -1857,8 +2180,12 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
   });
 
   /* ---------- version, changes, environment ---------- */
-  var APP_VERSION = '0.7.0', RULES_DATE = '13 Nov 2026';
+  var APP_VERSION = '0.8.0', RULES_DATE = '13 Nov 2026';
   var CHANGES = [
+    ['0.8.0 · 13 Nov 2026', [
+      'New look: calm warm palette, serif headings, glass navigation bar, hero with honest trust points, bento overview, clearer cards and focus states',
+      'No change to any medical rule'
+    ]],
     ['0.7.0 · 13 Nov 2026', [
       'Prostate: the Urological Society of India guideline is now the first source, with the American Cancer Society for schedules',
       'Anaemia: haemoglobin cut-offs and bands from the national Anemia Mukt Bharat guidelines, yearly check for women 20 to 49',

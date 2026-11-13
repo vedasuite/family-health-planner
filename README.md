@@ -1,4 +1,4 @@
-# Family Health Planner (v0.7.0)
+# Family Health Planner (v0.8.0)
 
 A single-page, rules-based tool: enter age, habits, your own conditions and what runs in the family, and it shows what to be aware of, which tests to ask about, what to take care of, and how to plan for health costs.
 

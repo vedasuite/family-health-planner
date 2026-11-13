@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.8.0 – 13 Nov 2026
+- Redesign: warm off-white palette, deep teal actions, serif headings (Fraunces) with Plus Jakarta Sans body, glass sticky navigation, hero with honest trust points, bento overview, how-it-works, trust section, reassuring footer, hover and focus polish. No medical rule changed.
+
 ## 0.7.0 – 13 Nov 2026
 - Prostate: Urological Society of India 2022 guideline is now the first source (PSA 4 as a point for further evaluation, after 50 for men at risk); ACS kept for schedules.
 - Anaemia: haemoglobin cut-offs and severity bands from Anemia Mukt Bharat; severe (below 8) says see a doctor; yearly check for women 20 to 49.
