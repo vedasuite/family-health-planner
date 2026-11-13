@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.0 - 13 Nov 2026
+- New soft violet look with a short Home page and a separate Check my family page.
+- Plainer words everywhere: medical terms are explained and test names say what they check.
+- No medical rule, number or source was changed.
+
 ## 0.8.0 – 13 Nov 2026
 - Redesign: warm off-white palette, deep teal actions, serif headings (Fraunces) with Plus Jakarta Sans body, glass sticky navigation, hero with honest trust points, bento overview, how-it-works, trust section, reassuring footer, hover and focus polish. No medical rule changed.
 

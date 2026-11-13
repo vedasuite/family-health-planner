@@ -7,7 +7,7 @@
 <title>Family Health Planner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: a form panel on the left, live results on the right; stacks to one column on phones. */
 :root {
@@ -406,8 +406,8 @@ button:focus-visible, .chk input:focus-visible, a:focus-visible, summary:focus-v
 .chk input { width: 20px; height: 20px; margin-top: 2px; }
 .btn { border-radius: var(--r-sm); min-height: 46px; padding: 10px 18px; font-size: 15px; background: var(--surface); transition: all .2s ease; }
 .btn:hover { filter: none; background: var(--surface-2); transform: translateY(-1px); box-shadow: var(--sh1); }
-.btn.primary { background: var(--accent); color: var(--accent-fg); box-shadow: 0 1px 2px rgba(15, 94, 90, 0.25), 0 6px 16px rgba(15, 94, 90, 0.18); }
-.btn.primary:hover { background: var(--accent-hover); box-shadow: 0 2px 4px rgba(15, 94, 90, 0.3), 0 10px 24px rgba(15, 94, 90, 0.22); }
+.btn.primary { background: var(--accent); color: var(--accent-fg); box-shadow: 0 1px 2px rgba(75, 49, 196, 0.25), 0 6px 16px rgba(75, 49, 196, 0.18); }
+.btn.primary:hover { background: var(--accent-hover); box-shadow: 0 2px 4px rgba(75, 49, 196, 0.3), 0 10px 24px rgba(75, 49, 196, 0.22); }
 .btn:active { transform: translateY(0) scale(0.99); }
 .member { border-radius: var(--r-md); padding: 16px; background: var(--surface-2); }
 .profile-bar, details { border-radius: var(--r-md); background: var(--surface); padding: 16px 20px; box-shadow: var(--sh1); transition: box-shadow .2s ease; }
@@ -461,6 +461,53 @@ ul.items li { font-size: 15px; line-height: 1.55; }
 .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 1080px) and (min-width: 881px) { .cards { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 640px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+
+/* ===================== v0.9: two pages, three design options ===================== */
+.nav-links a[aria-selected="true"] { color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+.looks-at { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 15px; color: var(--muted); }
+.looks-at span { font-size: 14px; font-weight: 600; padding: 6px 12px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); color: var(--fg); }
+.sec { margin-top: clamp(48px, 7vw, 80px); }
+.site-foot { margin-top: clamp(48px, 7vw, 80px); }
+.tool-sec { margin-top: 28px; }
+@media (max-width: 820px) { .nav-links { display: flex; margin-left: auto; } .nav-links a { padding: 8px 12px; font-size: 14.5px; } .brand span { display: none; } .nav .btn.primary { display: none; } }
+
+/* ---------- Look: soft violet (calm app feel, serif display, bold hero band) ---------- */
+html:root {
+  --bg: #F7F5FF; --surface: #FDFCFF; --surface-2: #EFEBFB; --fg: #1B1740; --muted: #5B5780; --line: #E1DCF3;
+  --accent: #5B3FD9; --accent-fg: #F9F8FF; --accent-hover: #4A31B8; --accent-soft: #E6E0FF; --sage: #E2EEE9; --peach: #FCE9E1; --lav: #E6E0FF;
+  --glass: rgba(247, 245, 255, 0.78); --sh1: 0 1px 2px rgba(60, 40, 140, 0.05), 0 8px 22px rgba(60, 40, 140, 0.07); --sh2: 0 4px 10px rgba(60, 40, 140, 0.08), 0 18px 40px rgba(60, 40, 140, 0.14);
+  --foot-bg: #1B1740; --foot-fg: #CFCBEA; --foot-head: #F4F2FF; --foot-line: #342E66;
+  --font-display: "DM Serif Display", Georgia, "Noto Serif Devanagari", serif; --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", "Noto Sans Devanagari", sans-serif;
+  --r-sm: 12px; --r-md: 18px; --r-lg: 26px; --hero-bg: #4B31C4;
+}
+@media (prefers-color-scheme: dark) { html:root:not([data-theme="light"]) {
+  --bg: #120F26; --surface: #1A1636; --surface-2: #231E45; --fg: #ECE9FF; --muted: #AEA8D6; --line: #2F2959;
+  --accent: #A593FF; --accent-fg: #17102F; --accent-hover: #BBAEFF; --accent-soft: #2A2358; --sage: #1B3030; --peach: #3A2530; --lav: #2A2358;
+  --glass: rgba(18, 15, 38, 0.76); --foot-bg: #0C0A1B; --foot-fg: #B3ADD8; --foot-line: #272148; --hero-bg: #2E2373; } }
+html:root[data-theme="dark"] {
+  --bg: #120F26; --surface: #1A1636; --surface-2: #231E45; --fg: #ECE9FF; --muted: #AEA8D6; --line: #2F2959;
+  --accent: #A593FF; --accent-fg: #17102F; --accent-hover: #BBAEFF; --accent-soft: #2A2358; --sage: #1B3030; --peach: #3A2530; --lav: #2A2358;
+  --glass: rgba(18, 15, 38, 0.76); --foot-bg: #0C0A1B; --foot-fg: #B3ADD8; --foot-line: #272148; --hero-bg: #2E2373; }
+html:root h1, html:root h2, html:root h3 { font-weight: 400; letter-spacing: -0.01em; }
+html:root h1 { font-size: clamp(36px, 5.6vw, 60px); line-height: 1.06; }
+html:root h3 { font-size: 20px; }
+html:root .hero { background: var(--hero-bg); color: #F6F4FF; border-radius: 32px; padding: clamp(28px, 5vw, 56px); margin-top: 18px; }
+html:root .hero .lead { color: rgba(246, 244, 255, 0.86); }
+html:root .hero-copy h1 em { color: #FFD28A; }
+html:root .hero .pill-note { background: rgba(255, 255, 255, 0.16); color: #F6F4FF; }
+html:root .hero .pill-note i { background: #FFD28A; }
+html:root .hero .btn.primary { background: #F6F4FF; color: #2E2373; box-shadow: none; }
+html:root .hero .btn.primary:hover { background: #fff; }
+html:root .hero .btn:not(.primary) { background: transparent; color: #F6F4FF; border-color: rgba(246, 244, 255, 0.5); }
+html:root .hero .btn:not(.primary):hover { background: rgba(255, 255, 255, 0.12); }
+html:root .trust-row li { color: rgba(246, 244, 255, 0.86); }
+html:root .trust-row svg { color: #FFD28A; }
+html:root .trust-row .pending svg { color: #FFD28A; }
+html:root .hero-card::before { display: none; }
+html:root .hero-card { color: var(--fg); box-shadow: 0 24px 50px rgba(10, 6, 50, 0.35); border-color: transparent; }
+html:root .nav { border-radius: 999px; }
+html:root .site-foot { border-radius: 32px; }
+html:root .eyebrow { color: var(--accent); }
 @media print { .nav, .site-foot { display: none; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .tile:hover, .risk:hover, .test:hover, .btn:hover, .care-grid > div:hover { transform: none !important; } }
 </style>
@@ -469,81 +516,71 @@ ul.items li { font-size: 15px; line-height: 1.55; }
 <body>
 <div class="wrap">
   <nav class="nav" aria-label="Main">
-    <a class="brand" href="#top" id="top"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="10" fill="var(--accent)"/><path d="M16 24.5c-5.5-3.6-8-6.7-8-10a4.6 4.6 0 018-3 4.6 4.6 0 018 3c0 3.3-2.5 6.4-8 10z" fill="none" stroke="var(--accent-fg)" stroke-width="1.9" stroke-linejoin="round"/><path d="M11.5 15h2.2l1.2-2.4 2 4.6 1.2-2.2h2.4" fill="none" stroke="var(--accent-fg)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family Health Planner</span></a>
-    <div class="nav-links">
-      <a href="#how">How it works</a>
-      <a href="#what">What you get</a>
-      <a href="#trust">Why trust it</a>
+    <a class="brand" href="#home" data-view="home"><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="10" fill="var(--accent)"/><path d="M16 24.5c-5.5-3.6-8-6.7-8-10a4.6 4.6 0 018-3 4.6 4.6 0 018 3c0 3.3-2.5 6.4-8 10z" fill="none" stroke="var(--accent-fg)" stroke-width="1.9" stroke-linejoin="round"/><path d="M11.5 15h2.2l1.2-2.4 2 4.6 1.2-2.2h2.4" fill="none" stroke="var(--accent-fg)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family Health Planner</span></a>
+    <div class="nav-links" role="tablist" aria-label="Pages">
+      <a href="#home" data-view="home" role="tab" id="tabHome">Home</a>
+      <a href="#tool" data-view="tool" role="tab" id="tabTool">Check my family</a>
     </div>
-    <a class="btn primary" href="#tool" data-go="tool">Get started</a>
+    <a class="btn primary" href="#tool" data-view="tool" id="navCta">Get started</a>
   </nav>
 
+  <div id="viewHome">
   <section class="hero" aria-labelledby="heroTitle">
     <div class="hero-copy">
       <span class="pill-note"><i></i>Free &middot; No account &middot; Made for Indian families</span>
       <h1 id="heroTitle">Know what runs in your family, <em>before</em> it becomes urgent.</h1>
-      <p class="lead">Tell us your age, your habits, and what your parents and siblings have had. In a few minutes you see what to be aware of, which checks to ask your doctor about, and what to plan for.</p>
+      <p class="lead">Tell us your age, your daily habits, and which illnesses run in your family. In a few minutes you will see what to watch out for, which tests to ask your doctor about, and how to plan ahead.</p>
       <div class="hero-cta">
-        <a class="btn primary lg" href="#tool" data-go="tool">Start with your age</a>
+        <a class="btn primary lg" href="#tool" data-view="tool" data-focus="age">Start with your age</a>
         <button type="button" class="btn lg" id="heroSample">See a sample family</button>
       </div>
       <ul class="trust-row" aria-label="Why you can trust it">
-        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg><span>Built on ICMR, MoHFW, CSI and USI guidelines, not guesses</span></li>
-        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><span>Stays on your device. No account, no ads, nothing stored on a server</span></li>
-        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2V5z"/><path d="M8 7h7"/></svg><span>Every line shows the source it came from</span></li>
-        <li class="pending"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Doctor review: not done yet. We say so openly</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg><span>Based on Indian health guidelines (ICMR and the Health Ministry), not guesses</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><span>Your details stay on your own phone or computer. No sign-up, no ads</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2V5z"/><path d="M8 7h7"/></svg><span>Every point shows where it came from</span></li>
+        <li class="pending"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>A doctor has not checked it yet. We tell you this openly</span></li>
       </ul>
     </div>
     <figure class="hero-card" style="margin:0">
       <div class="cap"><strong>Example result</strong><span>Sample values, not real data</span></div>
-      <div class="mini"><header><h3>Diabetes</h3><span class="pill high">Higher</span></header><p>Your father had diabetes and your waist is 96 cm. Risk score 70 out of 100.</p><span class="tag guide">Scored tool &middot; IDRS</span></div>
-      <div class="mini"><header><h3>Blood pressure</h3><span class="pill mod">Moderate</span></header><p>Mother has high blood pressure. Get it checked at least once a year.</p><span class="tag guide">Guideline &middot; MoHFW</span></div>
+      <div class="mini"><header><h3>Diabetes</h3><span class="pill high">Higher</span></header><p>Your father has diabetes and your waist is 96 cm. Your risk score is 70 out of 100.</p><span class="tag guide">Risk score &middot; IDRS</span></div>
+      <div class="mini"><header><h3>Blood pressure</h3><span class="pill mod">Moderate</span></header><p>Mother has high blood pressure. Get it checked at least once a year.</p><span class="tag guide">Official guideline &middot; Health Ministry</span></div>
       <div class="mini"><header><h3>Kidney</h3><span class="pill low">Lower</span></header><p>No kidney risk factors entered right now.</p></div>
-      <div><strong style="font-size:14px">Ask your doctor for</strong><div class="mini-tests" style="margin-top:8px"><span>HbA1c &middot; do first</span><span>Lipid profile &middot; this year</span><span>Eye check &middot; routine</span></div></div>
+      <div><strong style="font-size:14px">Ask your doctor for</strong><div class="mini-tests" style="margin-top:8px"><span>Sugar test (HbA1c) &middot; do first</span><span>Cholesterol test &middot; this year</span><span>Eye check &middot; routine</span></div></div>
     </figure>
   </section>
 
   <section class="sec" id="how" aria-labelledby="howT">
-    <div class="sec-head"><span class="eyebrow">How it works</span><h2 id="howT">Three calm steps. About five minutes.</h2><p class="lead">No sign-up and nothing to download. You can stop at any step and still get useful answers.</p></div>
+    <div class="sec-head"><span class="eyebrow">How it works</span><h2 id="howT">Three easy steps. About five minutes.</h2><p class="lead">No sign-up and nothing to download. You can stop at any step and still get useful answers.</p></div>
     <ol class="steps">
-      <li><h3>Tell us about you</h3><p>Age, sex, habits, and any condition you already have. Add readings from a recent report if you have one.</p></li>
-      <li><h3>Add your family</h3><p>Who had diabetes, heart trouble, cancer or kidney problems, and at what age. That age matters a lot.</p></li>
-      <li><h3>Get your plan</h3><p>See what to watch, which tests to ask for first, and how to plan the cost. Take a summary to your doctor.</p></li>
+      <li><h3>Tell us about you</h3><p>Your age, whether you are male or female, your habits, and any illness you already have. If you have a recent lab report, you can add the numbers too.</p></li>
+      <li><h3>Add your family</h3><p>Who in your family had diabetes, heart problems, cancer or kidney problems, and at what age it started. That age matters a lot.</p></li>
+      <li><h3>Get your plan</h3><p>See what to watch for, which tests to ask for first, and how to plan the cost. Take the summary to your doctor.</p></li>
     </ol>
-  </section>
-
-  <section class="sec" id="what" aria-labelledby="whatT">
-    <div class="sec-head"><span class="eyebrow">What you get</span><h2 id="whatT">Everything in one place, written in plain words.</h2></div>
-    <div class="bento">
-      <article class="tile big"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="M12 7.2V12M12 12L6 15.8M12 12l6 3.8"/></svg></span><h3>See what runs in your family</h3><p>Your own risk and your relatives' history are looked at together, across nine areas. Each one comes with a level, the reason for it, and what to do next.</p><div class="area-chips"><span>Diabetes</span><span>Heart and stroke</span><span>Blood pressure</span><span>Kidney</span><span>Prostate and urinary</span><span>Thyroid</span><span>Liver</span><span>Blood and vitamins</span><span>Cancer screening</span></div></article>
-      <article class="tile s2 peach"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg></span><h3>Tests, in the right order</h3><p>Do first, this year, or routine. So you know what to ask for at the lab.</p></article>
-      <article class="tile s2 lav"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg></span><h3>Sources on every line</h3><p>Guideline, scored tool, general advice, or prototype rule, each one labelled and linked.</p><div class="tag-demo"><span class="tag guide">Guideline</span><span class="tag tool">Scored tool</span><span class="tag">General advice</span></div></article>
-      <article class="tile s2"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M7 10h4M7 14h2"/><path d="M16 9v4M14 11h4"/></svg></span><h3>Emergency health card</h3><p>Blood group, allergies, medicines and contacts, ready to print for the wallet or the fridge.</p></article>
-      <article class="tile s2"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><h3>12-month plan</h3><p>A simple schedule you can add to your calendar, so checks do not slip.</p></article>
-      <article class="tile s2"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.5-1-1.5-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1 0-2-.5-2.5-1.5M12 6.5V8M12 16v1.5"/></svg></span><h3>Money and insurance</h3><p>A cost plan with the current IRDAI rules in plain language.</p></article>
-      <article class="tile s3"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></span><h3>Paste a lab report</h3><p>The values are found on your device and you confirm each one. Nothing is uploaded.</p></article>
-      <article class="tile s3"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h9M8.5 4v2M6 6c0 4 3 7 6 8M12 6c-.5 3-3 6-7 8"/><path d="M13 20l4-9 4 9M14.5 17h5"/></svg></span><h3>Find care without a doctor</h3><p>Free tele-consultation, the Tele-MANAS helpline, emergency numbers, and which specialist to see for what.</p></article>
-    </div>
+    <p class="looks-at"><strong>It looks at:</strong> <span>Diabetes</span><span>Heart and stroke</span><span>Blood pressure</span><span>Kidney</span><span>Prostate and urinary</span><span>Thyroid</span><span>Liver</span><span>Blood and vitamins</span><span>Cancer screening</span></p>
   </section>
 
   <section class="sec" id="trust" aria-labelledby="trustT">
-    <div class="sec-head"><span class="eyebrow">Why trust it</span><h2 id="trustT">Honest about what it is, and what it is not.</h2><p class="lead">Health tools earn trust by showing their working. Here is ours.</p></div>
+    <div class="sec-head"><span class="eyebrow">Why trust it</span><h2 id="trustT">Honest about what it is, and what it is not.</h2><p class="lead">A health tool should show how it works. Here is how ours does.</p></div>
     <div class="trust">
       <div class="yes"><h3>What it does</h3><ul>
-        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg><span>Uses fixed, published rules. No AI decides your risk.</span></li>
-        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg><span>Shows the source for every point, with Indian guidelines first.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg><span>Uses fixed, written rules. No AI decides your risk.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg><span>Shows where every point comes from, with Indian guidelines first.</span></li>
         <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg><span>Keeps what you type on your own device. You can delete it any time.</span></li>
-        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg><span>Publishes every rule so a doctor can check it.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg><span>Lists every rule openly, so a doctor can check it.</span></li>
       </ul></div>
       <div class="no"><h3>What it will not do</h3><ul>
-        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Diagnose anything, or tell you to start or stop a medicine.</span></li>
-        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Replace a doctor. A normal result does not mean you are healthy.</span></li>
-        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Claim a doctor has approved it. That review has not happened yet.</span></li>
-        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Cover children, pregnancy, vaccines or mental health in depth.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Diagnose any illness, or tell you to start or stop a medicine.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Replace a doctor. A "lower" result does not mean you are fully healthy.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Claim that a doctor has approved it. That check has not happened yet.</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span>Cover children, pregnancy, vaccines or mental health in detail.</span></li>
       </ul></div>
     </div>
   </section>
 
+  </div>
+
+  <div id="viewTool" hidden>
   <section id="tool" class="tool-sec" aria-labelledby="toolTitle">
   <header class="top">
     <div>
@@ -552,14 +589,14 @@ ul.items li { font-size: 15px; line-height: 1.55; }
       <p class="sub">Fill in what you know. Leave the rest blank. Results update as you type.</p>
     </div>
     <div class="chips">
-      <span class="chip warn">Prototype</span>
-      <span class="chip">Not clinically reviewed</span>
+      <span class="chip warn">Test version</span>
+      <span class="chip">No doctor has checked it yet</span>
       <span class="chip">Not a diagnosis</span>
     </div>
   </header>
 
   <div class="notice">
-    <strong>How to read this.</strong> The medical rules here come from named guidelines and a validated Indian risk score, and every result says which. A doctor has not reviewed them yet. Everything you type stays in this browser. Nothing is sent anywhere.
+    <strong>Please read.</strong> This tool gives awareness, not a diagnosis. Its rules come from health guidelines and an Indian diabetes risk score, and each result tells you which one. A doctor has not checked them yet. What you type stays on your own phone or computer. Nothing is sent anywhere.
   </div>
 
   <div class="lang-bar" id="langBar" hidden>
@@ -659,8 +696,8 @@ ul.items li { font-size: 15px; line-height: 1.55; }
         <label class="chk"><input type="checkbox" id="o-usym"> Urinary symptoms now: weak flow, getting up 2 or more times at night, burning, or the bladder not feeling empty (men)</label>
         <label class="chk"><input type="checkbox" id="o-blood"> Blood in the urine, even once, not yet checked by a doctor</label>
         <label class="chk"><input type="checkbox" id="o-liver"> Fatty liver or other liver disease</label>
-        <label class="chk"><input type="checkbox" id="o-pcos"> PCOS (women)</label>
-        <label class="chk"><input type="checkbox" id="o-metf"> I take metformin</label>
+        <label class="chk"><input type="checkbox" id="o-pcos"> PCOS, a hormone problem in women</label>
+        <label class="chk"><input type="checkbox" id="o-metf"> I take metformin (a diabetes medicine)</label>
         <p class="hint">Cancer you have had in the past, if any</p>
         <label class="chk"><input type="checkbox" id="o-pros"> Prostate cancer (men)</label>
         <label class="chk"><input type="checkbox" id="o-crc"> Colon or rectal cancer</label>
@@ -671,24 +708,24 @@ ul.items li { font-size: 15px; line-height: 1.55; }
         </div>
         <p class="hint">Latest readings, if you have them (optional)</p>
         <div class="row3">
-          <label class="field"><span>BP top</span><input type="number" id="sys" inputmode="numeric" min="60" max="260" placeholder="e.g. 128"></label>
-          <label class="field"><span>BP bottom</span><input type="number" id="dia" inputmode="numeric" min="30" max="160" placeholder="e.g. 82"></label>
-          <label class="field"><span>HbA1c (%)</span><input type="number" id="a1c" inputmode="decimal" step="0.1" min="3" max="18" placeholder="e.g. 5.6"></label>
+          <label class="field"><span>BP top number</span><input type="number" id="sys" inputmode="numeric" min="60" max="260" placeholder="e.g. 128"></label>
+          <label class="field"><span>BP bottom number</span><input type="number" id="dia" inputmode="numeric" min="30" max="160" placeholder="e.g. 82"></label>
+          <label class="field"><span>HbA1c, sugar test (%)</span><input type="number" id="a1c" inputmode="decimal" step="0.1" min="3" max="18" placeholder="e.g. 5.6"></label>
         </div>
         <div class="row3">
-          <label class="field"><span>LDL (mg/dL)</span><input type="number" id="ldl" inputmode="decimal" min="10" max="500" placeholder="e.g. 118"></label>
-          <label class="field"><span>Creatinine (mg/dL)</span><input type="number" id="creat" inputmode="decimal" step="0.01" min="0.2" max="15" placeholder="e.g. 0.9"></label>
-          <label class="field"><span>TSH (mIU/L)</span><input type="number" id="tsh" inputmode="decimal" step="0.01" min="0.01" max="150" placeholder="e.g. 2.4"></label>
+          <label class="field"><span>LDL, bad cholesterol (mg/dL)</span><input type="number" id="ldl" inputmode="decimal" min="10" max="500" placeholder="e.g. 118"></label>
+          <label class="field"><span>Creatinine, kidney test (mg/dL)</span><input type="number" id="creat" inputmode="decimal" step="0.01" min="0.2" max="15" placeholder="e.g. 0.9"></label>
+          <label class="field"><span>TSH, thyroid test (mIU/L)</span><input type="number" id="tsh" inputmode="decimal" step="0.01" min="0.01" max="150" placeholder="e.g. 2.4"></label>
         </div>
         <div class="row3">
-          <label class="field"><span>PSA (ng/mL, men)</span><input type="number" id="psa" inputmode="decimal" step="0.01" min="0" max="500" placeholder="e.g. 1.1"></label>
-          <label class="field"><span>Haemoglobin (g/dL)</span><input type="number" id="hb" inputmode="decimal" step="0.1" min="2" max="25" placeholder="e.g. 13.5"></label>
+          <label class="field"><span>PSA, prostate test (ng/mL, men)</span><input type="number" id="psa" inputmode="decimal" step="0.01" min="0" max="500" placeholder="e.g. 1.1"></label>
+          <label class="field"><span>Haemoglobin, blood level (g/dL)</span><input type="number" id="hb" inputmode="decimal" step="0.1" min="2" max="25" placeholder="e.g. 13.5"></label>
         </div>
-        <p class="hint">Lab ranges differ a little between labs. A single value is never a diagnosis.</p>
+        <p class="hint">Normal ranges differ a little from lab to lab. One number alone is never a diagnosis.</p>
         <details id="reportBox">
           <summary>Read values from my report (paste the text)</summary>
           <div class="inner stack">
-            <p class="hint">Copy the text of a digital lab report (from a PDF or a message) and paste it here. The tool finds the values on this device. Nothing is uploaded, and photos or scans do not work. You confirm every value before it is used, because a reader can mis-read a report.</p>
+            <p class="hint">Copy the text from a digital lab report (a PDF or a message) and paste it here. The tool finds the numbers on your own device. Nothing is uploaded. Photos and scans do not work. You confirm every number before it is used, because the reader can make mistakes.</p>
             <textarea id="rpText" maxlength="20000" aria-label="Pasted report text" placeholder="Paste the report text here"></textarea>
             <div class="actions"><button type="button" class="btn" id="rpFind">Find values</button><button type="button" class="btn" id="rpClear">Clear</button></div>
             <div class="rp-table" id="rpOut" aria-live="polite"></div>
@@ -701,22 +738,22 @@ ul.items li { font-size: 15px; line-height: 1.55; }
         <legend>Money planning (optional)</legend>
         <div class="row2">
           <label class="field"><span>Household expenses per month (₹)</span><input type="number" id="expm" inputmode="numeric" min="0" max="100000000" placeholder="e.g. 60000"></label>
-          <label class="field"><span>Health cover you have (₹ lakh)</span><input type="number" id="cover" inputmode="decimal" min="0" max="10000" placeholder="e.g. 10"></label>
+          <label class="field"><span>Health insurance amount you have (₹ lakh)</span><input type="number" id="cover" inputmode="decimal" min="0" max="10000" placeholder="e.g. 10"></label>
         </div>
-        <label class="chk"><input type="checkbox" id="m-emp"> My health cover comes only through my employer</label>
+        <label class="chk"><input type="checkbox" id="m-emp"> My health insurance comes only from my employer</label>
         <label class="chk"><input type="checkbox" id="m-par"> My parents have no health insurance of their own</label>
       </fieldset>
 
       <fieldset>
         <legend>Family history</legend>
-        <p class="hint">Add parents, brothers, sisters and children first. These count most. Grandparents, uncles and aunts are noted but do not change the scores. For a heart attack, blockage, bypass or stroke, add the age it first happened. For a cancer, add the age it was found. If a relative has their own saved profile on this device, link it so you enter their details only once.</p>
+        <p class="hint">Add parents, brothers, sisters and children first. They count the most. Grandparents, uncles and aunts are noted, but they do not change the results. For a heart attack, blocked artery, bypass or stroke, add the age it first happened. For cancer, add the age it was found. If a relative already has a saved profile on this device, link it so you do not type their details twice.</p>
         <div class="members" id="members"></div>
         <button type="button" class="btn" id="addMember">Add a family member</button>
       </fieldset>
 
       <div class="stack">
         <button type="button" class="btn primary" id="seeResults">See my results</button>
-        <p class="hint">Results also update by themselves as you type. On a phone they appear below this form.</p>
+        <p class="hint">Results update by themselves as you type. On a phone they appear below this form.</p>
         <p class="status err" id="seeStatus" role="status"></p>
       </div>
     </form>
@@ -724,10 +761,11 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     <main class="results-col">
       <div class="results" id="results" aria-live="polite"></div>
 
-      <section class="block stack" id="cardBox">
+      <details id="cardBox">
+        <summary>Emergency health card</summary>
+        <div class="inner stack">
         <div>
-          <h2>Emergency health card</h2>
-          <p class="hint">For you, or for a parent you look after. Fill it once, keep a copy on the phone and a printed one in the wallet or on the fridge. It stays on this device. Only what you copy or print leaves it. Do not enter bank, card or Aadhaar numbers.</p>
+          <p class="hint">For you, or for a parent you look after. Fill it once. Keep a copy on your phone and a printed one in your wallet or on the fridge. It stays on this device. Only what you copy or print leaves it. Do not enter bank, card or Aadhaar numbers.</p>
         </div>
         <div class="row2">
           <label class="field"><span>Name</span><input type="text" id="ec-name" maxlength="60"></label>
@@ -748,12 +786,13 @@ ul.items li { font-size: 15px; line-height: 1.55; }
         <div class="card-preview" id="ecPreview" aria-live="polite"></div>
         <div class="actions"><button type="button" class="btn primary" id="ecCopy">Copy card text</button><button type="button" class="btn" id="ecPrint">Print card</button><span class="status" id="ecStatus" role="status"></span></div>
         <textarea id="ecBox" readonly hidden aria-label="Card text"></textarea>
-      </section>
+        </div>
+      </details>
 
       <section class="block stack" id="explainBox" hidden>
         <div>
           <h2>Explain it in your language</h2>
-          <p class="hint">Claude rewrites the results above in simple words, or answers a question about them. The rules above decide the risk levels, not Claude. It can make mistakes, so check anything important with a doctor. Your results summary is sent to Claude when you press a button.</p>
+          <p class="hint">Claude can explain the results above in simple words, or answer a question about them. The risk levels come from the rules, not from Claude. Claude can make mistakes, so check anything important with a doctor. Your results summary is sent to Claude when you press a button.</p>
         </div>
         <div class="ask-row">
           <label class="field"><span>Language</span>
@@ -781,10 +820,11 @@ ul.items li { font-size: 15px; line-height: 1.55; }
         <div class="answer" id="answer" role="status" hidden></div>
       </section>
 
-      <section class="block stack" id="feedbackBox">
+      <details id="feedbackBox">
+        <summary>Tell me how this worked for you</summary>
+        <div class="inner stack">
         <div>
-          <h2>Tell me how this worked for you</h2>
-          <p class="hint">This is a test version. Your answers below help check whether it is clear and accurate. Nothing is sent from this page. You copy the text and send it to the person who shared this with you.</p>
+          <p class="hint">This is a test version. Your answers help us check if it is clear and correct. Nothing is sent from this page. You copy the text and send it to the person who shared this with you.</p>
         </div>
         <div class="row2">
           <label class="field"><span>Who is testing</span><input type="text" id="fbWho" maxlength="40" placeholder="e.g. Mom"></label>
@@ -801,28 +841,29 @@ ul.items li { font-size: 15px; line-height: 1.55; }
         <label class="chk"><input type="checkbox" id="fbInclude"> Include my results summary (levels and tests) in the text I copy</label>
         <div class="actions"><a class="btn primary" id="fbWa" href="https://wa.me/" target="_blank" rel="noopener">Send on WhatsApp</a><button type="button" class="btn" id="fbCopy">Copy feedback</button><span class="status" id="fbStatus" role="status"></span></div>
         <textarea id="fbBox" readonly hidden aria-label="Feedback text"></textarea>
-      </section>
+        </div>
+      </details>
       <details id="careBox">
         <summary>Find care and support</summary>
         <div class="inner stack">
-          <p class="hint">If you do not have a doctor yet, start here. These are public services in India. Check timings and availability in your area.</p>
+          <p class="hint">If you do not have a doctor yet, start here. These are public services in India. Please check the timings and whether they are available in your area.</p>
           <div class="care-grid">
             <div><h3>Free doctor consultation by phone or video</h3><p>eSanjeevani, the Health Ministry's telemedicine service. <a href="https://esanjeevani.mohfw.gov.in/" target="_blank" rel="noopener">esanjeevani.mohfw.gov.in</a></p></div>
-            <div><h3>Free screening near you</h3><p>Ask at the nearest Ayushman Arogya Mandir or primary health centre. The national programme screens blood pressure, sugar, and mouth, breast and cervical cancer from age 30.</p></div>
-            <div><h3>Stress, low mood, sleep, anxiety</h3><p>Tele-MANAS, free and 24 hours, in many languages: <strong>14416</strong> or <strong>1800-89-14416</strong>. It offers first-line counselling and is not for emergencies.</p></div>
-            <div><h3>Emergency</h3><p>Call <strong>112</strong> (national emergency number). <strong>108</strong> is the ambulance number in most states. Chest pain, stroke signs, heavy bleeding or severe breathlessness are emergencies. Do not wait for a test appointment.</p></div>
-            <div><h3>Health ID (ABHA)</h3><p>A free number that can link your reports and prescriptions across hospitals. <a href="https://abha.abdm.gov.in/" target="_blank" rel="noopener">abha.abdm.gov.in</a></p></div>
-            <div><h3>Government insurance hospitals</h3><p>If you qualify for Ayushman Bharat (PM-JAY), find empanelled hospitals here: <a href="https://hospitals.pmjay.gov.in/" target="_blank" rel="noopener">hospitals.pmjay.gov.in</a></p></div>
-            <div><h3>Quality labs</h3><p>NABL accredits medical labs. <a href="https://nabl-india.org/" target="_blank" rel="noopener">nabl-india.org</a> has a directory. Ask for a package price before booking.</p></div>
-            <div><h3>Check a doctor's registration</h3><p>Doctors are listed in the National Medical Commission's Indian Medical Register. <a href="https://www.nmc.org.in/information-desk/indian-medical-register/" target="_blank" rel="noopener">nmc.org.in</a></p></div>
+            <div><h3>Free screening near you</h3><p>Ask at your nearest Ayushman Arogya Mandir or primary health centre. The national programme checks blood pressure, sugar, and mouth, breast and cervical cancer from age 30.</p></div>
+            <div><h3>Stress, low mood, sleep, anxiety</h3><p>Tele-MANAS, free and 24 hours, in many languages: <strong>14416</strong> or <strong>1800-89-14416</strong>. It offers first-level counselling and is not for emergencies.</p></div>
+            <div><h3>Emergency</h3><p>Call <strong>112</strong> (national emergency number). <strong>108</strong> is the ambulance number in most states. Chest pain, signs of a stroke, heavy bleeding or severe breathlessness are emergencies. Do not wait for an appointment.</p></div>
+            <div><h3>Health ID (ABHA)</h3><p>A free number that keeps your reports and prescriptions together across hospitals. <a href="https://abha.abdm.gov.in/" target="_blank" rel="noopener">abha.abdm.gov.in</a></p></div>
+            <div><h3>Government insurance hospitals</h3><p>If you qualify for Ayushman Bharat (PM-JAY), find the hospitals that accept it here: <a href="https://hospitals.pmjay.gov.in/" target="_blank" rel="noopener">hospitals.pmjay.gov.in</a></p></div>
+            <div><h3>Quality labs</h3><p>NABL approves good medical labs. <a href="https://nabl-india.org/" target="_blank" rel="noopener">nabl-india.org</a> has a list. Ask for the package price before you book.</p></div>
+            <div><h3>Check a doctor's registration</h3><p>Every registered doctor is listed in the National Medical Commission's Indian Medical Register. <a href="https://www.nmc.org.in/information-desk/indian-medical-register/" target="_blank" rel="noopener">nmc.org.in</a></p></div>
           </div>
           <h3 class="subhead">Which doctor for what</h3>
           <div class="who-wrap"><table class="who-table"><tbody>
             <tr><td>Diabetes, blood pressure, cholesterol, thyroid, anaemia, liver</td><td>Start with a general physician or family doctor. They refer to a diabetologist, endocrinologist, cardiologist or gastroenterologist if needed.</td></tr>
             <tr><td>Heart and stroke</td><td>Physician first. Cardiologist for chest symptoms, a past event, or a strong family history. Neurologist after a stroke.</td></tr>
-            <tr><td>Kidney</td><td>Physician first, then a nephrologist if eGFR is low or protein shows in the urine.</td></tr>
-            <tr><td>Prostate and urinary</td><td>Urologist. A physician can order the first PSA and urine tests.</td></tr>
-            <tr><td>Cancer in the family</td><td>Physician, then an oncologist or a genetic counsellor when the pattern is strong.</td></tr>
+            <tr><td>Kidney</td><td>Physician first, then a kidney specialist (nephrologist) if kidney test results are low or the urine shows protein.</td></tr>
+            <tr><td>Prostate and urinary</td><td>Urologist (specialist for the urine system and prostate). A physician can order the first PSA and urine tests.</td></tr>
+            <tr><td>Cancer in the family</td><td>Physician, then a cancer specialist (oncologist) or a genetic counsellor if the pattern in the family is strong.</td></tr>
             <tr><td>Cancer screening from 30</td><td>Ayushman Arogya Mandir, primary health centre or a gynaecologist for breast and cervical checks.</td></tr>
           </tbody></table></div>
         </div>
@@ -831,7 +872,7 @@ ul.items li { font-size: 15px; line-height: 1.55; }
       <details id="backupBox">
         <summary>Move my saved profiles to another phone or computer</summary>
         <div class="inner stack">
-          <p class="hint">There is no account, so profiles stay on one device. To move them, copy a backup code here and paste it on the other device. The code contains the health details you saved, in a form anyone can decode, so send it only to yourself or to a person you trust.</p>
+          <p class="hint">There is no account, so your profiles stay on one device. To move them, make a backup code here and paste it on the other device. The code holds the health details you saved, and anyone can read it, so send it only to yourself or to someone you trust.</p>
           <div class="actions"><button type="button" class="btn" id="bkMake">Make backup code</button><button type="button" class="btn" id="bkCopy" hidden>Copy code</button></div>
           <textarea id="bkOut" readonly hidden aria-label="Backup code"></textarea>
           <label class="field"><span>Paste a backup code to bring profiles in</span><textarea id="bkIn" maxlength="400000" aria-label="Backup code to import"></textarea></label>
@@ -843,10 +884,10 @@ ul.items li { font-size: 15px; line-height: 1.55; }
         <summary>Privacy and your data</summary>
         <div class="inner">
           <ul class="src-list">
-            <li>There is no account and no server that stores what you type. Saved profiles and the emergency card are kept in this browser, on this device only. Anyone who uses the same browser can open them.</li>
-            <li>Nothing leaves your device unless you press Copy, Print, Invite or a WhatsApp button. On the Claude version, pressing the explain button sends your results summary to Claude.</li>
-            <li>Like any website, the web host keeps ordinary access logs, such as your IP address. This page has no analytics and no ads.</li>
-            <li>Health details are sensitive. If this ever becomes a service that stores data, it will need your consent and a privacy policy under India's Digital Personal Data Protection Act.</li>
+            <li>There is no account, and no server stores what you type. Saved profiles and the emergency card stay in this browser, on this device only. Anyone who uses the same browser can open them.</li>
+            <li>Nothing leaves your device unless you press Copy, Print, Invite or a WhatsApp button. On the Claude version, pressing the Explain button sends your results summary to Claude.</li>
+            <li>Like any website, the web host keeps basic visit records, such as your IP address. This page has no tracking and no ads.</li>
+            <li>Health details are private. If this ever starts storing data on a server, it will first ask for your consent and follow India's Digital Personal Data Protection Act.</li>
           </ul>
           <div class="actions"><button type="button" class="btn" id="wipeBtn">Delete everything saved on this device</button><span class="status" id="wipeStatus" role="status"></span></div>
         </div>
@@ -859,10 +900,11 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     </main>
   </div>
   </section>
+  </div>
   <div class="site-foot">
     <div class="foot-grid">
-      <div><h3>Family Health Planner</h3><p>Awareness, not diagnosis. It helps you ask better questions, earlier. It never replaces a doctor, and it never stores what you type on a server.</p></div>
-      <div><h4>Explore</h4><ul><li><a href="#how">How it works</a></li><li><a href="#what">What you get</a></li><li><a href="#trust">Why trust it</a></li><li><a href="#tool">Start the check</a></li></ul></div>
+      <div><h3>Family Health Planner</h3><p>Awareness, not diagnosis. It helps you ask better questions, sooner. It never replaces a doctor, and it never stores what you type on a server.</p></div>
+      <div><h4>Explore</h4><ul><li><a href="#home" data-view="home">Home</a></li><li><a href="#tool" data-view="tool">Check my family</a></li></ul></div>
       <div><h4>If you need help now</h4><ul><li>Emergency: <span class="help-num">112</span> or ambulance <span class="help-num">108</span></li><li>Stress, low mood: Tele-MANAS <span class="help-num">14416</span>, free, 24 hours</li><li>Free doctor by phone or video: eSanjeevani</li></ul></div>
     </div>
     <footer class="foot" id="foot"></footer>
@@ -875,24 +917,45 @@ ul.items li { font-size: 15px; line-height: 1.55; }
   var $ = function (id) { return document.getElementById(id); };
   var calm = false;
   try { calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  function goTool(e) {
-    var t = $('tool'); if (!t) return;
-    if (e) e.preventDefault();
-    t.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
-    setTimeout(function () { var a = $('age'); if (a) { try { a.focus({ preventScroll: true }); } catch (x) { a.focus(); } } }, calm ? 0 : 450);
+  var focusAfter = '';
+  function show(view, push) {
+    view = view === 'tool' ? 'tool' : 'home';
+    $('viewHome').hidden = view !== 'home';
+    $('viewTool').hidden = view !== 'tool';
+    ['Home', 'Tool'].forEach(function (n) {
+      var t = $('tab' + n), on = (n === 'Tool') === (view === 'tool');
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      if (on) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current');
+    });
+    $('navCta').hidden = view === 'tool';
+    if (push && location.hash !== '#' + view) { try { history.pushState(null, '', '#' + view); } catch (e) { location.hash = view; } }
+    window.scrollTo(0, 0);
+    if (focusAfter && view === 'tool') {
+      var f = $(focusAfter); focusAfter = '';
+      setTimeout(function () { if (f) { try { f.focus({ preventScroll: true }); } catch (x) { f.focus(); } } }, 60);
+    }
   }
-  Array.prototype.forEach.call(document.querySelectorAll('[data-go="tool"]'), function (a) { a.addEventListener('click', goTool); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-view]'), function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      focusAfter = a.getAttribute('data-focus') || '';
+      show(a.getAttribute('data-view'), true);
+    });
+  });
+  window.addEventListener('hashchange', function () { show(location.hash === '#tool' ? 'tool' : 'home', false); });
   var hs = $('heroSample');
   if (hs) hs.addEventListener('click', function () {
     var b = $('clearExample');
     if (b && /load example/i.test(b.textContent)) b.click();
-    goTool();
+    show('tool', true);
   });
   var nav = document.querySelector('.nav');
   if (nav) {
     var onScroll = function () { nav.classList.toggle('scrolled', window.scrollY > 8); };
     window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
   }
+  show(location.hash === '#tool' ? 'tool' : 'home', false);
+
 })();
 </script>
 
@@ -1034,7 +1097,7 @@ ul.items li { font-size: 15px; line-height: 1.55; }
   }
 
   /* ---------- helpers for output ---------- */
-  var TAGNAME = { guide: 'Guideline', tool: 'Scored tool', general: 'General advice', proto: 'Prototype rule' };
+  var TAGNAME = { guide: 'Official guideline', tool: 'Risk score', general: 'General advice', proto: 'Our simple rule' };
   var SRCURL = {
     'ICMR STW T2DM': 'https://icmr.gov.in/icmrobject/uploads/STWs/1726567245_diabetes_mellitus_type_2.pdf',
     'ICMR STW CKD': 'https://www.icmr.gov.in/icmrobject/uploads/STWs/1784807342_nephrology_all.pdf',
@@ -1102,33 +1165,33 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     var dm = { title: 'Diabetes', reasons: [] };
     if (own.dm) {
       dm.level = 'info'; dm.levelText = 'Already diagnosed';
-      dm.headline = 'You already have diabetes. The job now is steady control and watching for complications.';
+      dm.headline = 'You already have diabetes. The aim now is to keep your sugar steady and watch for problems it can cause.';
     } else if (a1cState === 'dm') {
       dm.level = 'high'; dm.levelText = 'See a doctor';
-      dm.headline = 'Your HbA1c is in the diabetes range (6.5% or more). Only a doctor can confirm this, usually with a repeat test.';
+      dm.headline = 'Your HbA1c (sugar test) is 6.5% or more, which is in the diabetes range. Only a doctor can confirm this, usually with a repeat test.';
     } else if (own.predm || a1cState === 'pre') {
       dm.level = 'high'; dm.levelText = 'Higher';
-      dm.headline = 'You are in the prediabetes range. Lifestyle changes work best at this stage.';
+      dm.headline = 'Your sugar is higher than normal but not yet diabetes (prediabetes). Changes in food and exercise work best at this stage.';
     } else if (idrs != null) {
       dm.level = idrs >= 60 ? 'high' : idrs >= 30 ? 'mod' : 'low';
       dm.levelText = idrs >= 60 ? 'Higher' : idrs >= 30 ? 'Moderate' : 'Lower';
-      dm.headline = 'Indian Diabetes Risk Score: ' + idrs + ' out of 100. ' + (idrs >= 60 ? 'A score of 60 or more means a higher chance of having or developing type 2 diabetes.' : idrs >= 30 ? 'A score of 30 to 50 is the moderate band.' : 'Below 30 is the lower band.');
+      dm.headline = 'Your Indian Diabetes Risk Score is ' + idrs + ' out of 100. ' + (idrs >= 60 ? 'A score of 60 or more means a higher chance of having or getting type 2 diabetes.' : idrs >= 30 ? 'A score of 30 to 50 means a medium chance.' : 'A score below 30 means a lower chance.');
     } else {
       dm.level = 'info'; dm.levelText = 'Needs more info';
-      dm.headline = 'Add your waist and activity level to calculate the Indian Diabetes Risk Score.';
+      dm.headline = 'Add your waist size and how active you are, so we can work out your Indian Diabetes Risk Score.';
     }
-    if (idrs != null) dm.reasons.push(li('Score built from age, waist, activity and whether parents have diabetes. Breakdown is at the bottom of the page.', 'tool', 'IDRS, Madras Diabetes Research Foundation'));
+    if (idrs != null) dm.reasons.push(li('The score uses your age, waist, activity and whether your parents have diabetes. The full working is at the bottom of the page.', 'tool', 'IDRS, Madras Diabetes Research Foundation'));
     if (parentsDM.length) dm.reasons.push(li(cap(names(parentsDM)) + (parentsDM.length > 1 ? ' have' : ' has') + ' diabetes. Having a parent with diabetes adds points to the score.', 'tool', 'IDRS'));
     var sibKids = fdrDM.filter(function (m) { return m.rel !== 'father' && m.rel !== 'mother'; });
-    if (sibKids.length) dm.reasons.push(li('A ' + names(sibKids) + ' with diabetes counts as a first-degree relative for testing advice, although the score itself counts parents only.', 'guide', 'ICMR STW T2DM; ADA'));
-    if (secondDeg.some(function (m) { return m.cond.dm; })) dm.reasons.push(li('Diabetes in grandparents, uncles or aunts is noted but does not change the score.', 'general'));
-    if (bmi != null) dm.reasons.push(li('Your BMI is ' + bmi.toFixed(1) + '. Guidelines use 23 or more as the point to consider testing for people of Asian origin.', 'guide', 'ICMR STW T2DM; ADA'));
-    if (a1cState === 'norm') dm.reasons.push(li('Your last HbA1c (' + p.a1c + '%) is below 5.7%, the normal range.', 'guide', 'ICMR STW T2DM; ADA'));
+    if (sibKids.length) dm.reasons.push(li('A ' + names(sibKids) + ' with diabetes is a close blood relative, so it matters for test advice. The score itself counts only parents.', 'guide', 'ICMR STW T2DM; ADA'));
+    if (secondDeg.some(function (m) { return m.cond.dm; })) dm.reasons.push(li('Diabetes in grandparents, uncles or aunts is noted, but it does not change the score.', 'general'));
+    if (bmi != null) dm.reasons.push(li('Your BMI (weight for height) is ' + bmi.toFixed(1) + '. For Asians, guidelines say a BMI of 23 or more is a reason to think about testing.', 'guide', 'ICMR STW T2DM; ADA'));
+    if (a1cState === 'norm') dm.reasons.push(li('Your last HbA1c (' + p.a1c + '%) is below 5.7%, which is normal.', 'guide', 'ICMR STW T2DM; ADA'));
     out.cards.push(dm);
 
     /* diabetes tests */
     var adaRF = [];
-    if (fdrDM.length) adaRF.push('a first-degree relative with diabetes');
+    if (fdrDM.length) adaRF.push('a close blood relative with diabetes');
     if (own.htn) adaRF.push('high blood pressure');
     if (own.cvd) adaRF.push('heart disease');
     if (own.chol) adaRF.push('high cholesterol');
@@ -1136,23 +1199,23 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     if (own.pcos) adaRF.push('polycystic ovary syndrome (PCOS)');
     if (own.dm) {
       out.tests.push({ name: 'HbA1c', when: 'As often as your doctor sets it.', why: 'Shows average sugar control over about three months.', kind: 'general' });
-      out.tests.push({ name: 'Kidney, eye and foot checks', when: 'Ask your doctor which are due.', why: 'Diabetes can affect kidneys, eyes and nerves in the feet. Regular checks catch changes early.', kind: 'general', src: 'ADA' });
+      out.tests.push({ name: 'Kidney, eye and foot checks', when: 'Ask your doctor which are due.', why: 'Diabetes can harm the kidneys, eyes and the nerves of the feet. Regular checks catch problems early.', kind: 'general', src: 'ADA' });
     } else if (a1cState === 'dm') {
-      out.tests.push({ name: 'Repeat HbA1c or fasting glucose', when: 'Soon. Book a doctor visit.', why: 'A reading in the diabetes range needs confirming.', kind: 'guide', src: 'ADA' });
+      out.tests.push({ name: 'Repeat HbA1c or fasting glucose', when: 'Soon. Book a doctor visit.', why: 'A reading in the diabetes range must be confirmed with a repeat test.', kind: 'guide', src: 'ADA' });
     } else if (own.predm || a1cState === 'pre') {
-      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Every year.', why: 'People in the prediabetes range should be tested yearly.', kind: 'guide', src: 'ADA' });
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Every year.', why: 'People with prediabetes should be tested every year.', kind: 'guide', src: 'ADA' });
     } else if (own.gdm) {
-      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'At least every 3 years, for life.', why: 'Diabetes during pregnancy raises the lifelong chance of type 2 diabetes.', kind: 'guide', src: 'ADA' });
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'At least every 3 years, for life.', why: 'Diabetes during pregnancy raises your chance of type 2 diabetes for life.', kind: 'guide', src: 'ADA' });
     } else if (p.age != null && p.age >= 35) {
-      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Now, if you have not had one in the last 3 years. Then at least every 3 years if normal.', why: 'The American Diabetes Association advises screening all adults from age 35. India\'s national NCD programme goes further and screens everyone from 30, every year.', kind: 'guide', src: 'ADA 2025; MoHFW NP-NCD' });
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Now, if you have not had one in the last 3 years. Then at least every 3 years if normal.', why: 'The American Diabetes Association advises testing all adults from age 35. India\'s national programme for lifestyle diseases goes further and checks everyone from age 30, every year.', kind: 'guide', src: 'ADA 2025; MoHFW NP-NCD' });
     } else if (p.age != null && p.age >= 30) {
-      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Ask for one now. Then as your doctor advises, or yearly if you have risk factors.', why: 'India\'s national NCD programme screens everyone from 30, and ICMR lists age over 30 with overweight and a risk factor as a reason to test. The American Diabetes Association starts at 35.', kind: 'guide', src: 'MoHFW NP-NCD; ICMR STW T2DM; ADA' });
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Ask for one now. Then as your doctor advises, or yearly if you have risk factors.', why: 'India\'s national programme for lifestyle diseases checks everyone from age 30, and ICMR says people over 30 who are overweight and have another risk factor should be tested. The American Diabetes Association starts at 35.', kind: 'guide', src: 'MoHFW NP-NCD; ICMR STW T2DM; ADA' });
     } else if (bmi != null && bmi >= 23 && adaRF.length) {
-      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Worth doing now. Then at least every 3 years if normal.', why: 'BMI of 23 or more plus ' + adaRF[0] + ' meets the testing criteria.', kind: 'guide', src: 'ICMR STW T2DM; ADA' });
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Worth doing now. Then at least every 3 years if normal.', why: 'A BMI of 23 or more, together with ' + adaRF[0] + ', is a reason to test.', kind: 'guide', src: 'ICMR STW T2DM; ADA' });
     } else if (bmi == null && adaRF.length) {
-      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Add height and weight to check the criteria. Ask your doctor in any case.', why: 'You have ' + adaRF[0] + ', which is a recognised risk factor.', kind: 'guide', src: 'ADA' });
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Add height and weight to check the criteria. Ask your doctor in any case.', why: 'You have ' + adaRF[0] + ', which raises the chance of diabetes.', kind: 'guide', src: 'ADA' });
     } else if (p.age != null) {
-      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Not required yet by the criteria. Plan one by age 35, or sooner if weight or other risk factors change.', why: 'Ask your doctor if you want an earlier baseline.', kind: 'guide', src: 'ADA' });
+      out.tests.push({ name: 'HbA1c or fasting glucose', when: 'Not needed yet by the guidelines. Plan one by age 35, or sooner if your weight or other risk factors change.', why: 'Ask your doctor if you want an earlier baseline.', kind: 'guide', src: 'ADA' });
     }
 
     /* ===== Heart ===== */
@@ -1169,44 +1232,44 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     var ht = { title: 'Heart and stroke', reasons: [] };
     if (own.cvd) {
       ht.level = 'info'; ht.levelText = 'Already diagnosed';
-      ht.headline = 'You already have heart disease or a stroke. Follow your cardiologist. Medicines should never lapse.';
+      ht.headline = 'You already have heart disease or have had a stroke. Follow your heart doctor\'s advice, and never skip your medicines.';
     } else if (premature.length) {
       ht.level = 'high'; ht.levelText = 'Higher';
-      ht.headline = 'A close relative had a heart or stroke event at a young age. This is one of the strongest family signals.';
+      ht.headline = 'A close relative had a heart attack or stroke at a young age. This is one of the strongest warning signs in a family.';
     } else if (ownRF.length >= 2) {
       ht.level = 'high'; ht.levelText = 'Higher';
-      ht.headline = 'You have ' + ownRF.length + ' heart risk factors together.';
+      ht.headline = 'You have ' + ownRF.length + ' things that raise heart risk, all together.';
     } else if (ownRF.length === 1 || famHeart.length || secondDeg.some(function (m) { return m.cond.cvd || m.cond.stroke; })) {
       ht.level = 'mod'; ht.levelText = 'Moderate';
-      ht.headline = 'There is at least one heart risk signal worth acting on.';
+      ht.headline = 'There is at least one sign of heart risk that is worth acting on.';
     } else {
       ht.level = 'low'; ht.levelText = 'Lower';
-      ht.headline = 'No major family or personal signal entered. South Asian background still raises baseline risk, so basic checks matter.';
+      ht.headline = 'No major warning sign entered. People of South Asian origin still have a higher starting risk, so basic checks matter.';
     }
     premature.forEach(function (m) {
-      ht.reasons.push(li(m.label + ' had a heart or stroke event at ' + m.evAge + '. A first-degree relative affected before 55 (men) or 65 (women) counts as premature family history.', 'guide', 'ACC/AHA'));
+      ht.reasons.push(li(m.label + ' had a heart attack or stroke at ' + m.evAge + '. When a parent, brother, sister or child is affected before 55 (men) or 65 (women), doctors call it early heart disease in the family.', 'guide', 'ACC/AHA'));
     });
     famHeart.filter(function (m) { return premature.indexOf(m) < 0 && m.evAge != null; }).forEach(function (m) {
-      ht.reasons.push(li(m.label + ' had a heart or stroke event at ' + m.evAge + ', which is past the premature cut-off. It still matters, but counts for less.', 'guide', 'ACC/AHA'));
+      ht.reasons.push(li(m.label + ' had a heart attack or stroke at ' + m.evAge + ', which is later than the "early" limit (55 for men, 65 for women). It still matters, but counts for less.', 'guide', 'ACC/AHA'));
     });
-    if (unknownAge.length) ht.reasons.push(li('Add the age of the first event for ' + names(unknownAge) + '. That age decides whether it counts as premature.', 'general'));
-    if (famHeart.some(function (m) { return m.sex === 'F'; })) ht.reasons.push(li('Definitions differ a little. ACC/AHA calls a woman\'s event before 65 premature, and the Cardiological Society of India uses 60. This tool uses 65 so that nobody is missed.', 'guide', 'ACC/AHA; CSI 2023'));
+    if (unknownAge.length) ht.reasons.push(li('Add the age of the first heart attack or stroke for ' + names(unknownAge) + '. That age decides whether it counts as early.', 'general'));
+    if (famHeart.some(function (m) { return m.sex === 'F'; })) ht.reasons.push(li('Experts differ a little. The American heart guideline (ACC/AHA) says before 65 for a woman, and the Cardiological Society of India says 60. This tool uses 65 so that nobody is missed.', 'guide', 'ACC/AHA; CSI 2023'));
     if (ownRF.length) ht.reasons.push(li('Your own risk factors: ' + ownRF.join(', ') + '.', 'guide', 'ACC/AHA'));
-    ht.reasons.push(li('South Asian ancestry is listed as a risk-enhancing factor, so a standard calculator may under-estimate your risk.', 'guide', 'ACC/AHA'));
-    ht.reasons.push(li('The Higher, Moderate and Lower grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+    ht.reasons.push(li('Being of South Asian origin adds to heart risk, so a standard online calculator may show your risk as lower than it really is.', 'guide', 'ACC/AHA'));
+    ht.reasons.push(li('The Higher, Moderate or Lower label above comes from a simple rule we wrote for this test version. It is not a proven medical score.', 'proto'));
     out.cards.push(ht);
 
     /* heart tests */
     if (own.cvd) {
-      out.tests.push({ name: 'Cardiology follow-up and lipid profile', when: 'As your cardiologist advises.', why: 'Ongoing care lowers the chance of another event.', kind: 'general' });
+      out.tests.push({ name: 'Cardiology follow-up and lipid profile', when: 'As your cardiologist advises.', why: 'Regular care lowers the chance of another heart attack or stroke.', kind: 'general' });
     } else if (premature.length) {
-      out.tests.push({ name: 'Lipid profile (total, LDL, HDL, triglycerides)', when: 'Now, as a baseline.', why: 'Family history of premature heart disease is a reason to know your cholesterol early.', kind: 'guide', src: 'ACC/AHA' });
-      out.tests.push({ name: 'Lipoprotein(a), once in life', when: 'Ask your doctor about it now.', why: 'The Cardiological Society of India advises measuring it at least once in life, and testing relatives when someone in the family had premature heart disease. Other societies agree.', kind: 'guide', src: 'CSI 2023; Lp(a) society statements' });
-      out.tests.push({ name: 'Formal 10-year heart risk estimate', when: 'At your next visit.', why: 'Your doctor can combine age, BP, cholesterol, sugar and family history. Ask how South Asian background was accounted for.', kind: 'guide', src: 'ACC/AHA' });
+      out.tests.push({ name: 'Lipid profile (cholesterol test)', when: 'Now, to know your starting level.', why: 'Early heart disease in the family is a reason to know your cholesterol early.', kind: 'guide', src: 'ACC/AHA' });
+      out.tests.push({ name: 'Lipoprotein(a), once in life', when: 'Ask your doctor about it now.', why: 'This is a special type of cholesterol that is mostly inherited. The Cardiological Society of India advises measuring it at least once in life, and testing relatives if someone in the family had early heart disease. Other medical societies agree.', kind: 'guide', src: 'CSI 2023; Lp(a) society statements' });
+      out.tests.push({ name: 'Heart risk estimate for the next 10 years', when: 'At your next visit.', why: 'Your doctor can combine your age, blood pressure, cholesterol, sugar and family history into one number. Ask whether your South Asian background was taken into account.', kind: 'guide', src: 'ACC/AHA' });
     } else if (ownRF.length || famHeart.length) {
-      out.tests.push({ name: 'Lipid profile (total, LDL, HDL, triglycerides)', when: 'Get a baseline now. Your doctor sets how often to repeat.', why: 'You have ' + (ownRF.length ? ownRF[0] : 'a relative with heart disease or stroke') + '.', kind: 'guide', src: 'ACC/AHA' });
+      out.tests.push({ name: 'Lipid profile (cholesterol test)', when: 'Get a first reading now. Your doctor will say how often to repeat it.', why: 'You have ' + (ownRF.length ? ownRF[0] : 'a relative with heart disease or stroke') + '.', kind: 'guide', src: 'ACC/AHA' });
     } else {
-      out.tests.push({ name: 'Lipid profile (total, LDL, HDL, triglycerides)', when: 'Ask your doctor when to take a baseline. The Cardiological Society of India advises everyone to have a lipid profile by age 18.', why: 'South Asian ancestry raises baseline heart risk even with no family history.', kind: 'guide', src: 'CSI 2023; ACC/AHA' });
+      out.tests.push({ name: 'Lipid profile (cholesterol test)', when: 'Ask your doctor when to get your first reading. The Cardiological Society of India advises everyone to have a cholesterol test by age 18.', why: 'People of South Asian origin have a higher heart risk even with no family history.', kind: 'guide', src: 'CSI 2023; ACC/AHA' });
     }
 
     /* ===== Blood pressure ===== */
@@ -1214,7 +1277,7 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     var htnRF = [];
     if (p.age != null && p.age > 50) htnRF.push('age above 50');
     if (own.dm) htnRF.push('diabetes');
-    if (bmi != null && bmi >= 25) htnRF.push('higher body weight (BMI 25 or more)');
+    if (bmi != null && bmi >= 25) htnRF.push('extra body weight (BMI 25 or more)');
     if (p.smoke === 'current') htnRF.push('tobacco use');
     if (own.cvd) htnRF.push('heart disease or stroke');
     if (famHTN.length) htnRF.push('family history of high blood pressure');
@@ -1224,44 +1287,44 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     var bp = { title: 'Blood pressure', reasons: [] };
     if (own.htn) {
       bp.level = 'info'; bp.levelText = 'Already diagnosed';
-      bp.headline = 'You already have high blood pressure. Steady control protects the heart, brain and kidneys.';
+      bp.headline = 'You already have high blood pressure. Keeping it under control protects your heart, brain and kidneys.';
     } else if (readingSevere) {
       bp.level = 'high'; bp.levelText = 'Check today';
-      bp.headline = 'A reading of 180/110 or more needs a doctor the same day.';
+      bp.headline = 'A reading of 180/110 or more needs a doctor on the same day.';
     } else if (readingHigh) {
       bp.level = 'high'; bp.levelText = 'Confirm it';
-      bp.headline = 'Your reading is 140/90 or above. One reading is not a diagnosis, but it needs repeating and a doctor review.';
+      bp.headline = 'Your reading is 140/90 or higher. One reading is not a diagnosis, but it needs to be repeated and a doctor should see it.';
     } else if (htnRF.length >= 2) {
       bp.level = 'high'; bp.levelText = 'Higher';
-      bp.headline = 'You have ' + htnRF.length + ' of the risk factors the Indian guideline lists for high blood pressure.';
+      bp.headline = 'You have ' + htnRF.length + ' of the things the Indian guideline lists as raising the chance of high blood pressure.';
     } else if (htnRF.length === 1) {
       bp.level = 'mod'; bp.levelText = 'Moderate';
-      bp.headline = 'You have one of the risk factors the Indian guideline lists for high blood pressure.';
+      bp.headline = 'You have one of the things the Indian guideline lists as raising the chance of high blood pressure.';
     } else {
       bp.level = 'low'; bp.levelText = 'Lower';
-      bp.headline = 'None of the listed risk factors apply right now. Keep getting it measured.';
+      bp.headline = 'None of the listed risk factors apply right now. Keep getting your blood pressure measured.';
     }
     if (htnRF.length) bp.reasons.push(li('Risk factors present: ' + htnRF.join(', ') + '.', 'guide', 'India MoHFW'));
     if (famHTN.length) bp.reasons.push(li(cap(names(famHTN)) + (famHTN.length > 1 ? ' have' : ' has') + ' high blood pressure.', 'guide', 'India MoHFW'));
     if (p.sys != null && p.dia != null && !readingHigh) bp.reasons.push(li('Your reading of ' + p.sys + '/' + p.dia + ' is below 140/90.', 'guide', 'India MoHFW'));
-    bp.reasons.push(li('The count-based grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+    bp.reasons.push(li('This label counts your risk factors with a simple rule we wrote for this test version. It is not a proven medical score.', 'proto'));
     out.cards.push(bp);
 
     /* BP tests */
     if (own.htn) {
-      out.tests.push({ name: 'Home and clinic BP readings', when: 'As your doctor advises. Keep a log.', why: 'The Indian guideline sets the usual treatment target below 140/90 for people under 80.', kind: 'guide', src: 'India MoHFW' });
+      out.tests.push({ name: 'Home and clinic BP readings', when: 'As your doctor advises. Keep a log.', why: 'For people under 80, the Indian guideline sets the usual goal at below 140/90.', kind: 'guide', src: 'India MoHFW' });
     } else {
-      out.tests.push({ name: 'Blood pressure measurement', when: (htnRF.length || (p.age != null && p.age >= 30)) ? 'At every doctor visit, and at least once a year.' : 'At every doctor visit.', why: 'High blood pressure usually has no symptoms. The Indian guideline advises measuring all adults over 18 whenever they meet a health worker, and the national NCD programme screens everyone from 30 every year.', kind: 'guide', src: 'India MoHFW; MoHFW NP-NCD' });
+      out.tests.push({ name: 'Blood pressure measurement', when: (htnRF.length || (p.age != null && p.age >= 30)) ? 'At every doctor visit, and at least once a year.' : 'At every doctor visit.', why: 'High blood pressure usually causes no symptoms. The Indian guideline advises measuring it in every adult over 18 whenever they meet a health worker, and the national programme for lifestyle diseases checks everyone from age 30, every year.', kind: 'guide', src: 'India MoHFW; MoHFW NP-NCD' });
     }
 
     /* ===== Labs on the heart card (LDL) ===== */
     if (p.ldl != null) {
       if (p.ldl >= 190) {
-        ht.reasons.push(li('Your LDL of ' + p.ldl + ' mg/dL is 190 or more. Guidelines treat this level as a high-risk group on its own, whatever else is present.', 'guide', 'ACC/AHA'));
-        if (!own.cvd && ht.level !== 'high') { ht.level = 'high'; ht.levelText = 'Higher'; ht.headline = 'Your LDL cholesterol is very high. This needs a doctor, whatever else is going on.'; }
-        out.tests.push({ dom: 'heart', name: 'Doctor review of a very high LDL', when: 'Soon.', why: 'An LDL of 190 mg/dL or more can come from inherited high cholesterol, which also affects close relatives.', kind: 'guide', src: 'ACC/AHA' });
+        ht.reasons.push(li('Your LDL of ' + p.ldl + ' mg/dL is 190 or more. On its own, this level puts you in a high-risk group, whatever else is present.', 'guide', 'ACC/AHA'));
+        if (!own.cvd && ht.level !== 'high') { ht.level = 'high'; ht.levelText = 'Higher'; ht.headline = 'Your LDL (bad cholesterol) is very high. You need to see a doctor, whatever else is going on.'; }
+        out.tests.push({ dom: 'heart', name: 'Doctor review of a very high LDL', when: 'Soon.', why: 'An LDL of 190 mg/dL or more can be caused by high cholesterol that runs in families, which can affect close relatives too.', kind: 'guide', src: 'ACC/AHA' });
       } else if (p.ldl >= 160) {
-        ht.reasons.push(li('Your LDL of ' + p.ldl + ' mg/dL is in the 160 to 189 range. A level that stays here counts as a risk-enhancing factor.', 'guide', 'ACC/AHA'));
+        ht.reasons.push(li('Your LDL of ' + p.ldl + ' mg/dL is in the 160 to 189 range. If it stays at this level, it adds to your heart risk.', 'guide', 'ACC/AHA'));
       } else if (p.ldl >= 100) {
         ht.reasons.push(li('Your LDL is ' + p.ldl + ' mg/dL. Indian guidance sets the target at below 100 for low and moderate risk, below 70 for high risk and below 55 for very high risk. Ask your doctor which group you are in.', 'guide', 'CSI 2023'));
       } else {
@@ -1287,32 +1350,32 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     var egfrLow = egfr != null && egfr < 60;
     if (own.ckd) {
       kd.level = 'info'; kd.levelText = 'Already diagnosed';
-      kd.headline = 'You already have kidney disease. Regular kidney tests and careful use of medicines protect what is left.';
+      kd.headline = 'You already have kidney disease. Regular kidney tests and careful use of medicines help protect your kidneys.';
     } else if (egfrLow) {
       kd.level = 'high'; kd.levelText = 'See a doctor';
-      kd.headline = 'Your creatinine gives an estimated kidney filtering rate (eGFR) below 60. It counts as kidney disease only if it stays low for 3 months, so it needs repeating and a doctor review.';
+      kd.headline = 'Your creatinine result suggests your kidneys are filtering below the normal rate (eGFR below 60). It counts as kidney disease only if it stays low for 3 months, so it needs a repeat test and a doctor\'s review.';
     } else if (kRF.length >= 2) {
       kd.level = 'high'; kd.levelText = 'Higher';
-      kd.headline = 'You have ' + kRF.length + ' of the factors that make kidney screening worthwhile.';
+      kd.headline = 'You have ' + kRF.length + ' of the things that make a kidney check worthwhile.';
     } else if (kRF.length === 1) {
       kd.level = 'mod'; kd.levelText = 'Moderate';
-      kd.headline = 'You have one of the factors that make kidney screening worthwhile.';
+      kd.headline = 'You have one of the things that make a kidney check worthwhile.';
     } else {
       kd.level = 'low'; kd.levelText = 'Lower';
-      kd.headline = 'None of the usual kidney screening factors are present. Early kidney damage gives no symptoms, so tell a doctor if that changes.';
+      kd.headline = 'None of the usual reasons for a kidney check are present. Early kidney damage causes no symptoms, so tell a doctor if that changes.';
     }
     if (kRF.length) kd.reasons.push(li('Factors present: ' + kRF.join(', ') + '. Diabetes, high blood pressure, heart disease, age 60 or more and a family history of kidney disease are the usual reasons to check the kidneys.', 'guide', 'ICMR STW CKD; AAFP 2023 review'));
     if (famCKD.length) kd.reasons.push(li(cap(names(famCKD)) + (famCKD.length > 1 ? ' have' : ' has') + ' kidney disease.', 'guide', 'ICMR STW CKD; AAFP 2023 review'));
-    if (egfr != null) kd.reasons.push(li('Your creatinine of ' + p.creat + ' mg/dL gives an eGFR of about ' + Math.round(egfr) + '. A value of 60 or more is not low. A normal eGFR can still hide protein leaking in the urine, which is why the urine test is also done.', 'tool', 'CKD-EPI 2021; ICMR STW CKD'));
-    kd.reasons.push(li('The count-based grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+    if (egfr != null) kd.reasons.push(li('Your creatinine of ' + p.creat + ' mg/dL gives an eGFR of about ' + Math.round(egfr) + '. (eGFR shows how well your kidneys filter your blood.) A value of 60 or more is not low. Even a normal eGFR can miss protein leaking into the urine, which is why a urine test is also done.', 'tool', 'CKD-EPI 2021; ICMR STW CKD'));
+    kd.reasons.push(li('This label counts your risk factors with a simple rule we wrote for this test version. It is not a proven medical score.', 'proto'));
     out.cards.push(kd);
     if (own.ckd) {
-      out.tests.push({ dom: 'kidney', name: 'Kidney follow-up: eGFR and urine albumin-creatinine ratio', when: 'As your kidney doctor advises.', why: 'Shows whether kidney function is steady.', kind: 'general' });
+      out.tests.push({ dom: 'kidney', name: 'Kidney follow-up: eGFR blood test and urine protein test', when: 'As your kidney doctor advises.', why: 'Shows whether your kidneys are working steadily.', kind: 'general' });
     } else if (kRF.length || egfrLow) {
       var kYearly = own.dm || own.htn;
-      out.tests.push({ dom: 'kidney', name: 'eGFR (blood creatinine) and urine albumin-creatinine ratio', when: kYearly ? 'Every year.' : 'Once now as a baseline. Your doctor sets how often after that.', why: 'Early kidney damage causes no symptoms. These two simple tests are how it is found.', kind: 'guide', src: kYearly ? 'ADA; KDIGO' : 'ICMR STW CKD; AAFP 2023 review' });
+      out.tests.push({ dom: 'kidney', name: 'Kidney blood test (eGFR) and urine protein test', when: kYearly ? 'Every year.' : 'Once now as a baseline. Your doctor sets how often after that.', why: 'Early kidney damage causes no symptoms. These two simple tests are how it is found.', kind: 'guide', src: kYearly ? 'ADA; KDIGO' : 'ICMR STW CKD; AAFP 2023 review' });
     }
-    if (own.dm || own.htn || own.ckd || egfrLow || famCKD.length) out.care.push(li('Avoid regular use of painkillers such as diclofenac or ibuprofen, and long-term herbal or home remedies, without a doctor\'s advice. Long-term use of either is on the ICMR list of reasons to check the kidneys, and the risk is higher with diabetes or high blood pressure.', 'guide', 'ICMR STW CKD'));
+    if (own.dm || own.htn || own.ckd || egfrLow || famCKD.length) out.care.push(li('Do not use painkillers such as diclofenac or ibuprofen regularly, or long-term herbal or home remedies, without a doctor\'s advice. ICMR lists long-term use of either as a reason to check the kidneys, and the risk is higher with diabetes or high blood pressure.', 'guide', 'ICMR STW CKD'));
 
     /* ===== Prostate and urinary (men) ===== */
     var famPros = firstDeg.filter(function (m) { return m.sex === 'M' && m.cond.pros; });
@@ -1325,40 +1388,40 @@ ul.items li { font-size: 15px; line-height: 1.55; }
       var psaHigh = p.psa != null && p.psa >= 4;
       if (own.pros) {
         pr.level = 'info'; pr.levelText = 'Already diagnosed';
-        pr.headline = 'You have had prostate cancer. Follow-up PSA tests are set by your urologist.';
+        pr.headline = 'You have had prostate cancer. Your urologist (prostate specialist) will decide when to repeat the PSA test.';
       } else if (own.blood) {
         pr.level = 'high'; pr.levelText = 'See a doctor';
         pr.headline = 'Blood in the urine, even once, needs a doctor to find the cause. It is often something treatable, but it should not be left.';
       } else if (psaHigh) {
         pr.level = 'high'; pr.levelText = 'Confirm it';
-        pr.headline = 'Your PSA is 4 or above. Many things besides cancer raise PSA, such as an enlarged prostate or an infection, so it needs a doctor to review it.';
+        pr.headline = 'Your PSA is 4 or above. Many things besides cancer can raise PSA, such as an enlarged prostate or an infection, so a doctor needs to look at it.';
       } else if (famPros.length) {
         pr.level = 'high'; pr.levelText = 'Higher';
-        pr.headline = 'A father, brother or son with prostate cancer raises your own chance. Guidelines advise talking about PSA testing earlier.';
+        pr.headline = 'A father, brother or son with prostate cancer raises your own chance. Guidelines advise talking to a doctor about PSA testing earlier.';
       } else if (uSym) {
         pr.level = 'mod'; pr.levelText = 'Moderate';
-        pr.headline = 'Urinary symptoms or repeated urine infections in a man are a reason to see a doctor to find the cause.';
+        pr.headline = 'Urine problems or repeated urine infections in a man are a reason to see a doctor and find the cause.';
       } else if (famUro.length) {
         pr.level = 'mod'; pr.levelText = 'Moderate';
-        pr.headline = 'A close male relative has had prostate or urinary problems. These are common with age and often treatable, but it helps to know the early signs.';
+        pr.headline = 'A close male relative has had prostate or urine problems. These are common with age and often treatable, but it helps to know the early signs.';
       } else {
         pr.level = 'low'; pr.levelText = 'Lower';
-        pr.headline = 'No family or urinary flag entered. ' + (p.age >= 50 ? 'At 50 or more, PSA testing is a choice to talk through with a doctor.' : 'Prostate screening is usually discussed from age 50.');
+        pr.headline = 'No family history or urine problem entered. ' + (p.age >= 50 ? 'At 50 or more, whether to have a PSA test is a choice to talk through with a doctor.' : 'Prostate screening is usually discussed from age 50.');
       }
       famPros.forEach(function (m) {
         pr.reasons.push(li(m.label + ' had prostate cancer' + (m.cAge != null ? ', found at ' + m.cAge : '') + '. ' + (m.cAge != null && m.cAge < 65 ? 'A diagnosis before 65 is the stronger signal.' : m.cAge != null ? 'Found at 65 or later, it counts for less than a younger diagnosis.' : 'Add the age it was found. It decides how often to test.'), 'guide', 'American Cancer Society'));
       });
       if (famPros.length) pr.reasons.push(li('The American Cancer Society advises men with a father, brother or son who had prostate cancer to talk about PSA testing from age 45, yearly if the relative was diagnosed before 65 or more than one relative is affected, otherwise every 2 years.', 'guide', 'American Cancer Society'));
-      if (uSym || famUro.length) pr.reasons.push(li('Repeated urine infections or a weak flow in a man can point to a prostate or bladder problem, such as an enlarged or inflamed prostate or a blockage. Studies have looked at a link with prostate cancer, but a cause-and-effect link is not established. The practical point is to find the cause early, because a blockage left alone can strain the bladder and kidneys.', 'general'));
-      if (p.age >= 50 && !famPros.length) pr.reasons.push(li('The Urological Society of India says that after 50, if life expectancy is more than about 10 to 15 years, a PSA with a digital rectal exam can be offered to men at risk. It does not set a yearly schedule in the summary I could read. The American Cancer Society adds a schedule for average risk: PSA every 2 years from 50 to 69. Bodies differ on whether to screen at average risk, so decide with a doctor after hearing the benefits and the risk of over-treatment.', 'guide', 'USI 2022; American Cancer Society'));
+      if (uSym || famUro.length) pr.reasons.push(li('Repeated urine infections or a weak urine flow in a man can point to a prostate or bladder problem, such as an enlarged or swollen prostate or a blockage. Studies have looked for a link with prostate cancer, but a cause-and-effect link is not established. The practical point is to find the cause early, because a blockage left alone can strain the bladder and kidneys.', 'general'));
+      if (p.age >= 50 && !famPros.length) pr.reasons.push(li('The Urological Society of India says that after 50, if life expectancy is more than about 10 to 15 years, a PSA with a finger check of the prostate (digital rectal exam) can be offered to men at risk. It does not give a yearly schedule in the summary we could read. The American Cancer Society adds a schedule for average risk: PSA every 2 years from 50 to 69. Bodies differ on whether to screen at average risk, so decide with a doctor after hearing the benefits and the risk of over-treatment.', 'guide', 'USI 2022; American Cancer Society'));
       if (p.psa != null && psaHigh) pr.reasons.push(li('Your PSA of ' + p.psa + ' ng/mL is at or above 4. The Urological Society of India says a PSA of 4 can be taken as a point for further evaluation, and it gives no single cut-off for a biopsy. Between 4 and 10 it suggests extra steps, such as an MRI, which are the doctor\'s call.', 'guide', 'USI 2022'));
-      if (p.psa != null && !psaHigh) pr.reasons.push(li( 'Your PSA of ' + p.psa + ' ng/mL is below 4, the traditional cut-off. Doctors also look at age, prostate size and the trend, so with a family history a lower value can still be followed.', 'general'));
-      pr.reasons.push(li('The Higher, Moderate and Lower grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+      if (p.psa != null && !psaHigh) pr.reasons.push(li( 'Your PSA of ' + p.psa + ' ng/mL is below 4, the usual cut-off. Doctors also look at your age, the size of the prostate and how the number changes over time, so with a family history a lower value can still be followed up.', 'general'));
+      pr.reasons.push(li('The Higher, Moderate or Lower label above comes from a simple rule we wrote for this test version. It is not a proven medical score.', 'proto'));
       out.cards.push(pr);
       if (own.blood) {
-        out.tests.push({ dom: 'pros', name: 'Urine test and a doctor visit for the blood in the urine', when: 'Book it now.', why: 'The cause can be a stone, an infection, the prostate or something else. Each is easier to deal with when found early.', kind: 'general' });
+        out.tests.push({ dom: 'pros', name: 'Urine test and a doctor visit for the blood in your urine', when: 'Book it now.', why: 'The cause can be a stone, an infection, the prostate or something else. Each is easier to treat when found early.', kind: 'general' });
       } else if (uSym) {
-        out.tests.push({ dom: 'pros', name: 'Urine test and a prostate check by a doctor', when: 'At your next visit. Go sooner for fever, burning, or if passing urine becomes hard.', why: 'Repeated infections or a weak flow should have a cause found.', kind: 'general' });
+        out.tests.push({ dom: 'pros', name: 'Urine test and a prostate check by a doctor', when: 'At your next visit. Go sooner if you have fever, burning, or if passing urine becomes hard.', why: 'Repeated infections or a weak flow should have a cause found.', kind: 'general' });
       }
       if (famPros.length) {
         var psaWhen;
@@ -1368,7 +1431,7 @@ ul.items li { font-size: 15px; line-height: 1.55; }
         else psaWhen = 'Talk to a doctor now. Add the age your relative was diagnosed above, because it decides between yearly and every 2 years.';
         out.tests.push({ dom: 'pros', name: 'PSA blood test', when: psaWhen, why: 'A father, brother or son with prostate cancer raises your own chance.', kind: 'guide', src: 'American Cancer Society' });
       } else if (p.age >= 50 || psaHigh) {
-        out.tests.push({ dom: 'pros', name: 'PSA blood test', when: psaHigh ? 'Repeat it with a doctor.' : 'Talk it through with a doctor. The Urological Society of India supports PSA with a rectal exam for men at risk after 50. The American Cancer Society suggests every 2 years from 50 to 69 for average risk.', why: 'It is a shared decision, because PSA can lead to extra tests that were not needed.', kind: 'guide', src: 'USI 2022; American Cancer Society' });
+        out.tests.push({ dom: 'pros', name: 'PSA blood test', when: psaHigh ? 'Repeat it with a doctor.' : 'Talk it through with a doctor. The Urological Society of India supports PSA with a rectal exam for men at risk after 50. The American Cancer Society suggests every 2 years from 50 to 69 for average risk.', why: 'You and your doctor decide this together, because a PSA test can lead to extra tests that were not needed.', kind: 'guide', src: 'USI 2022; American Cancer Society' });
       }
     }
 
@@ -1378,27 +1441,27 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     var th = { title: 'Thyroid', key: 'thy', reasons: [] };
     if (own.thy) {
       th.level = 'info'; th.levelText = 'Already diagnosed';
-      th.headline = 'You already have a thyroid condition. Take the medicine as advised and repeat the TSH test on the schedule your doctor sets.';
+      th.headline = 'You already have a thyroid problem. Take your medicine as advised and repeat the TSH test when your doctor says.';
     } else if (tshOut) {
       th.level = 'high'; th.levelText = 'Confirm it';
-      th.headline = 'Your TSH is outside the commonly used range. One value is not a diagnosis, so it needs repeating and a doctor review.';
+      th.headline = 'Your TSH is outside the range most labs use. One number is not a diagnosis, so it needs a repeat test and a doctor\'s review.';
     } else if (famThy.length) {
       th.level = 'mod'; th.levelText = 'Moderate';
-      th.headline = 'A close relative has thyroid disease. Thyroid problems often run in families and are common, especially in women.';
+      th.headline = 'A close relative has a thyroid problem. Thyroid problems often run in families and are common, especially in women.';
     } else {
       th.level = 'low'; th.levelText = 'Lower';
-      th.headline = 'No family or personal thyroid flag entered. No rule asks everyone to be screened.';
+      th.headline = 'No thyroid problem entered for you or your family. No rule asks everyone to be tested.';
     }
     if (famThy.length) th.reasons.push(li(cap(names(famThy)) + (famThy.length > 1 ? ' have' : ' has') + ' thyroid disease.', 'general'));
-    if (p.tsh != null) th.reasons.push(li(tshOut ? 'Your TSH of ' + p.tsh + ' mIU/L is outside 0.4 to 4.0, a commonly used range. Labs use slightly different ranges.' : 'Your TSH of ' + p.tsh + ' mIU/L is inside 0.4 to 4.0, a commonly used range. Labs use slightly different ranges.', 'general'));
-    th.reasons.push(li('There is no single rule that everyone should be screened, and the ICMR workflow does not set one. Many doctors check TSH when there is a family history, symptoms, or another autoimmune condition, so ask yours.', 'general'));
-    th.reasons.push(li('The ICMR workflow for hypothyroidism uses TSH together with free T4 (or total T4), and thyroid antibodies (TPO) where available. "Subclinical" means TSH is high while T4 is normal. Even then it lists reasons a doctor may still treat, such as a large goitre, positive antibodies, heart disease, high cholesterol, infertility, depression, unexplained anaemia, or autoimmune disease in the person or family.', 'guide', 'ICMR STW Hypothyroidism'));
-    th.reasons.push(li('Tell a doctor about unexplained tiredness, weight change that diet does not explain, feeling unusually cold or hot, hair fall, constipation, a racing heart, or swelling at the front of the neck.', 'general'));
+    if (p.tsh != null) th.reasons.push(li(tshOut ? 'Your TSH of ' + p.tsh + ' mIU/L is outside 0.4 to 4.0, the range most labs use. Labs use slightly different ranges.' : 'Your TSH of ' + p.tsh + ' mIU/L is inside 0.4 to 4.0, the range most labs use. Labs use slightly different ranges.', 'general'));
+    th.reasons.push(li('No guideline says that everyone should be tested, and the ICMR workflow does not say so either. Many doctors check TSH when there is a family history, symptoms, or another autoimmune illness (where the body attacks itself), so ask yours.', 'general'));
+    th.reasons.push(li('For an underactive thyroid, the ICMR workflow uses TSH together with free T4 (or total T4), and thyroid antibody tests (TPO) where available. "Subclinical" means TSH is high but T4 is still normal. Even then, a doctor may still treat if there is a large swelling in the neck (goitre), positive antibodies, heart disease, high cholesterol, trouble having a baby, depression, unexplained anaemia, or an autoimmune illness in the person or family.', 'guide', 'ICMR STW Hypothyroidism'));
+    th.reasons.push(li('Tell a doctor if you have unexplained tiredness, weight change that food does not explain, feeling unusually cold or hot, hair fall, constipation, a racing heart, or a swelling at the front of the neck.', 'general'));
     out.cards.push(th);
     if (own.thy) {
-      out.tests.push({ dom: 'thy', name: 'TSH follow-up', when: 'As your doctor advises.', why: 'Shows whether the medicine dose is right.', kind: 'general' });
+      out.tests.push({ dom: 'thy', name: 'TSH follow-up', when: 'As your doctor advises.', why: 'Shows whether your medicine dose is right.', kind: 'general' });
     } else if (famThy.length || tshOut) {
-      out.tests.push({ dom: 'thy', name: 'TSH blood test', when: tshOut ? 'Repeat it with a doctor, usually together with free T4, and antibodies if your doctor advises.' : 'Ask for a baseline at your next blood test. Your doctor sets how often after that.', why: tshOut ? 'One out-of-range TSH is confirmed with a repeat and a T4 before anything is decided.' : 'A relative with thyroid disease is a common reason to check once.', kind: tshOut ? 'guide' : 'general', src: tshOut ? 'ICMR STW Hypothyroidism' : undefined });
+      out.tests.push({ dom: 'thy', name: 'TSH blood test', when: tshOut ? 'Repeat it with a doctor, usually together with free T4, and antibodies if your doctor advises.' : 'Ask for a baseline at your next blood test. Your doctor sets how often after that.', why: tshOut ? 'One TSH result outside the range is confirmed with a repeat test and a T4 test before anything is decided.' : 'A relative with a thyroid problem is a common reason to check once.', kind: tshOut ? 'guide' : 'general', src: tshOut ? 'ICMR STW Hypothyroidism' : undefined });
     }
 
     /* ===== Cancer in the family ===== */
@@ -1411,18 +1474,18 @@ ul.items li { font-size: 15px; line-height: 1.55; }
       var brYoung = famBR.filter(function (m) { return m.cAge != null && m.cAge < 50; });
       if (cancerRel.length >= 2 || crcYoung.length || brYoung.length) {
         ca.level = 'high'; ca.levelText = 'Higher';
-        ca.headline = 'The pattern in your family, more than one close relative or a cancer found young, is the kind doctors look at more closely.';
+        ca.headline = 'The pattern in your family, either more than one close relative or a cancer found at a young age, is the kind doctors look at more closely.';
       } else {
         ca.level = 'mod'; ca.levelText = 'Moderate';
-        ca.headline = 'A close relative has had cancer. This can mean earlier or more frequent screening for you.';
+        ca.headline = 'A close relative has had cancer. This can mean you need to be checked earlier or more often.';
       }
       famCRC.concat(famBR).forEach(function (m) {
         var what = m.cond.crc && !m.cond.brca ? 'colon or rectal cancer' : m.cond.brca && !m.cond.crc ? 'breast or ovarian cancer' : 'cancer';
         ca.reasons.push(li(m.label + ' had ' + what + (m.cAge != null ? ', found at ' + m.cAge : '') + '.', 'general'));
       });
-      if (famCRC.concat(famBR).some(function (m) { return m.cAge == null; })) ca.reasons.push(li('Add the age each cancer was found. A cancer found young counts for more.', 'general'));
-      ca.reasons.push(li('In some families, prostate, breast, ovarian and colon cancers share an inherited cause. When more than one of them appears, ask a doctor about genetic counselling.', 'general'));
-      ca.reasons.push(li('The grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+      if (famCRC.concat(famBR).some(function (m) { return m.cAge == null; })) ca.reasons.push(li('Add the age each cancer was found. A cancer found at a young age counts for more.', 'general'));
+      ca.reasons.push(li('In some families, prostate, breast, ovarian and colon cancers share a cause that is passed down. If more than one of them appears in your family, ask a doctor about genetic counselling (a talk with a specialist about inherited illness).', 'general'));
+      ca.reasons.push(li('This label comes from a simple rule we wrote for this test version. It is not a proven medical score.', 'proto'));
       out.cards.push(ca);
       if (famCRC.length) {
         var crcAges = famCRC.map(function (m) { return m.cAge; }).filter(function (a) { return a != null; });
@@ -1432,9 +1495,9 @@ ul.items li { font-size: 15px; line-height: 1.55; }
         var crcWhen = crcMin == null ? 'Add the age your relative was diagnosed, because it sets the start age. The usual rule is age 40 or 10 years before the relative\'s age, whichever is earlier.'
           : (crcMin < 60 || crcMulti) ? 'The US Multi-Society Task Force advises a colonoscopy every 5 years starting at ' + crcStart + ' (10 years before your youngest affected relative, or 40, whichever is earlier). ' + (p.age >= crcStart ? 'You are already at that age, so ask your doctor now.' : 'Ask your doctor to plan it.')
           : 'For a relative diagnosed at 60 or later, the same task force advises starting at 40, then screening as for average risk. ' + (p.age >= 40 ? 'You are at that age, so ask your doctor now.' : 'Ask again at 40.');
-        out.tests.push({ dom: 'cancer', name: 'Colon screening, earlier than usual', when: crcWhen, why: 'A close relative with colon or rectal cancer raises your own chance. India\'s national programme does not cover colon screening, so this follows a US guideline.', kind: 'guide', src: 'US Multi-Society Task Force' });
+        out.tests.push({ dom: 'cancer', name: 'Colon cancer check, earlier than usual', when: crcWhen, why: 'A close relative with colon or rectal cancer raises your own chance. India\'s national programme does not cover colon cancer checks, so this follows a US guideline.', kind: 'guide', src: 'US Multi-Society Task Force' });
       }
-      if (famBR.length) out.tests.push({ dom: 'cancer', name: 'Ask about earlier breast screening and genetic counselling', when: 'Ask your doctor, especially if the cancer was found before 50 or more than one relative had it.', why: 'A close relative with breast or ovarian cancer can change when screening should start.', kind: 'general' });
+      if (famBR.length) out.tests.push({ dom: 'cancer', name: 'Ask about an earlier breast check and genetic counselling', when: 'Ask your doctor, especially if the cancer was found before 50 or more than one relative had it.', why: 'A close relative with breast or ovarian cancer can change when your checks should start.', kind: 'general' });
     }
 
     /* ===== Own past cancer and PCOS touches ===== */
@@ -1443,7 +1506,7 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     /* ===== Alcohol ===== */
     var drinksDaily = p.alcohol === 'daily', drinksWeekly = p.alcohol === 'weekly';
     if (drinksDaily) bp.reasons.push(li('ICMR-NIN says regular alcohol above two measures a day raises the risk of high blood pressure and stroke.', 'guide', 'ICMR-NIN 2024'));
-    if (drinksDaily || drinksWeekly) out.care.push(li('ICMR-NIN advises avoiding alcohol. It links alcohol to fatty liver, cirrhosis, high blood pressure, stroke and cancers of the mouth, throat, food pipe and breast, and the prostate is on its list too. Ask your doctor for help if cutting down is hard.', 'guide', 'ICMR-NIN 2024'));
+    if (drinksDaily || drinksWeekly) out.care.push(li('ICMR-NIN advises avoiding alcohol. It links alcohol to fatty liver, liver scarring (cirrhosis), high blood pressure, stroke, and cancers of the mouth, throat, food pipe and breast. The prostate is on its list too. Ask your doctor for help if cutting down is hard.', 'guide', 'ICMR-NIN 2024'));
 
     /* ===== Liver ===== */
     var liverRF = [];
@@ -1455,26 +1518,26 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     var lv = { title: 'Liver', key: 'liver', reasons: [] };
     if (own.liver) {
       lv.level = 'info'; lv.levelText = 'Already diagnosed';
-      lv.headline = 'You already have a liver condition. Follow your doctor\'s plan and avoid alcohol unless told otherwise.';
+      lv.headline = 'You already have a liver problem. Follow your doctor\'s plan and avoid alcohol unless told otherwise.';
     } else if (drinksDaily || liverRF.length >= 2) {
       lv.level = 'high'; lv.levelText = 'Higher';
-      lv.headline = drinksDaily ? 'Drinking most days is a clear risk for the liver, and for blood pressure and some cancers.' : 'You have ' + liverRF.length + ' factors that are linked with fatty liver. It is common in India and usually has no symptoms.';
+      lv.headline = drinksDaily ? 'Drinking most days is a clear risk for your liver, and also for blood pressure and some cancers.' : 'You have ' + liverRF.length + ' things that are linked with fatty liver. It is common in India and usually causes no symptoms.';
     } else if (liverRF.length === 1 || drinksWeekly) {
       lv.level = 'mod'; lv.levelText = 'Moderate';
-      lv.headline = 'There is at least one factor linked with fatty liver. It usually has no symptoms.';
+      lv.headline = 'There is at least one thing linked with fatty liver. It usually causes no symptoms.';
     } else {
       lv.level = 'low'; lv.levelText = 'Lower';
-      lv.headline = 'No liver risk factor entered. Fatty liver has no symptoms, so keep weight and alcohol in check.';
+      lv.headline = 'No liver risk entered. Fatty liver causes no symptoms, so keep your weight and alcohol in check.';
     }
-    if (liverRF.length) lv.reasons.push(li('Factors present: ' + liverRF.join(', ') + '. Diabetes, extra weight around the waist and related conditions go with fatty liver.', 'general'));
-    if (own.dm) lv.reasons.push(li('An Indian guideline for people with type 2 diabetes advises regular screening for fatty liver (MASLD), especially with obesity or related conditions, and non-invasive checks such as the FIB-4 score or a liver stiffness scan for scarring.', 'guide', 'MASLD diabetes guideline, summary'));
+    if (liverRF.length) lv.reasons.push(li('Factors present: ' + liverRF.join(', ') + '. Diabetes, extra weight around the waist and similar problems often go with fatty liver.', 'general'));
+    if (own.dm) lv.reasons.push(li('An Indian guideline for people with type 2 diabetes advises regular checks for fatty liver (called MASLD), especially with obesity or similar problems, and simple tests for liver scarring, such as the FIB-4 score (worked out from a blood test) or a liver stiffness scan.', 'guide', 'MASLD diabetes guideline, summary'));
     if (drinksDaily || drinksWeekly) lv.reasons.push(li('ICMR-NIN links alcohol with fatty liver and cirrhosis and advises avoiding alcohol.', 'guide', 'ICMR-NIN 2024'));
-    lv.reasons.push(li('The grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+    lv.reasons.push(li('This label comes from a simple rule we wrote for this test version. It is not a proven medical score.', 'proto'));
     out.cards.push(lv);
     if (own.liver) {
-      out.tests.push({ dom: 'liver', name: 'Liver follow-up', when: 'As your doctor advises.', why: 'Shows whether the liver is steady.', kind: 'general' });
+      out.tests.push({ dom: 'liver', name: 'Liver follow-up', when: 'As your doctor advises.', why: 'Shows whether your liver is steady.', kind: 'general' });
     } else if (liverRF.length || drinksDaily || drinksWeekly) {
-      out.tests.push({ dom: 'liver', name: 'Liver enzymes (SGPT/ALT, SGOT/AST) and a liver ultrasound', when: own.dm ? 'Ask at your next check-up. Your doctor decides whether a scarring check (FIB-4 or a liver stiffness scan) is needed.' : 'Ask for the enzymes at your next blood test, and for an ultrasound if they are high or you have several of these factors.', why: 'Fatty liver is common and usually silent. Simple tests find it early, when changes help most.', kind: own.dm ? 'guide' : 'general', src: own.dm ? 'MASLD diabetes guideline, summary' : undefined });
+      out.tests.push({ dom: 'liver', name: 'Liver blood test (SGPT/ALT, SGOT/AST) and a liver ultrasound', when: own.dm ? 'Ask at your next check-up. Your doctor will decide whether a liver scarring check (FIB-4 or a liver stiffness scan) is needed.' : 'Ask for the liver blood test at your next blood test, and for an ultrasound if the results are high or you have several of these risks.', why: 'Fatty liver is common and usually causes no symptoms. Simple tests find it early, when changes help the most.', kind: own.dm ? 'guide' : 'general', src: own.dm ? 'MASLD diabetes guideline, summary' : undefined });
     }
 
     /* ===== Blood and vitamins ===== */
@@ -1487,24 +1550,24 @@ ul.items li { font-size: 15px; line-height: 1.55; }
       bl.headline = 'A haemoglobin below 8 is in the severe range used by the national anaemia programme. Please see a doctor soon, and go the same day if you are breathless, dizzy, or have chest pain or a racing heart.';
     } else if (hbLow) {
       bl.level = 'high'; bl.levelText = 'Confirm it';
-      bl.headline = 'Your haemoglobin is below the cut-off used by India\'s national anaemia programme (13 for men, 12 for women who are not pregnant). One value is not a diagnosis, but low haemoglobin needs a doctor to find the cause.';
+      bl.headline = 'Your haemoglobin is below the limit used by India\'s national anaemia programme (13 for men, 12 for women who are not pregnant). One number is not a diagnosis, but low haemoglobin needs a doctor to find the cause.';
     } else if (b12Risk) {
       bl.level = 'mod'; bl.levelText = 'Moderate';
-      bl.headline = 'A vegetarian diet and long-term metformin can both lower vitamin B12. A test is worth asking about.';
+      bl.headline = 'A vegetarian diet and long-term use of metformin can both lower vitamin B12. It is worth asking for a test.';
     } else {
       bl.level = 'low'; bl.levelText = 'Lower';
-      bl.headline = 'No blood or vitamin flag entered.';
+      bl.headline = 'No blood or vitamin problem entered.';
     }
-    if (p.hb != null) bl.reasons.push(li(hbLow ? 'Your haemoglobin of ' + p.hb + ' g/dL is low for your sex.' : 'Your haemoglobin of ' + p.hb + ' g/dL is not low for your sex. The cut-off is 13 for men and 12 for non-pregnant women.', 'guide', 'Anemia Mukt Bharat'));
-    if (hbLow) bl.reasons.push(li('The national programme (using WHO bands) calls it mild at 11.0 to 12.9 for men and 11.0 to 11.9 for women, moderate at 8.0 to 10.9, and severe below 8.0. In pregnancy the cut-off is 11 in the first and third trimesters and 10.5 in the second. The programme advises checking for inherited blood disorders before long iron courses in people who do not respond.', 'guide', 'Anemia Mukt Bharat'));
+    if (p.hb != null) bl.reasons.push(li(hbLow ? 'Your haemoglobin of ' + p.hb + ' g/dL is low for your sex.' : 'Your haemoglobin of ' + p.hb + ' g/dL is not low for your sex. The limit is 13 for men and 12 for women who are not pregnant.', 'guide', 'Anemia Mukt Bharat'));
+    if (hbLow) bl.reasons.push(li('The national programme (using WHO bands) calls it mild at 11.0 to 12.9 for men and 11.0 to 11.9 for women, moderate at 8.0 to 10.9, and severe below 8.0. In pregnancy the limit is 11 in the first and last three months, and 10.5 in the middle three months. The programme advises checking for blood disorders that run in families before giving long courses of iron to people who do not improve.', 'guide', 'Anemia Mukt Bharat'));
     if (p.sex === 'F' && p.age >= 20 && p.age <= 49 && p.hb == null) out.tests.push({ dom: 'blood', name: 'Haemoglobin (anaemia check)', when: 'Once a year.', why: 'The national anaemia programme advises a yearly haemoglobin test for women aged 20 to 49.', kind: 'guide', src: 'Anemia Mukt Bharat' });
     if (hbLow) bl.reasons.push(li('Tea and coffee reduce iron absorption. ICMR-NIN advises keeping them an hour away from meals.', 'guide', 'ICMR-NIN 2024'));
-    if (p.diet.veg) bl.reasons.push(li('Vitamin B12 comes mainly from animal foods and milk products, so people who eat none or few can run low.', 'general'));
-    if (own.metf) bl.reasons.push(li('Long-term metformin can lower vitamin B12. Doctors often check it from time to time.', 'general'));
+    if (p.diet.veg) bl.reasons.push(li('Vitamin B12 comes mainly from animal foods and milk products, so people who eat little or none of them can run low.', 'general'));
+    if (own.metf) bl.reasons.push(li('Long-term use of metformin can lower vitamin B12. Doctors often check it from time to time.', 'general'));
     bl.reasons.push(li('Low vitamin D is common in India. No rule asks everyone to be tested, so ask your doctor if you have bone pain or muscle weakness.', 'general'));
-    bl.reasons.push(li('The grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
+    bl.reasons.push(li('This label comes from a simple rule we wrote for this test version. It is not a proven medical score.', 'proto'));
     out.cards.push(bl);
-    if (hbLow) out.tests.push({ dom: 'blood', name: 'Haemoglobin repeat and iron studies', when: 'Soon, with a doctor.', why: 'Low haemoglobin has several causes, and iron lack is only one of them.', kind: 'general' });
+    if (hbLow) out.tests.push({ dom: 'blood', name: 'Haemoglobin repeat and iron tests', when: 'Soon, with a doctor.', why: 'Low haemoglobin has several causes, and lack of iron is only one of them.', kind: 'general' });
     if (b12Risk) out.tests.push({ dom: 'blood', name: 'Vitamin B12 blood test', when: 'Ask at your next blood test.', why: p.diet.veg && own.metf ? 'A vegetarian diet and metformin both lower B12.' : p.diet.veg ? 'A vegetarian diet can lower B12.' : 'Long-term metformin can lower B12.', kind: 'general' });
 
     /* ===== Cancer screening for your age (national programme) ===== */
@@ -1513,65 +1576,65 @@ ul.items li { font-size: 15px; line-height: 1.55; }
       var cs = { title: 'Cancer screening for your age', short: 'Cancer screening', key: 'screen', reasons: [] };
       cs.level = tobaccoNow ? 'mod' : 'info';
       cs.levelText = tobaccoNow ? 'Moderate' : 'Routine';
-      cs.headline = tobaccoNow ? 'You use tobacco, a leading cause of mouth cancer. Do not wait the full 5 years between mouth checks.' : 'India\'s national programme screens everyone from 30 for mouth cancer, and women for breast and cervical cancer.';
-      cs.reasons.push(li('Mouth (oral) cancer: everyone aged 30 and above, once every 5 years.', 'guide', 'MoHFW NP-NCD'));
+      cs.headline = tobaccoNow ? 'You use tobacco, a leading cause of mouth cancer. Do not wait the full 5 years between mouth checks.' : 'India\'s national programme checks everyone from age 30 for mouth cancer, and women also for breast and cervical cancer.';
+      cs.reasons.push(li('Mouth cancer: everyone aged 30 and above, once every 5 years.', 'guide', 'MoHFW NP-NCD'));
       if (p.sex === 'F') {
-        cs.reasons.push(li('Breast cancer: women aged 30 and above, a clinical breast examination once every 5 years. The guideline notes that the yield is higher after 40.', 'guide', 'MoHFW NP-NCD'));
-        cs.reasons.push(li('Cervical cancer: women aged 30 and above, once every 5 years.', 'guide', 'MoHFW NP-NCD'));
+        cs.reasons.push(li('Breast cancer: women aged 30 and above, a breast examination by a doctor or nurse once every 5 years. The guideline notes that it finds more after age 40.', 'guide', 'MoHFW NP-NCD'));
+        cs.reasons.push(li('Cervical cancer (cancer of the mouth of the womb): women aged 30 and above, once every 5 years.', 'guide', 'MoHFW NP-NCD'));
       }
       if (drinksDaily || drinksWeekly) cs.reasons.push(li('ICMR-NIN links alcohol with cancers of the mouth, larynx, food pipe and breast.', 'guide', 'ICMR-NIN 2024'));
-      if (p.age >= 45) cs.reasons.push(li('Colon cancer: India\'s national programme lists mouth, breast and cervical screening, not colon. For average risk, the US Preventive Services Task Force advises screening from 45 to 75 (a yearly stool test called FIT, or a colonoscopy every 10 years). Whatever your age, blood in the stool, a lasting change in bowel habit or unexplained weight loss needs a doctor.', 'guide', 'USPSTF colorectal'));
-      if (own.pros || own.crc || own.brca) cs.reasons.push(li('You noted a past cancer. Follow-up for that is set by your cancer doctor, not by this list.', 'general'));
-      cs.reasons.push(li('Raising the level for tobacco use is a simple rule used in this prototype.', 'proto'));
+      if (p.age >= 45) cs.reasons.push(li('Colon cancer: India\'s national programme lists mouth, breast and cervical checks, not colon. For people at average risk, the US Preventive Services Task Force advises checks from age 45 to 75 (a yearly stool test called FIT, or a colonoscopy, a camera test of the bowel, every 10 years). At any age, blood in the stool, a lasting change in bowel habit or unexplained weight loss needs a doctor.', 'guide', 'USPSTF colorectal'));
+      if (own.pros || own.crc || own.brca) cs.reasons.push(li('You noted a past cancer. Your cancer doctor decides the follow-up for that, not this list.', 'general'));
+      cs.reasons.push(li('Showing a higher level for tobacco users is a simple rule we added for this test version.', 'proto'));
       out.cards.push(cs);
-      out.tests.push({ dom: 'screen', name: 'Mouth (oral) cancer check', when: tobaccoNow ? 'Ask for one now, then at least every 5 years. See a doctor at once for a white or red patch, or an ulcer that does not heal.' : 'Once every 5 years from age 30.', why: 'A quick look by a trained health worker or dentist.', kind: 'guide', src: 'MoHFW NP-NCD' });
+      out.tests.push({ dom: 'screen', name: 'Mouth cancer check', when: tobaccoNow ? 'Ask for one now, then at least every 5 years. See a doctor at once for a white or red patch, or an ulcer that does not heal.' : 'Once every 5 years from age 30.', why: 'A quick look inside the mouth by a trained health worker or dentist.', kind: 'guide', src: 'MoHFW NP-NCD' });
       if (p.sex === 'F') {
-        out.tests.push({ dom: 'screen', name: 'Clinical breast examination', when: 'Once every 5 years from age 30. Ask earlier if breast or ovarian cancer runs in the family.', why: 'Examined by a trained doctor or nurse.', kind: 'guide', src: 'MoHFW NP-NCD' });
-        out.tests.push({ dom: 'screen', name: 'Cervical screening test', when: 'Once every 5 years from age 30. Your doctor chooses the test.', why: 'Cervical cancer can be prevented when changes are found early.', kind: 'guide', src: 'MoHFW NP-NCD' });
+        out.tests.push({ dom: 'screen', name: 'Breast examination by a doctor or nurse', when: 'Once every 5 years from age 30. Ask earlier if breast or ovarian cancer runs in the family.', why: 'A trained doctor or nurse checks the breasts by hand.', kind: 'guide', src: 'MoHFW NP-NCD' });
+        out.tests.push({ dom: 'screen', name: 'Cervical cancer test', when: 'Once every 5 years from age 30. Your doctor chooses the test.', why: 'Cervical cancer can be prevented when early changes are found.', kind: 'guide', src: 'MoHFW NP-NCD' });
       }
     }
 
     /* ===== Care: lifestyle ===== */
-    if (p.diet.salt) out.care.push(li('Cut back on salt: pickles, papad, namkeen and packaged foods. The ICMR-NIN dietary guidelines advise no more than 5 g of salt a day, about one teaspoon, and less salt helps lower blood pressure.', 'guide', 'ICMR-NIN 2024; India MoHFW'));
-    if (p.diet.lowfv) out.care.push(li('Aim for fruit and vegetables every day. More of them, with less salt, can lower blood pressure noticeably. The ICMR-NIN plate for a 2,000 calorie diet has about 400 g of vegetables and 100 g of fruit a day.', 'guide', 'ICMR-NIN 2024; India MoHFW'));
-    if (p.diet.sweet) out.care.push(li('Cut sweets and sugary drinks to occasional. ICMR-NIN advises keeping sugar below 5% of daily energy. This matters more if diabetes runs in your family.', 'guide', 'ICMR-NIN 2024'));
-    if (p.diet.fried) out.care.push(li('Reduce fried and street food. It adds to cholesterol and weight over time. ICMR-NIN suggests 25 to 30 g of cooking oil a day for an adult.', 'guide', 'ICMR-NIN 2024'));
-    if (p.act === 20 || p.act === 30) out.care.push(li('Build regular movement into the week. ICMR-NIN advises 30 to 60 minutes of moderate activity on at least 5 days a week, which is 150 minutes or more. Check with your doctor first if you have a heart condition.', 'guide', 'ICMR-NIN 2024'));
-    if (p.waist != null && ((p.sex === 'M' && p.waist >= 90) || (p.sex === 'F' && p.waist >= 80))) out.care.push(li('Your waist is in a range that adds points to the diabetes score. Reducing it is one of the changes within your control.', 'tool', 'IDRS'));
-    if (p.smoke === 'current') out.care.push(li('Stopping tobacco lowers heart and blood pressure risk. Ask your doctor about quit support.', 'guide', 'India MoHFW'));
-    if (!out.care.length) out.care.push(li('Nothing flagged in the habits you entered. Keep the routine and repeat this check once a year.', 'general'));
+    if (p.diet.salt) out.care.push(li('Eat less salt: pickles, papad, namkeen and packaged foods. The ICMR-NIN food guidelines say no more than 5 g of salt a day, about one teaspoon. Less salt helps lower blood pressure.', 'guide', 'ICMR-NIN 2024; India MoHFW'));
+    if (p.diet.lowfv) out.care.push(li('Eat fruit and vegetables every day. More of them, with less salt, can lower blood pressure noticeably. For a 2,000 calorie diet, the ICMR-NIN plate has about 400 g of vegetables and 100 g of fruit a day.', 'guide', 'ICMR-NIN 2024; India MoHFW'));
+    if (p.diet.sweet) out.care.push(li('Have sweets and sugary drinks only now and then. ICMR-NIN advises keeping sugar below 5% of your daily energy. This matters more if diabetes runs in your family.', 'guide', 'ICMR-NIN 2024'));
+    if (p.diet.fried) out.care.push(li('Eat less fried and street food. Over time it adds to cholesterol and weight. ICMR-NIN suggests 25 to 30 g of cooking oil a day for an adult.', 'guide', 'ICMR-NIN 2024'));
+    if (p.act === 20 || p.act === 30) out.care.push(li('Move your body regularly. ICMR-NIN advises 30 to 60 minutes of moderate activity on at least 5 days a week, which is 150 minutes or more. Check with your doctor first if you have a heart problem.', 'guide', 'ICMR-NIN 2024'));
+    if (p.waist != null && ((p.sex === 'M' && p.waist >= 90) || (p.sex === 'F' && p.waist >= 80))) out.care.push(li('Your waist size adds points to the diabetes score. Bringing it down is one change that is in your hands.', 'tool', 'IDRS'));
+    if (p.smoke === 'current') out.care.push(li('Quitting tobacco lowers your heart and blood pressure risk. Ask your doctor for help to quit.', 'guide', 'India MoHFW'));
+    if (!out.care.length) out.care.push(li('Nothing to worry about in the habits you entered. Keep up the routine and repeat this check once a year.', 'general'));
 
     /* ===== Plan ahead (money) ===== */
     var rupee = function (x) { return '₹' + Math.round(x).toLocaleString('en-IN'); };
-    out.plan.push(li('Review health insurance while no condition is diagnosed. Under the IRDAI Master Circular of 29 May 2024, a waiting period for conditions you already have when you buy can be at most 36 months, and after 60 continuous months of cover an insurer cannot contest a claim over non-disclosure, except for proven fraud. Declare every condition honestly.', 'guide', 'IRDAI Master Circular 2024'));
-    out.plan.push(li('The same circular lets you port a policy to another insurer. The old insurer must send your details within 72 hours, the new one must decide within 5 days, and the sum insured and no-claim bonus carry over. It also requires a decision on a cashless hospital request within one hour. Port before the renewal date, not after.', 'guide', 'IRDAI Master Circular, full text'));
-    if (p.emp) out.plan.push(li('Your cover depends on your job. It usually ends when the job does, and a new policy bought later, at an older age and with new conditions, costs more and brings waiting periods. Consider a personal policy as well.', 'general'));
-    if (p.parNoCover) out.plan.push(li('Parents who already have diabetes, heart disease or high blood pressure can still be insured, usually with waiting periods and higher premiums. The IRDAI circular asks insurers to offer health products for all ages, with no entry age cap. Premiums, tests and waiting periods still differ, so compare policies and read the waiting period for each existing condition.', 'guide', 'IRDAI Master Circular, full text'));
-    if (p.expm != null && p.expm > 0) out.plan.push(li('A common rule of thumb is to keep 6 months of household expenses in an easy-to-reach reserve. For you that is about ' + rupee(p.expm * 6) + '. With a long-term condition in the family, some planners suggest more.', 'general'));
-    else out.plan.push(li('Add your monthly household expenses in the Money planning section to see a reserve figure. A common rule of thumb is 6 months of expenses, kept where you can reach it fast.', 'general'));
-    if (p.cover != null && p.cover > 0) out.plan.push(li('You entered ₹' + p.cover + ' lakh of cover. No rule gives the right amount. Ask an insurer or adviser to check it against hospital costs in your city, and whether it is one amount for each person or one amount shared by the whole family.', 'general'));
-    if (out.tests.length) out.plan.push(li(out.tests.length + ' tests or check-ups are flagged to ask about. Ask a lab for a package price and put it in the yearly budget, so the checks are not skipped for cost.', 'general'));
-    out.plan.push(li('Under the old income tax regime, Section 80D allows up to ₹5,000 for preventive health check-ups, counted within the overall health deduction limit. It is not available under the new regime. Ask a tax adviser how it applies to you.', 'guide', 'Income Tax Act s.80D, as summarised by ClearTax'));
-    out.plan.push(li('Check whether you or your parents qualify for government cover such as Ayushman Bharat (PM-JAY), and keep the card or number with the family papers.', 'general'));
+    out.plan.push(li('Look at your health insurance while you have no diagnosed illness. Under the IRDAI Master Circular of 29 May 2024 (the insurance regulator\'s rules), the waiting period for an illness you already had when you bought the policy can be at most 36 months. After 60 continuous months of cover, the insurer cannot reject a claim for something you did not mention, unless it is proven fraud. Always tell the insurer about every illness honestly.', 'guide', 'IRDAI Master Circular 2024'));
+    out.plan.push(li('The same rules let you move your policy to another insurer (called porting). The old insurer must send your details within 72 hours, the new one must decide within 5 days, and your cover amount and no-claim bonus carry over. A request for cashless treatment at a hospital must be answered within one hour. Move before the renewal date, not after.', 'guide', 'IRDAI Master Circular, full text'));
+    if (p.emp) out.plan.push(li('Your insurance depends on your job. It usually ends when the job does, and a new policy bought later, at an older age and with new illnesses, costs more and brings waiting periods. Think about a personal policy as well.', 'general'));
+    if (p.parNoCover) out.plan.push(li('Parents who already have diabetes, heart disease or high blood pressure can still get insurance, usually with waiting periods and a higher premium. The IRDAI rules ask insurers to offer health plans for all ages, with no upper age limit. Premiums, tests and waiting periods still differ, so compare policies and read the waiting period for each illness they already have.', 'guide', 'IRDAI Master Circular, full text'));
+    if (p.expm != null && p.expm > 0) out.plan.push(li('A common rule of thumb is to keep 6 months of household expenses saved where you can reach it easily. For you that is about ' + rupee(p.expm * 6) + '. If someone in the family has a long-term illness, some planners suggest more.', 'general'));
+    else out.plan.push(li('Add your monthly household expenses in the Money planning section to see how much to keep aside. A common rule of thumb is 6 months of expenses, kept where you can reach it fast.', 'general'));
+    if (p.cover != null && p.cover > 0) out.plan.push(li('You entered ₹' + p.cover + ' lakh of insurance. No rule gives the right amount. Ask an insurer or adviser to compare it with hospital costs in your city, and to tell you whether it is one amount for each person or one amount shared by the whole family.', 'general'));
+    if (out.tests.length) out.plan.push(li(out.tests.length + ' tests or check-ups are listed for you to ask about. Ask a lab for a package price and add it to your yearly budget, so the checks are not skipped because of cost.', 'general'));
+    out.plan.push(li('Under the old income tax system, Section 80D lets you claim up to ₹5,000 for preventive health check-ups, within the overall limit for health deductions. It is not available under the new tax system. Ask a tax adviser how it applies to you.', 'guide', 'Income Tax Act s.80D, as summarised by ClearTax'));
+    out.plan.push(li('Check whether you or your parents qualify for government health cover such as Ayushman Bharat (PM-JAY), and keep the card or number with your family papers.', 'general'));
     out.plan.push(li('Keep every report and prescription in one folder, on paper and on your phone, so any family member can find them quickly.', 'general'));
-    if (fam.some(function (m) { return m.deg === 1 && COND.some(function (x) { return m.cond[x[0]]; }); })) out.plan.push(li('For relatives already diagnosed, keep a list of their medicines, their doctor and hospital, and their insurance details where family can reach them in an emergency.', 'general'));
+    if (fam.some(function (m) { return m.deg === 1 && COND.some(function (x) { return m.cond[x[0]]; }); })) out.plan.push(li('For relatives who already have an illness, keep a list of their medicines, their doctor and hospital, and their insurance details where the family can find them in an emergency.', 'general'));
 
     /* ===== Questions for the doctor ===== */
     premature.forEach(function (m) {
-      out.qs.push('My ' + m.label.toLowerCase() + ' had a heart or stroke event at ' + m.evAge + '. Should I have a lipid profile and Lipoprotein(a) now, and a 10-year heart risk estimate?');
+      out.qs.push('My ' + m.label.toLowerCase() + ' had a heart attack or stroke at ' + m.evAge + '. Should I have a cholesterol test (lipid profile) and a Lipoprotein(a) test now, and a heart risk estimate for the next 10 years?');
     });
-    if (fdrDM.length && !own.dm) out.qs.push('Diabetes runs in my family (' + names(fdrDM) + '). Should I take HbA1c or fasting glucose now, and how often after that?');
-    if (famHTN.length && !own.htn) out.qs.push('High blood pressure runs in my family. Should I monitor at home, and with which device?');
-    if (readingHigh && !own.htn) out.qs.push('My reading was ' + p.sys + '/' + p.dia + '. How should we confirm whether this is high blood pressure?');
+    if (fdrDM.length && !own.dm) out.qs.push('Diabetes runs in my family (' + names(fdrDM) + '). Should I have an HbA1c or fasting sugar test now, and how often after that?');
+    if (famHTN.length && !own.htn) out.qs.push('High blood pressure runs in my family. Should I check it at home, and with which device?');
+    if (readingHigh && !own.htn) out.qs.push('My reading was ' + p.sys + '/' + p.dia + '. How do we find out if this is high blood pressure?');
     out.qs.push('Given my age, weight and family history, which checks am I missing?');
     if (famPros.length) out.qs.push('A close relative had prostate cancer. Should I have a PSA test now, and how often after that?');
-    if (p.sex === 'M' && (uSym || famUro.length)) out.qs.push('Urinary problems or repeated urine infections run in my family' + (uSym ? ' and I have symptoms' : '') + '. Should I have a urine test and a prostate check?');
+    if (p.sex === 'M' && (uSym || famUro.length)) out.qs.push('Urine problems or repeated urine infections run in my family' + (uSym ? ' and I have symptoms' : '') + '. Should I have a urine test and a prostate check?');
     if (own.blood) out.qs.push('I have seen blood in my urine. What tests will find the cause?');
-    if (kRF.length && !own.ckd) out.qs.push('Should I have an eGFR and a urine albumin-creatinine test, and how often?');
+    if (kRF.length && !own.ckd) out.qs.push('Should I have a kidney blood test (eGFR) and a urine protein test, and how often?');
     if (famThy.length && !own.thy) out.qs.push('Thyroid disease runs in my family. Should I have a TSH test?');
-    if (famCRC.length) out.qs.push('A close relative had colon or rectal cancer. At what age should I start colon screening?');
-    if (famBR.length) out.qs.push('A close relative had breast or ovarian cancer. Should I start screening earlier, and is genetic counselling useful?');
-    out.qs.push('Is there anything else in my family history that I should be screened for?');
+    if (famCRC.length) out.qs.push('A close relative had colon or rectal cancer. At what age should I start colon cancer checks?');
+    if (famBR.length) out.qs.push('A close relative had breast or ovarian cancer. Should I start checks earlier, and is genetic counselling useful?');
+    out.qs.push('Is there anything else in my family history that I should be tested for?');
 
     /* ===== Family members already diagnosed ===== */
     fam.forEach(function (m) {
@@ -1579,17 +1642,17 @@ ul.items li { font-size: 15px; line-height: 1.55; }
       var has = COND.filter(function (x) { return c[x[0]]; });
       if (!has.length) return;
       var items = [];
-      if (c.dm) items.push(li('Diabetes can affect the heart, kidneys, eyes and the nerves of the feet. Ask the doctor which of these checks are due.', 'general', 'ADA'));
-      if (c.htn) items.push(li('Uncontrolled high blood pressure leads to stroke, heart failure and kidney failure. Regular readings and taking medicines without gaps are the main protection.', 'guide', 'India MoHFW'));
-      if (c.cvd || c.stroke) items.push(li('After a heart event or stroke, the chance of another stays higher. Regular cardiology follow-up and unbroken medicines matter, and so do blood pressure, sugar and cholesterol checks.', 'general'));
-      if (c.chol) items.push(li('High cholesterol needs follow-up tests. The doctor sets how often.', 'general'));
-      if (c.ckd) items.push(li('Kidney disease needs regular eGFR and urine tests. Blood pressure and sugar should stay controlled, painkillers such as diclofenac or ibuprofen should be avoided unless the doctor says otherwise, and every doctor should be told about the kidney problem before new medicines.', 'general'));
-      if (c.thy) items.push(li('Thyroid disease needs a TSH test now and then and medicine taken regularly as advised.', 'general'));
-      if (c.uro) items.push(li('A weak flow, repeated infections or getting up often at night should be assessed. A blockage left alone can strain the bladder and kidneys.', 'general'));
-      if (c.pros) items.push(li('After prostate cancer, the urologist sets follow-up PSA tests. Brothers and sons should ask about PSA testing from age 45.', 'guide', 'American Cancer Society'));
-      if (c.crc) items.push(li('Brothers, sisters and children of someone with colon or rectal cancer should ask about earlier colon screening.', 'general'));
-      if (c.brca) items.push(li('Sisters, daughters and sometimes brothers of someone with breast or ovarian cancer should ask about earlier screening and genetic counselling.', 'general'));
-      if ((c.dm && (c.htn || c.cvd || c.stroke)) || (c.htn && (c.cvd || c.stroke))) items.push(li('Several conditions together raise the risk further, so every one of them needs to be controlled, not only the one that caused the last hospital visit.', 'general'));
+      if (c.dm) items.push(li('Diabetes can harm the heart, kidneys, eyes and the nerves of the feet. Ask the doctor which of these checks are due.', 'general', 'ADA'));
+      if (c.htn) items.push(li('High blood pressure that is not controlled can lead to stroke, heart failure and kidney failure. Regular readings and taking medicines without gaps are the main protection.', 'guide', 'India MoHFW'));
+      if (c.cvd || c.stroke) items.push(li('After a heart attack or stroke, the chance of another one stays higher. Regular visits to the heart doctor and taking medicines without gaps matter, and so do blood pressure, sugar and cholesterol checks.', 'general'));
+      if (c.chol) items.push(li('High cholesterol needs repeat tests. The doctor will say how often.', 'general'));
+      if (c.ckd) items.push(li('Kidney disease needs regular kidney blood tests (eGFR) and urine tests. Blood pressure and sugar should stay under control. Painkillers such as diclofenac or ibuprofen should be avoided unless the doctor says otherwise, and every doctor should be told about the kidney problem before giving new medicines.', 'general'));
+      if (c.thy) items.push(li('A thyroid problem needs a TSH test now and then, and medicine taken regularly as advised.', 'general'));
+      if (c.uro) items.push(li('A weak urine flow, repeated infections or getting up often at night should be seen by a doctor. A blockage left alone can strain the bladder and kidneys.', 'general'));
+      if (c.pros) items.push(li('After prostate cancer, the urologist decides when to repeat the PSA test. Brothers and sons should ask about PSA testing from age 45.', 'guide', 'American Cancer Society'));
+      if (c.crc) items.push(li('Brothers, sisters and children of someone with colon or rectal cancer should ask about colon cancer checks at an earlier age.', 'general'));
+      if (c.brca) items.push(li('Sisters, daughters and sometimes brothers of someone with breast or ovarian cancer should ask about earlier checks and genetic counselling.', 'general'));
+      if ((c.dm && (c.htn || c.cvd || c.stroke)) || (c.htn && (c.cvd || c.stroke))) items.push(li('Having several illnesses together raises the risk even more, so every one of them needs to be kept under control, not only the one that caused the last hospital visit.', 'general'));
       out.famcare.push({ label: m.label, has: has.map(function (x) { return x[1].toLowerCase(); }), items: items });
     });
 
@@ -1614,7 +1677,7 @@ ul.items li { font-size: 15px; line-height: 1.55; }
   /* ---------- checks on what was typed ---------- */
   function warnHTML(p) {
     var w = [];
-    if (p.sys != null && p.dia != null && p.sys <= p.dia) w.push('The top blood pressure number is not higher than the bottom one. Check that they are in the right boxes.');
+    if (p.sys != null && p.dia != null && p.sys <= p.dia) w.push('The top blood pressure number is not higher than the bottom one. Please check that they are in the right boxes.');
     if (p.ht != null && (p.ht < 120 || p.ht > 215)) w.push('Height of ' + p.ht + ' cm looks unusual. It must be in centimetres.');
     if (p.wt != null && (p.wt < 30 || p.wt > 220)) w.push('Weight of ' + p.wt + ' kg looks unusual. It must be in kilograms.');
     if (p.waist != null && (p.waist < 50 || p.waist > 170)) w.push('Waist of ' + p.waist + ' cm looks unusual. It must be in centimetres.');
@@ -1624,7 +1687,7 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     if (p.hb != null && (p.hb < 4 || p.hb > 20)) w.push('Haemoglobin of ' + p.hb + ' g/dL looks unusual. Check the number and unit.');
     if (p.tsh != null && p.tsh > 100) w.push('TSH of ' + p.tsh + ' is extremely high. Check the number and unit.');
     if (p.psa != null && p.psa > 100) w.push('PSA of ' + p.psa + ' looks unusual. Check the number.');
-    if (p.age != null && p.age < 18) w.push('This tool is written for adults. Results for a child or teenager are not meaningful, so ask a paediatrician.');
+    if (p.age != null && p.age < 18) w.push('This tool is made for adults. Results for a child or teenager are not meaningful, so please ask a children\'s doctor.');
     if (!w.length) return '';
     return '<div class="warnbox" role="alert"><strong>Please check what you typed</strong><ul>' + w.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>';
   }
@@ -1650,10 +1713,10 @@ ul.items li { font-size: 15px; line-height: 1.55; }
 
   function render(p, fam, out) {
     var h = '';
-    h += '<section class="section"><div class="section-head"><h2>Where you stand</h2><p>The areas where your family history and your own numbers matter most.</p></div><div class="cards">' + out.cards.map(cardHTML).join('') + '</div></section>';
+    h += '<section class="section"><div class="section-head"><h2>Where you stand</h2><p>The health areas where your family history and your own numbers matter most.</p></div><div class="cards">' + out.cards.map(cardHTML).join('') + '</div></section>';
 
-    var groups = [[1, 'Do these first'], [2, 'This year'], [3, 'Ongoing or routine']];
-    h += '<section class="section"><div class="section-head"><h2>Tests to ask about, in order</h2><p>Bring this list to your doctor. They decide what is right for you. The order follows the levels above and is a simple rule used in this prototype.</p></div>' +
+    var groups = [[1, 'Do these first'], [2, 'This year'], [3, 'Regular or routine']];
+    h += '<section class="section"><div class="section-head"><h2>Tests to ask about, in order</h2><p>Show this list to your doctor. The doctor decides what is right for you. The order follows the levels above and comes from a simple rule we wrote for this test version.</p></div>' +
       groups.map(function (g) {
         var list = out.tests.filter(function (t) { return t.pri === g[0]; });
         return list.length ? '<h3 class="grp">' + g[1] + '</h3><div class="tests">' + list.map(testHTML).join('') + '</div>' : '';
@@ -1663,21 +1726,21 @@ ul.items li { font-size: 15px; line-height: 1.55; }
 
     h += '<section class="section"><div class="section-head"><h2>What to take care of</h2><p>Based on the habits you entered.</p></div><div class="block"><ul class="items">' + out.care.join('') + '</ul></div></section>';
 
-    h += '<section class="section"><div class="section-head"><h2>Plan ahead</h2><p>General suggestions. This is not financial advice.</p></div><div class="block"><ul class="items">' + out.plan.join('') + '</ul></div></section>';
+    h += '<section class="section"><div class="section-head"><h2>Plan ahead</h2><p>General ideas only. This is not financial advice.</p></div><div class="block"><ul class="items">' + out.plan.join('') + '</ul></div></section>';
 
     if (out.famcare.length) {
-      h += '<section class="section"><div class="section-head"><h2>Looking after family already diagnosed</h2><p>What tends to follow each condition, so nothing arrives as a surprise.</p></div><div class="block">' +
+      h += '<section class="section"><div class="section-head"><h2>Looking after family who already have an illness</h2><p>What often goes along with each illness, so nothing comes as a surprise.</p></div><div class="block">' +
         out.famcare.map(function (f) { return '<div class="member-out"><h3>' + f.label + ': ' + f.has.join(', ') + '</h3><ul class="items">' + f.items.join('') + '</ul></div>'; }).join('') +
         '</div></section>';
     }
 
     h += '<section class="section"><div class="section-head"><h2>Questions to ask your doctor</h2></div><div class="block"><ul class="items">' + out.qs.map(function (q) { return '<li><span>' + q + '</span></li>'; }).join('') + '</ul></div></section>';
 
-    h += '<div class="emergency"><strong>Get emergency care straight away</strong> for chest pain or pressure, breathlessness, fainting, sudden weakness or numbness on one side, trouble speaking, being unable to pass urine, or a very high blood pressure reading with a severe headache. Do not wait for a test appointment.</div>';
+    h += '<div class="emergency"><strong>Get emergency help straight away</strong> for chest pain or a heavy feeling in the chest, trouble breathing, fainting, sudden weakness or numbness on one side of the body, trouble speaking, being unable to pass urine, or very high blood pressure with a severe headache. Do not wait for an appointment. Call 112 or 108.</div>';
 
     h += '<section class="section"><div class="actions"><button type="button" class="btn primary" id="copyBtn">Copy summary for my doctor</button><button type="button" class="btn" id="docPrint"' + (inFrame ? ' hidden' : '') + '>Print doctor sheet</button><span class="status" id="copyStatus" role="status"></span></div><textarea id="copyBox" readonly hidden aria-label="Summary text"></textarea></section>';
 
-    h += '<details><summary>How this was worked out</summary><div class="inner">';
+    h += '<details><summary>How we worked this out</summary><div class="inner">';
     if (out.method.idrs) {
       var m = out.method.idrs, pa = m.parts;
       h += '<div><h3>Indian Diabetes Risk Score</h3><div class="scroll-x"><table><thead><tr><th>Part</th><th class="num">Points</th></tr></thead><tbody>' +
@@ -1685,14 +1748,14 @@ ul.items li { font-size: 15px; line-height: 1.55; }
         '<tr><td>Waist (men under 90 cm: 0, 90 to 99: 10, 100 or more: 20. Women under 80: 0, 80 to 89: 10, 90 or more: 20)</td><td class="num">' + pa.waist + '</td></tr>' +
         '<tr><td>Physical activity (0, 10, 20 or 30)</td><td class="num">' + pa.act + '</td></tr>' +
         '<tr><td>Parents with diabetes (none: 0, one: 10, both: 20)</td><td class="num">' + pa.fam + '</td></tr>' +
-        '<tr><td><strong>Total</strong> (under 30 lower, 30 to 50 moderate, 60 or more higher)</td><td class="num"><strong>' + m.total + '</strong></td></tr>' +
+        '<tr><td><strong>Total</strong> (under 30 lower, 30 to 50 medium, 60 or more higher)</td><td class="num"><strong>' + m.total + '</strong></td></tr>' +
         '</tbody></table></div></div>';
     } else {
       h += '<p>The diabetes score needs age, waist and activity level.</p>';
     }
-    h += '<div><h3>What is solid and what is not</h3><ul class="src-list">' +
+    h += '<div><h3>What is firm and what is not</h3><ul class="src-list">' +
       '<li>Indian sources come first wherever one exists: ICMR, the Ministry of Health, ICMR-NIN and the Cardiological Society of India. International guidelines fill the gaps and are always named in the tag.</li>' +
-      '<li>The diabetes score and its bands come from a published, validated Indian tool.</li>' +
+      '<li>The diabetes score and its bands come from a published Indian tool that was tested on Indian people.</li>' +
       '<li>Diabetes testing: India\'s national programme screens everyone from 30, and ICMR lists age over 30 with overweight and a risk factor as a reason to test. The American Diabetes Association starts at 35 and repeats every 3 years. Where they differ, the page shows both and the earlier one is the safer reading.</li>' +
       '<li>Blood pressure advice follows the Indian Ministry of Health guideline and national programme. The yearly frequency for people with risk factors is a general suggestion.</li>' +
       '<li>Heart: the Indian cholesterol targets and the advice to test Lipoprotein(a) once come from the Cardiological Society of India. The premature heart disease age for women is 65 in ACC/AHA and 60 in the Indian guideline, and this tool uses 65.</li>' +
@@ -1701,10 +1764,10 @@ ul.items li { font-size: 15px; line-height: 1.55; }
       '<li>PSA: the age (after 50, with a life expectancy of 10 to 15 years or more) and the PSA of 4 as a point for further evaluation come from the executive summary of the Urological Society of India guidelines (2022). That summary gives no testing interval, so the 2-year and yearly schedules and the 45-with-family-history advice come from the American Cancer Society. Guidelines differ on screening men at average risk, which is why it is framed as a decision with a doctor.</li>' +
       '<li>Repeated urine infections in men are a reason to look for a prostate or bladder cause. A cause-and-effect link with prostate cancer is not established.</li>' +
       '<li>Thyroid: the tests and the reasons to treat a mildly high TSH come from the ICMR hypothyroidism workflow. That workflow gives no rule for who should be screened and no TSH reference range, so the range of 0.4 to 4.0 is a commonly used value that labs adjust. Colon: India\'s national programme has no colon screening, so the age (45 to 75) follows the US Preventive Services Task Force, and the family-history rule (start at 40 or 10 years before the relative, colonoscopy every 5 years) follows the US Multi-Society Task Force. Breast advice beyond the national programme is general.</li>' +
-      '<li>Insurance: the waiting-period cap (36 months), the 60-month moratorium, portability and the one-hour cashless decision come from the IRDAI Master Circular of 29 May 2024 (read from the IRDAI listing and a full-text copy of the circular). Section 80D is still taken from a consumer site, not the Act. The 6-month reserve is a rule of thumb, not financial advice.</li>' +
-      '<li>The Higher, Moderate and Lower groupings and the order of tests are simple rules written for this prototype. A doctor should replace them with validated calculators.</li>' +
-      '<li>Alcohol, food and anaemia tips follow ICMR-NIN. Cancer screening for your age follows the national programme. The fatty liver advice for people with diabetes comes from a news summary of an Indian guideline, not the guideline text. Haemoglobin cut-offs and bands follow the Anemia Mukt Bharat guidelines, which use the WHO values. The B12 and vitamin D points are general advice, and I found no Indian guideline that asks everyone to be tested for vitamin D.</li>' +
-      '<li>Helplines and portals in the Find care section: Tele-MANAS (14416) is from a Health Ministry press release of April 2023, so check that the number still works. The government portal links are the official addresses as I know them. My tools could not open those sites, so if one fails, please tell us.</li>' +
+      '<li>Insurance: the waiting-period cap (36 months), the 60-month rule on rejecting claims, moving a policy to another insurer, and the one-hour answer on cashless treatment come from the IRDAI Master Circular of 29 May 2024 (read from the IRDAI listing and a full-text copy of the circular). Section 80D is still taken from a consumer site, not the Act. The 6-month reserve is a rule of thumb, not financial advice.</li>' +
+      '<li>The Higher, Moderate and Lower labels and the order of the tests are simple rules we wrote for this test version. A doctor should check them or replace them with proven calculators.</li>' +
+      '<li>Alcohol, food and anaemia tips follow ICMR-NIN. Cancer screening for your age follows the national programme. The fatty liver advice for people with diabetes comes from a news summary of an Indian guideline, not the guideline text. Haemoglobin cut-offs and bands follow the Anemia Mukt Bharat guidelines, which use the WHO values. The B12 and vitamin D points are general advice, and we found no Indian guideline that asks everyone to be tested for vitamin D.</li>' +
+      '<li>Helplines and portals in the Find care section: Tele-MANAS (14416) is from a Health Ministry press release of April 2023, so check that the number still works. The government portal links are the official addresses as I know them. We could not open those sites to check them, so if a link does not work, please tell us.</li>' +
       '<li>Not covered: lung and skin cancers, mental health beyond a helpline link, bone health, pregnancy, children, adult vaccines, your medicines, and eyes, hearing and falls in older people. Reports are never uploaded. You can paste report text and the tool reads the values on your device, and you confirm each one.</li>' +
       '<li>Sources were last re-checked on 13 Nov 2026. Guidelines change, so the rules are re-checked every 6 months and the date shown at the bottom of the page is updated each time.</li>' +
       '</ul></div>';
@@ -1803,7 +1866,7 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     if (p.age == null) {
       lastOut = null; lastText = '';
       $('liveBar').hidden = true;
-      $('results').innerHTML = '<div class="empty"><h2>Start with your age</h2><p style="margin-top:8px">Enter your age and sex on the left. Results appear here and update as you type.</p></div>';
+      $('results').innerHTML = '<div class="empty"><h2>Start with your age</h2><p style="margin-top:8px">Enter your age and whether you are male or female. Your results will appear here and change as you type.</p></div>';
       return;
     }
     var fam = famView();
@@ -1815,7 +1878,7 @@ ul.items li { font-size: 15px; line-height: 1.55; }
   function goToResults() {
     var st = $('seeStatus');
     if (num('age') == null) {
-      st.textContent = 'Enter your age first, then press the button again.';
+      st.textContent = 'Please enter your age first, then press the button again.';
       $('age').focus();
       return;
     }
@@ -1853,7 +1916,7 @@ ul.items li { font-size: 15px; line-height: 1.55; }
   function setExampleBar(on) {
     exampleOn = on;
     $('exampleBar').hidden = false;
-    $('exampleMsg').textContent = on ? 'Example profile loaded. Change any field, or clear it and enter your own.' : 'Want to see how it works first? Load a sample family.';
+    $('exampleMsg').textContent = on ? 'Sample family loaded. Change anything, or clear it and enter your own details.' : 'Want to see how it works first? Load a sample family.';
     $('clearExample').textContent = on ? 'Clear example' : 'Load example';
   }
   $('clearExample').addEventListener('click', function () {
@@ -2180,8 +2243,18 @@ ul.items li { font-size: 15px; line-height: 1.55; }
   });
 
   /* ---------- version, changes, environment ---------- */
-  var APP_VERSION = '0.8.0', RULES_DATE = '13 Nov 2026';
+  var APP_VERSION = '1.0.0', RULES_DATE = '13 Nov 2026';
   var CHANGES = [
+    ['1.0.0 · 13 Nov 2026', [
+      'New soft violet look, with a short Home page and a separate Check my family page',
+      'Plainer words everywhere: medical terms are now explained, and test names say what they check',
+      'No medical rule, number or source was changed'
+    ]],
+    ['0.9.0 · 13 Nov 2026', [
+      'Two pages: a short Home and a separate Check my family page, so no one has to read everything top to bottom',
+      'Emergency card and feedback now fold away on the tool page',
+      'Design options were tried. No medical rule changed'
+    ]],
     ['0.8.0 · 13 Nov 2026', [
       'New look: calm warm palette, serif headings, glass navigation bar, hero with honest trust points, bento overview, clearer cards and focus states',
       'No change to any medical rule'
@@ -2204,7 +2277,7 @@ ul.items li { font-size: 15px; line-height: 1.55; }
     ['0.5.0 · earlier', ['First shareable version: diabetes, heart and blood pressure with family history, saved profiles, tester feedback by WhatsApp']]
   ];
   var inFrame = (function () { try { return window.top !== window.self; } catch (e) { return true; } })();
-  $('foot').innerHTML = 'Family Health Planner · version ' + APP_VERSION + ' · rules and sources re-checked ' + RULES_DATE + ' · doctor review: not done yet' +
+  $('foot').innerHTML = 'Family Health Planner · version ' + APP_VERSION + ' · rules and sources re-checked ' + RULES_DATE + ' · a doctor has not checked it yet' +
     (inFrame ? '' : ' · <a href="review.html">Review sheet for doctors</a> · <a href="privacy.html">Privacy and terms</a> · <a href="hindi.html">हिन्दी में जानकारी</a> · <a href="https://github.com/vedasuite/family-health-planner/blob/main/RULES.md" target="_blank" rel="noopener">Rules and sources</a>');
   $('changeBody').innerHTML = CHANGES.map(function (c) { return '<div><h3>' + c[0] + '</h3><ul class="src-list">' + c[1].map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>'; }).join('');
 

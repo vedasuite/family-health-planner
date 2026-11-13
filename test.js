@@ -26,7 +26,7 @@ function eq(a, b, m) { if (a !== b) throw new Error((m || '') + ' expected ' + J
 function yes(c, m) { if (!c) throw new Error(m || 'expected true'); }
 
 t('blank start shows no results and no prefilled values', () => { const a = make(); yes(/Start with your age/.test(a.text()) || a.$('results').textContent.includes('Start with your age')); eq(a.$('age').value, ''); });
-t('IDRS adds up: 38M waist 96, inactive, father diabetes = 70', () => { const a = make(); a.set('age', 38); a.set('height', 172); a.set('weight', 78); a.set('waist', 96); a.set('activity', '30'); a.fam('father', ['dm']); yes(/Risk Score: 70 out of 100/.test(a.text()), 'IDRS total'); eq(a.level('Diabetes'), 'Higher'); });
+t('IDRS adds up: 38M waist 96, inactive, father diabetes = 70', () => { const a = make(); a.set('age', 38); a.set('height', 172); a.set('weight', 78); a.set('waist', 96); a.set('activity', '30'); a.fam('father', ['dm']); yes(/Risk Score is 70 out of 100/.test(a.text()), 'IDRS total'); eq(a.level('Diabetes'), 'Higher'); });
 t('premature heart: father event at 52 gives Higher', () => { const a = make(); a.set('age', 32); a.fam('father', ['cvd'], 52); eq(a.level('Heart and stroke'), 'Higher'); yes(a.tests().includes('Lipoprotein(a), once in life')); });
 t('heart event at 66 is not premature for a father', () => { const a = make(); a.set('age', 40); a.fam('father', ['cvd'], 66); eq(a.level('Heart and stroke'), 'Moderate'); });
 t('BP 185/112 is flagged same day', () => { const a = make(); a.set('age', 50); a.set('sys', 185); a.set('dia', 112); eq(a.level('Blood pressure'), 'Check today'); });
@@ -53,7 +53,7 @@ t('linked relative uses the saved profile', () => {
   a.$('profileNew').click(); a.set('age', 68); a.set('o-dm', true); a.set('o-cvd', true); a.set('o-evage', 52); a.set('profileName', 'Papa'); a.$('profileSave').click();
   a.$('profileNew').click(); a.set('age', 40); a.$('addMember').click();
   const ls = a.d.querySelector('[data-f="link"]'); ls.value = 'Papa'; ls.dispatchEvent(new a.w.Event('change', { bubbles: true }));
-  eq(a.level('Heart and stroke'), 'Higher'); yes(/Father had a heart or stroke event at 52/.test(a.text()));
+  eq(a.level('Heart and stroke'), 'Higher'); yes(/Father had a heart attack or stroke at 52/.test(a.text()));
 });
 t('emergency card text includes entered details', () => { const a = make(); a.set('age', 70); a.set('ec-name', 'Papa'); a.set('ec-blood', 'B+'); yes(/Name: Papa/.test(a.$('ecPreview').textContent)); yes(/Blood group: B\+/.test(a.$('ecPreview').textContent)); });
 t('delete everything clears saved data', () => { const a = make(); a.set('age', 30); a.set('profileName', 'X'); a.$('profileSave').click(); a.$('wipeBtn').click(); a.$('wipeBtn').click(); eq(a.w.localStorage.getItem('family-health-planner-profiles-v1'), null); });
@@ -99,7 +99,7 @@ t('backup code round trip adds profiles and renames clashes', () => {
 });
 t('backup import rejects junk and does not break', () => { const a = make(); a.$('bkIn').value = 'FHP1.not-base64!!'; a.$('bkImport').click(); yes(/could not be read|does not look/.test(a.$('bkStatus').textContent)); a.$('bkIn').value = 'hello'; a.$('bkImport').click(); yes(/does not look like/.test(a.$('bkStatus').textContent)); });
 t('find care section has Tele-MANAS and emergency numbers', () => { const a = make(); const x = a.$('careBox').textContent; yes(/14416/.test(x) && /112/.test(x) && /eSanjeevani/.test(x)); });
-t('version is 0.8.0', () => { const a = make(); yes(/version 0\.8\.0/.test(a.$('foot').textContent)); });
+t('version is 1.0.0', () => { const a = make(); yes(/version 1\.0\.0/.test(a.$('foot').textContent)); });
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);
