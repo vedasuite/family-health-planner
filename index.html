@@ -112,6 +112,19 @@ legend { font-family: var(--font-display); font-weight: 600; font-size: 16px; pa
 .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .field > span, .age-wrap { font-size: 13px; font-weight: 500; color: var(--muted); }
 .hint { font-size: 12.5px; color: var(--muted); }
+.warnbox { border: 1px solid var(--mod); background: var(--mod-bg); border-radius: 10px; padding: 10px 14px; font-size: 14px; margin-bottom: 12px; }
+.warnbox ul { margin: 6px 0 0; padding-left: 18px; }
+.rp-table { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
+.rp-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; }
+.rp-row input[type="number"] { width: 96px; min-height: 36px; font: inherit; padding: 4px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--fg); }
+.rp-row .why { color: var(--muted); font-size: 12.5px; flex-basis: 100%; }
+.care-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.care-grid > div { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-width: 0; }
+.care-grid h3 { font-size: 14px; margin: 0 0 4px; }
+.care-grid p { margin: 0; font-size: 13.5px; }
+.who-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.who-table td { border-top: 1px solid var(--line); padding: 6px 4px; vertical-align: top; }
+.who-wrap { overflow-x: auto; }
 input[type="number"], select {
   width: 100%; font: inherit; color: var(--fg); background: var(--surface-2);
   border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; min-height: 40px;
@@ -383,6 +396,16 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
           <label class="field"><span>Haemoglobin (g/dL)</span><input type="number" id="hb" inputmode="decimal" step="0.1" min="2" max="25" placeholder="e.g. 13.5"></label>
         </div>
         <p class="hint">Lab ranges differ a little between labs. A single value is never a diagnosis.</p>
+        <details id="reportBox">
+          <summary>Read values from my report (paste the text)</summary>
+          <div class="inner stack">
+            <p class="hint">Copy the text of a digital lab report (from a PDF or a message) and paste it here. The tool finds the values on this device. Nothing is uploaded, and photos or scans do not work. You confirm every value before it is used, because a reader can mis-read a report.</p>
+            <textarea id="rpText" maxlength="20000" aria-label="Pasted report text" placeholder="Paste the report text here"></textarea>
+            <div class="actions"><button type="button" class="btn" id="rpFind">Find values</button><button type="button" class="btn" id="rpClear">Clear</button></div>
+            <div class="rp-table" id="rpOut" aria-live="polite"></div>
+            <div class="actions" id="rpActions" hidden><button type="button" class="btn primary" id="rpApply">Fill the ticked values into the form</button><span class="status" id="rpStatus" role="status"></span></div>
+          </div>
+        </details>
       </fieldset>
 
       <fieldset>
@@ -490,6 +513,43 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
         <div class="actions"><a class="btn primary" id="fbWa" href="https://wa.me/" target="_blank" rel="noopener">Send on WhatsApp</a><button type="button" class="btn" id="fbCopy">Copy feedback</button><span class="status" id="fbStatus" role="status"></span></div>
         <textarea id="fbBox" readonly hidden aria-label="Feedback text"></textarea>
       </section>
+      <details id="careBox">
+        <summary>Find care and support</summary>
+        <div class="inner stack">
+          <p class="hint">If you do not have a doctor yet, start here. These are public services in India. Check timings and availability in your area.</p>
+          <div class="care-grid">
+            <div><h3>Free doctor consultation by phone or video</h3><p>eSanjeevani, the Health Ministry's telemedicine service. <a href="https://esanjeevani.mohfw.gov.in/" target="_blank" rel="noopener">esanjeevani.mohfw.gov.in</a></p></div>
+            <div><h3>Free screening near you</h3><p>Ask at the nearest Ayushman Arogya Mandir or primary health centre. The national programme screens blood pressure, sugar, and mouth, breast and cervical cancer from age 30.</p></div>
+            <div><h3>Stress, low mood, sleep, anxiety</h3><p>Tele-MANAS, free and 24 hours, in many languages: <strong>14416</strong> or <strong>1800-89-14416</strong>. It offers first-line counselling and is not for emergencies.</p></div>
+            <div><h3>Emergency</h3><p>Call <strong>112</strong> (national emergency number). <strong>108</strong> is the ambulance number in most states. Chest pain, stroke signs, heavy bleeding or severe breathlessness are emergencies. Do not wait for a test appointment.</p></div>
+            <div><h3>Health ID (ABHA)</h3><p>A free number that can link your reports and prescriptions across hospitals. <a href="https://abha.abdm.gov.in/" target="_blank" rel="noopener">abha.abdm.gov.in</a></p></div>
+            <div><h3>Government insurance hospitals</h3><p>If you qualify for Ayushman Bharat (PM-JAY), find empanelled hospitals here: <a href="https://hospitals.pmjay.gov.in/" target="_blank" rel="noopener">hospitals.pmjay.gov.in</a></p></div>
+            <div><h3>Quality labs</h3><p>NABL accredits medical labs. <a href="https://nabl-india.org/" target="_blank" rel="noopener">nabl-india.org</a> has a directory. Ask for a package price before booking.</p></div>
+            <div><h3>Check a doctor's registration</h3><p>Doctors are listed in the National Medical Commission's Indian Medical Register. <a href="https://www.nmc.org.in/information-desk/indian-medical-register/" target="_blank" rel="noopener">nmc.org.in</a></p></div>
+          </div>
+          <h3 class="subhead">Which doctor for what</h3>
+          <div class="who-wrap"><table class="who-table"><tbody>
+            <tr><td>Diabetes, blood pressure, cholesterol, thyroid, anaemia, liver</td><td>Start with a general physician or family doctor. They refer to a diabetologist, endocrinologist, cardiologist or gastroenterologist if needed.</td></tr>
+            <tr><td>Heart and stroke</td><td>Physician first. Cardiologist for chest symptoms, a past event, or a strong family history. Neurologist after a stroke.</td></tr>
+            <tr><td>Kidney</td><td>Physician first, then a nephrologist if eGFR is low or protein shows in the urine.</td></tr>
+            <tr><td>Prostate and urinary</td><td>Urologist. A physician can order the first PSA and urine tests.</td></tr>
+            <tr><td>Cancer in the family</td><td>Physician, then an oncologist or a genetic counsellor when the pattern is strong.</td></tr>
+            <tr><td>Cancer screening from 30</td><td>Ayushman Arogya Mandir, primary health centre or a gynaecologist for breast and cervical checks.</td></tr>
+          </tbody></table></div>
+        </div>
+      </details>
+
+      <details id="backupBox">
+        <summary>Move my saved profiles to another phone or computer</summary>
+        <div class="inner stack">
+          <p class="hint">There is no account, so profiles stay on one device. To move them, copy a backup code here and paste it on the other device. The code contains the health details you saved, in a form anyone can decode, so send it only to yourself or to a person you trust.</p>
+          <div class="actions"><button type="button" class="btn" id="bkMake">Make backup code</button><button type="button" class="btn" id="bkCopy" hidden>Copy code</button></div>
+          <textarea id="bkOut" readonly hidden aria-label="Backup code"></textarea>
+          <label class="field"><span>Paste a backup code to bring profiles in</span><textarea id="bkIn" maxlength="400000" aria-label="Backup code to import"></textarea></label>
+          <div class="actions"><button type="button" class="btn" id="bkImport">Add these profiles</button><span class="status" id="bkStatus" role="status"></span></div>
+        </div>
+      </details>
+
       <details id="privacyBox">
         <summary>Privacy and your data</summary>
         <div class="inner">
@@ -667,6 +727,14 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     'Lp(a) society statements': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10945898',
     'AAFP 2023 review': 'https://www.aafp.org/pubs/afp/issues/2023/1200/chronic-kidney-disease.html',
     'American Cancer Society': 'https://www.cancer.org/latest-news/prostate-cancer-screening-faq.html',
+    'USI 2022': 'https://pubmed.ncbi.nlm.nih.gov/36568450/',
+    'ICMR STW Hypothyroidism': 'https://icmr.gov.in/icmrobject/uploads/STWs/1726567243_hypothyroidism.pdf',
+    'Anemia Mukt Bharat': 'https://www.nhm.gov.in/New-Update-2025-26/Nutrition/AMB-guidelines/AMB-Abhiyaan-Guidelines.pdf',
+    'USPSTF colorectal': 'https://www.uspreventiveservicestaskforce.org/uspstf/document/ClinicalSummaryFinal/colorectal-cancer-screening',
+    'US Multi-Society Task Force': 'https://pmc.ncbi.nlm.nih.gov/articles/mid/NIHMS1569766/table/T1',
+    'IRDAI Master Circular 2024': 'https://irdai.gov.in/health-dept',
+    'IRDAI Master Circular, full text': 'https://mail.caalley.com/irda24/Master_Circular_on_Health_Insurance_Business_29052024.pdf',
+    'Tele-MANAS (Health Ministry, PIB)': 'https://pib.gov.in/PressReleasePage.aspx?PRID=1919200',
     'IRDAI 2024 rules, as summarised by PolicyBazaar': 'https://www.policybazaar.com/health-insurance/articles/new-irdai-health-insurance-guidelines-you-must-know',
     'Income Tax Act s.80D, as summarised by ClearTax': 'https://cleartax.in/s/medical-insurance',
     'MASLD diabetes guideline, summary': 'https://www.medboundtimes.com/medbound-blog/india-new-guidelines-diabetes-liver-health'
@@ -959,8 +1027,9 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       });
       if (famPros.length) pr.reasons.push(li('The American Cancer Society advises men with a father, brother or son who had prostate cancer to talk about PSA testing from age 45, yearly if the relative was diagnosed before 65 or more than one relative is affected, otherwise every 2 years.', 'guide', 'American Cancer Society'));
       if (uSym || famUro.length) pr.reasons.push(li('Repeated urine infections or a weak flow in a man can point to a prostate or bladder problem, such as an enlarged or inflamed prostate or a blockage. Studies have looked at a link with prostate cancer, but a cause-and-effect link is not established. The practical point is to find the cause early, because a blockage left alone can strain the bladder and kidneys.', 'general'));
-      if (p.age >= 50 && !famPros.length) pr.reasons.push(li('For men at average risk, the American Cancer Society advises PSA every 2 years from 50 to 69. Other bodies differ on whether to screen, so decide with a doctor after hearing the benefits and the risk of over-treatment.', 'guide', 'American Cancer Society'));
-      if (p.psa != null) pr.reasons.push(li(psaHigh ? 'Your PSA of ' + p.psa + ' ng/mL is at or above 4, the traditional cut-off.' : 'Your PSA of ' + p.psa + ' ng/mL is below 4, the traditional cut-off. Doctors also look at age, prostate size and the trend, so with a family history a lower value can still be followed.', 'general'));
+      if (p.age >= 50 && !famPros.length) pr.reasons.push(li('The Urological Society of India says that after 50, if life expectancy is more than about 10 to 15 years, a PSA with a digital rectal exam can be offered to men at risk. It does not set a yearly schedule in the summary I could read. The American Cancer Society adds a schedule for average risk: PSA every 2 years from 50 to 69. Bodies differ on whether to screen at average risk, so decide with a doctor after hearing the benefits and the risk of over-treatment.', 'guide', 'USI 2022; American Cancer Society'));
+      if (p.psa != null && psaHigh) pr.reasons.push(li('Your PSA of ' + p.psa + ' ng/mL is at or above 4. The Urological Society of India says a PSA of 4 can be taken as a point for further evaluation, and it gives no single cut-off for a biopsy. Between 4 and 10 it suggests extra steps, such as an MRI, which are the doctor\'s call.', 'guide', 'USI 2022'));
+      if (p.psa != null && !psaHigh) pr.reasons.push(li( 'Your PSA of ' + p.psa + ' ng/mL is below 4, the traditional cut-off. Doctors also look at age, prostate size and the trend, so with a family history a lower value can still be followed.', 'general'));
       pr.reasons.push(li('The Higher, Moderate and Lower grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
       out.cards.push(pr);
       if (own.blood) {
@@ -976,7 +1045,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
         else psaWhen = 'Talk to a doctor now. Add the age your relative was diagnosed above, because it decides between yearly and every 2 years.';
         out.tests.push({ dom: 'pros', name: 'PSA blood test', when: psaWhen, why: 'A father, brother or son with prostate cancer raises your own chance.', kind: 'guide', src: 'American Cancer Society' });
       } else if (p.age >= 50 || psaHigh) {
-        out.tests.push({ dom: 'pros', name: 'PSA blood test', when: psaHigh ? 'Repeat it with a doctor.' : 'Talk it through with a doctor. The American Cancer Society suggests every 2 years from 50 to 69 for average risk.', why: 'It is a shared decision, because PSA can lead to extra tests that were not needed.', kind: 'guide', src: 'American Cancer Society' });
+        out.tests.push({ dom: 'pros', name: 'PSA blood test', when: psaHigh ? 'Repeat it with a doctor.' : 'Talk it through with a doctor. The Urological Society of India supports PSA with a rectal exam for men at risk after 50. The American Cancer Society suggests every 2 years from 50 to 69 for average risk.', why: 'It is a shared decision, because PSA can lead to extra tests that were not needed.', kind: 'guide', src: 'USI 2022; American Cancer Society' });
       }
     }
 
@@ -999,13 +1068,14 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     }
     if (famThy.length) th.reasons.push(li(cap(names(famThy)) + (famThy.length > 1 ? ' have' : ' has') + ' thyroid disease.', 'general'));
     if (p.tsh != null) th.reasons.push(li(tshOut ? 'Your TSH of ' + p.tsh + ' mIU/L is outside 0.4 to 4.0, a commonly used range. Labs use slightly different ranges.' : 'Your TSH of ' + p.tsh + ' mIU/L is inside 0.4 to 4.0, a commonly used range. Labs use slightly different ranges.', 'general'));
-    th.reasons.push(li('There is no single rule that everyone should be screened. Many doctors check TSH when there is a family history, symptoms, or another autoimmune condition, so ask yours.', 'general'));
+    th.reasons.push(li('There is no single rule that everyone should be screened, and the ICMR workflow does not set one. Many doctors check TSH when there is a family history, symptoms, or another autoimmune condition, so ask yours.', 'general'));
+    th.reasons.push(li('The ICMR workflow for hypothyroidism uses TSH together with free T4 (or total T4), and thyroid antibodies (TPO) where available. "Subclinical" means TSH is high while T4 is normal. Even then it lists reasons a doctor may still treat, such as a large goitre, positive antibodies, heart disease, high cholesterol, infertility, depression, unexplained anaemia, or autoimmune disease in the person or family.', 'guide', 'ICMR STW Hypothyroidism'));
     th.reasons.push(li('Tell a doctor about unexplained tiredness, weight change that diet does not explain, feeling unusually cold or hot, hair fall, constipation, a racing heart, or swelling at the front of the neck.', 'general'));
     out.cards.push(th);
     if (own.thy) {
       out.tests.push({ dom: 'thy', name: 'TSH follow-up', when: 'As your doctor advises.', why: 'Shows whether the medicine dose is right.', kind: 'general' });
     } else if (famThy.length || tshOut) {
-      out.tests.push({ dom: 'thy', name: 'TSH blood test', when: tshOut ? 'Repeat it with a doctor.' : 'Ask for a baseline at your next blood test. Your doctor sets how often after that.', why: 'A relative with thyroid disease is a common reason to check once.', kind: 'general' });
+      out.tests.push({ dom: 'thy', name: 'TSH blood test', when: tshOut ? 'Repeat it with a doctor, usually together with free T4, and antibodies if your doctor advises.' : 'Ask for a baseline at your next blood test. Your doctor sets how often after that.', why: tshOut ? 'One out-of-range TSH is confirmed with a repeat and a T4 before anything is decided.' : 'A relative with thyroid disease is a common reason to check once.', kind: tshOut ? 'guide' : 'general', src: tshOut ? 'ICMR STW Hypothyroidism' : undefined });
     }
 
     /* ===== Cancer in the family ===== */
@@ -1031,7 +1101,16 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       ca.reasons.push(li('In some families, prostate, breast, ovarian and colon cancers share an inherited cause. When more than one of them appears, ask a doctor about genetic counselling.', 'general'));
       ca.reasons.push(li('The grouping above is a simple rule used in this prototype. It is not a validated score.', 'proto'));
       out.cards.push(ca);
-      if (famCRC.length) out.tests.push({ dom: 'cancer', name: 'Ask about colon screening earlier than usual', when: 'Ask your doctor when to start. Commonly cited advice is to start at 40, or 10 years before the age your relative was diagnosed, whichever is earlier.', why: 'A close relative with colon or rectal cancer raises your own chance.', kind: 'general' });
+      if (famCRC.length) {
+        var crcAges = famCRC.map(function (m) { return m.cAge; }).filter(function (a) { return a != null; });
+        var crcMin = crcAges.length ? Math.min.apply(null, crcAges) : null;
+        var crcMulti = famCRC.length > 1;
+        var crcStart = (crcMin != null && (crcMin < 60 || crcMulti)) ? Math.min(40, crcMin - 10) : 40;
+        var crcWhen = crcMin == null ? 'Add the age your relative was diagnosed, because it sets the start age. The usual rule is age 40 or 10 years before the relative\'s age, whichever is earlier.'
+          : (crcMin < 60 || crcMulti) ? 'The US Multi-Society Task Force advises a colonoscopy every 5 years starting at ' + crcStart + ' (10 years before your youngest affected relative, or 40, whichever is earlier). ' + (p.age >= crcStart ? 'You are already at that age, so ask your doctor now.' : 'Ask your doctor to plan it.')
+          : 'For a relative diagnosed at 60 or later, the same task force advises starting at 40, then screening as for average risk. ' + (p.age >= 40 ? 'You are at that age, so ask your doctor now.' : 'Ask again at 40.');
+        out.tests.push({ dom: 'cancer', name: 'Colon screening, earlier than usual', when: crcWhen, why: 'A close relative with colon or rectal cancer raises your own chance. India\'s national programme does not cover colon screening, so this follows a US guideline.', kind: 'guide', src: 'US Multi-Society Task Force' });
+      }
       if (famBR.length) out.tests.push({ dom: 'cancer', name: 'Ask about earlier breast screening and genetic counselling', when: 'Ask your doctor, especially if the cancer was found before 50 or more than one relative had it.', why: 'A close relative with breast or ovarian cancer can change when screening should start.', kind: 'general' });
     }
 
@@ -1077,11 +1156,15 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 
     /* ===== Blood and vitamins ===== */
     var hbLow = p.hb != null && p.hb < (p.sex === 'F' ? 12 : 13);
+    var hbSevere = p.hb != null && p.hb < 8;
     var b12Risk = p.diet.veg || own.metf;
     var bl = { title: 'Blood and vitamins', short: 'Blood', key: 'blood', reasons: [] };
-    if (hbLow) {
+    if (hbSevere) {
+      bl.level = 'high'; bl.levelText = 'See a doctor';
+      bl.headline = 'A haemoglobin below 8 is in the severe range used by the national anaemia programme. Please see a doctor soon, and go the same day if you are breathless, dizzy, or have chest pain or a racing heart.';
+    } else if (hbLow) {
       bl.level = 'high'; bl.levelText = 'Confirm it';
-      bl.headline = 'Your haemoglobin is below the commonly used cut-off (13 for men, 12 for women). One value is not a diagnosis, but low haemoglobin needs a doctor to find the cause.';
+      bl.headline = 'Your haemoglobin is below the cut-off used by India\'s national anaemia programme (13 for men, 12 for women who are not pregnant). One value is not a diagnosis, but low haemoglobin needs a doctor to find the cause.';
     } else if (b12Risk) {
       bl.level = 'mod'; bl.levelText = 'Moderate';
       bl.headline = 'A vegetarian diet and long-term metformin can both lower vitamin B12. A test is worth asking about.';
@@ -1089,7 +1172,9 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       bl.level = 'low'; bl.levelText = 'Lower';
       bl.headline = 'No blood or vitamin flag entered.';
     }
-    if (p.hb != null) bl.reasons.push(li(hbLow ? 'Your haemoglobin of ' + p.hb + ' g/dL is low for your sex.' : 'Your haemoglobin of ' + p.hb + ' g/dL is not low for your sex. The commonly used cut-off is 13 for men and 12 for women.', 'general'));
+    if (p.hb != null) bl.reasons.push(li(hbLow ? 'Your haemoglobin of ' + p.hb + ' g/dL is low for your sex.' : 'Your haemoglobin of ' + p.hb + ' g/dL is not low for your sex. The cut-off is 13 for men and 12 for non-pregnant women.', 'guide', 'Anemia Mukt Bharat'));
+    if (hbLow) bl.reasons.push(li('The national programme (using WHO bands) calls it mild at 11.0 to 12.9 for men and 11.0 to 11.9 for women, moderate at 8.0 to 10.9, and severe below 8.0. In pregnancy the cut-off is 11 in the first and third trimesters and 10.5 in the second. The programme advises checking for inherited blood disorders before long iron courses in people who do not respond.', 'guide', 'Anemia Mukt Bharat'));
+    if (p.sex === 'F' && p.age >= 20 && p.age <= 49 && p.hb == null) out.tests.push({ dom: 'blood', name: 'Haemoglobin (anaemia check)', when: 'Once a year.', why: 'The national anaemia programme advises a yearly haemoglobin test for women aged 20 to 49.', kind: 'guide', src: 'Anemia Mukt Bharat' });
     if (hbLow) bl.reasons.push(li('Tea and coffee reduce iron absorption. ICMR-NIN advises keeping them an hour away from meals.', 'guide', 'ICMR-NIN 2024'));
     if (p.diet.veg) bl.reasons.push(li('Vitamin B12 comes mainly from animal foods and milk products, so people who eat none or few can run low.', 'general'));
     if (own.metf) bl.reasons.push(li('Long-term metformin can lower vitamin B12. Doctors often check it from time to time.', 'general'));
@@ -1112,6 +1197,7 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
         cs.reasons.push(li('Cervical cancer: women aged 30 and above, once every 5 years.', 'guide', 'MoHFW NP-NCD'));
       }
       if (drinksDaily || drinksWeekly) cs.reasons.push(li('ICMR-NIN links alcohol with cancers of the mouth, larynx, food pipe and breast.', 'guide', 'ICMR-NIN 2024'));
+      if (p.age >= 45) cs.reasons.push(li('Colon cancer: India\'s national programme lists mouth, breast and cervical screening, not colon. For average risk, the US Preventive Services Task Force advises screening from 45 to 75 (a yearly stool test called FIT, or a colonoscopy every 10 years). Whatever your age, blood in the stool, a lasting change in bowel habit or unexplained weight loss needs a doctor.', 'guide', 'USPSTF colorectal'));
       if (own.pros || own.crc || own.brca) cs.reasons.push(li('You noted a past cancer. Follow-up for that is set by your cancer doctor, not by this list.', 'general'));
       cs.reasons.push(li('Raising the level for tobacco use is a simple rule used in this prototype.', 'proto'));
       out.cards.push(cs);
@@ -1134,9 +1220,10 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 
     /* ===== Plan ahead (money) ===== */
     var rupee = function (x) { return '₹' + Math.round(x).toLocaleString('en-IN'); };
-    out.plan.push(li('Review health insurance while no condition is diagnosed. Under the IRDAI rules in force since April 2024, a waiting period for conditions you already have when you buy can be at most 3 years, and after 5 years of continuous cover an insurer cannot reject a claim over non-disclosure, except for fraud. Declare every condition honestly.', 'guide', 'IRDAI 2024 rules, as summarised by PolicyBazaar'));
+    out.plan.push(li('Review health insurance while no condition is diagnosed. Under the IRDAI Master Circular of 29 May 2024, a waiting period for conditions you already have when you buy can be at most 36 months, and after 60 continuous months of cover an insurer cannot contest a claim over non-disclosure, except for proven fraud. Declare every condition honestly.', 'guide', 'IRDAI Master Circular 2024'));
+    out.plan.push(li('The same circular lets you port a policy to another insurer. The old insurer must send your details within 72 hours, the new one must decide within 5 days, and the sum insured and no-claim bonus carry over. It also requires a decision on a cashless hospital request within one hour. Port before the renewal date, not after.', 'guide', 'IRDAI Master Circular, full text'));
     if (p.emp) out.plan.push(li('Your cover depends on your job. It usually ends when the job does, and a new policy bought later, at an older age and with new conditions, costs more and brings waiting periods. Consider a personal policy as well.', 'general'));
-    if (p.parNoCover) out.plan.push(li('Parents who already have diabetes, heart disease or high blood pressure can still be insured, usually with waiting periods and higher premiums. IRDAI removed the upper age limit for buying a policy in April 2024. Compare policies and read the waiting period for each existing condition.', 'guide', 'IRDAI 2024 rules, as summarised by PolicyBazaar'));
+    if (p.parNoCover) out.plan.push(li('Parents who already have diabetes, heart disease or high blood pressure can still be insured, usually with waiting periods and higher premiums. The IRDAI circular asks insurers to offer health products for all ages, with no entry age cap. Premiums, tests and waiting periods still differ, so compare policies and read the waiting period for each existing condition.', 'guide', 'IRDAI Master Circular, full text'));
     if (p.expm != null && p.expm > 0) out.plan.push(li('A common rule of thumb is to keep 6 months of household expenses in an easy-to-reach reserve. For you that is about ' + rupee(p.expm * 6) + '. With a long-term condition in the family, some planners suggest more.', 'general'));
     else out.plan.push(li('Add your monthly household expenses in the Money planning section to see a reserve figure. A common rule of thumb is 6 months of expenses, kept where you can reach it fast.', 'general'));
     if (p.cover != null && p.cover > 0) out.plan.push(li('You entered ₹' + p.cover + ' lakh of cover. No rule gives the right amount. Ask an insurer or adviser to check it against hospital costs in your city, and whether it is one amount for each person or one amount shared by the whole family.', 'general'));
@@ -1199,6 +1286,24 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     });
     out.premature = premature;
     return out;
+  }
+
+  /* ---------- checks on what was typed ---------- */
+  function warnHTML(p) {
+    var w = [];
+    if (p.sys != null && p.dia != null && p.sys <= p.dia) w.push('The top blood pressure number is not higher than the bottom one. Check that they are in the right boxes.');
+    if (p.ht != null && (p.ht < 120 || p.ht > 215)) w.push('Height of ' + p.ht + ' cm looks unusual. It must be in centimetres.');
+    if (p.wt != null && (p.wt < 30 || p.wt > 220)) w.push('Weight of ' + p.wt + ' kg looks unusual. It must be in kilograms.');
+    if (p.waist != null && (p.waist < 50 || p.waist > 170)) w.push('Waist of ' + p.waist + ' cm looks unusual. It must be in centimetres.');
+    if (p.creat != null && p.creat > 6) w.push('Creatinine of ' + p.creat + ' is very high for mg/dL. If your report is in micromol/L, divide by 88.4 first.');
+    if (p.ldl != null && p.ldl < 20) w.push('LDL of ' + p.ldl + ' looks like mmol/L. This tool needs mg/dL. Multiply mmol/L by 38.7.');
+    if (p.a1c != null && p.a1c > 14) w.push('HbA1c of ' + p.a1c + '% is very high. Check the number.');
+    if (p.hb != null && (p.hb < 4 || p.hb > 20)) w.push('Haemoglobin of ' + p.hb + ' g/dL looks unusual. Check the number and unit.');
+    if (p.tsh != null && p.tsh > 100) w.push('TSH of ' + p.tsh + ' is extremely high. Check the number and unit.');
+    if (p.psa != null && p.psa > 100) w.push('PSA of ' + p.psa + ' looks unusual. Check the number.');
+    if (p.age != null && p.age < 18) w.push('This tool is written for adults. Results for a child or teenager are not meaningful, so ask a paediatrician.');
+    if (!w.length) return '';
+    return '<div class="warnbox" role="alert"><strong>Please check what you typed</strong><ul>' + w.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>';
   }
 
   /* ---------- drawing the results ---------- */
@@ -1270,13 +1375,15 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       '<li>Heart: the Indian cholesterol targets and the advice to test Lipoprotein(a) once come from the Cardiological Society of India. The premature heart disease age for women is 65 in ACC/AHA and 60 in the Indian guideline, and this tool uses 65.</li>' +
       '<li>Food and activity advice follows the ICMR-NIN Dietary Guidelines for Indians 2024.</li>' +
       '<li>Kidney: the checks follow an ICMR workflow and a 2023 clinical review. The eGFR is worked out with the CKD-EPI equation, which the ICMR workflow names.</li>' +
-      '<li>PSA ages and how often follow the American Cancer Society. I did not find an Indian guideline for routine PSA testing that I could read, so this one is international. Guidelines differ on whether to screen men at average risk, which is why it is framed as a decision with a doctor.</li>' +
+      '<li>PSA: the age (after 50, with a life expectancy of 10 to 15 years or more) and the PSA of 4 as a point for further evaluation come from the executive summary of the Urological Society of India guidelines (2022). That summary gives no testing interval, so the 2-year and yearly schedules and the 45-with-family-history advice come from the American Cancer Society. Guidelines differ on screening men at average risk, which is why it is framed as a decision with a doctor.</li>' +
       '<li>Repeated urine infections in men are a reason to look for a prostate or bladder cause. A cause-and-effect link with prostate cancer is not established.</li>' +
-      '<li>The thyroid, colon and breast advice is general advice, not a single guideline. The TSH range of 0.4 to 4.0 and the PSA cut-off of 4 are commonly used values that labs and doctors adjust.</li>' +
-      '<li>Insurance and tax points follow IRDAI rules from April 2024 and Section 80D as summarised by two consumer sites, not the original texts. The 6-month reserve is a rule of thumb, not financial advice.</li>' +
+      '<li>Thyroid: the tests and the reasons to treat a mildly high TSH come from the ICMR hypothyroidism workflow. That workflow gives no rule for who should be screened and no TSH reference range, so the range of 0.4 to 4.0 is a commonly used value that labs adjust. Colon: India\'s national programme has no colon screening, so the age (45 to 75) follows the US Preventive Services Task Force, and the family-history rule (start at 40 or 10 years before the relative, colonoscopy every 5 years) follows the US Multi-Society Task Force. Breast advice beyond the national programme is general.</li>' +
+      '<li>Insurance: the waiting-period cap (36 months), the 60-month moratorium, portability and the one-hour cashless decision come from the IRDAI Master Circular of 29 May 2024 (read from the IRDAI listing and a full-text copy of the circular). Section 80D is still taken from a consumer site, not the Act. The 6-month reserve is a rule of thumb, not financial advice.</li>' +
       '<li>The Higher, Moderate and Lower groupings and the order of tests are simple rules written for this prototype. A doctor should replace them with validated calculators.</li>' +
-      '<li>Alcohol, food and anaemia tips follow ICMR-NIN. Cancer screening for your age follows the national programme. The fatty liver advice for people with diabetes comes from a news summary of an Indian guideline, not the guideline text. Haemoglobin cut-offs, the B12 and vitamin D points are general advice.</li>' +
-      '<li>Not covered yet: lung and skin cancers, mental health, bone health, pregnancy, children, adult vaccines, and eyes, hearing and falls in older people. Reports cannot be uploaded yet, so values are typed in.</li>' +
+      '<li>Alcohol, food and anaemia tips follow ICMR-NIN. Cancer screening for your age follows the national programme. The fatty liver advice for people with diabetes comes from a news summary of an Indian guideline, not the guideline text. Haemoglobin cut-offs and bands follow the Anemia Mukt Bharat guidelines, which use the WHO values. The B12 and vitamin D points are general advice, and I found no Indian guideline that asks everyone to be tested for vitamin D.</li>' +
+      '<li>Helplines and portals in the Find care section: Tele-MANAS (14416) is from a Health Ministry press release of April 2023, so check that the number still works. The government portal links are the official addresses as I know them. My tools could not open those sites, so if one fails, please tell us.</li>' +
+      '<li>Not covered: lung and skin cancers, mental health beyond a helpline link, bone health, pregnancy, children, adult vaccines, your medicines, and eyes, hearing and falls in older people. Reports are never uploaded. You can paste report text and the tool reads the values on your device, and you confirm each one.</li>' +
+      '<li>Sources were last re-checked on 13 Nov 2026. Guidelines change, so the rules are re-checked every 6 months and the date shown at the bottom of the page is updated each time.</li>' +
       '</ul></div>';
     var L = function (u, t) { return '<li><a href="' + u + '" target="_blank" rel="noopener">' + t + '</a></li>'; };
     h += '<div><h3>Sources: Indian</h3><ul class="src-list">' +
@@ -1286,6 +1393,12 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       L(SRCURL['MoHFW NP-NCD'], 'Ministry of Health: Operational Guidelines on Prevention, Screening and Control of Hypertension, Diabetes and Common Cancers') +
       L(SRCURL['India MoHFW'], 'Government of India standard treatment guideline: Hypertension in adults') +
       L(SRCURL['CSI 2023'], 'Cardiological Society of India: dyslipidemia guidelines, executive summary (Indian Heart Journal, 2023)') +
+      L(SRCURL['USI 2022'], 'Urological Society of India guidelines for prostate cancer, executive summary (Indian Journal of Urology, 2022)') +
+      L(SRCURL['ICMR STW Hypothyroidism'], 'ICMR Standard Treatment Workflow: Hypothyroidism') +
+      L(SRCURL['Anemia Mukt Bharat'], 'Anemia Mukt Bharat guidelines (Health Ministry): haemoglobin cut-offs and screening') +
+      L(SRCURL['IRDAI Master Circular 2024'], 'IRDAI Master Circular on Health Insurance, 29 May 2024 (IRDAI listing)') +
+      L(SRCURL['IRDAI Master Circular, full text'], 'IRDAI Master Circular on Health Insurance, 29 May 2024 (full text copy)') +
+      L(SRCURL['Tele-MANAS (Health Ministry, PIB)'], 'Tele-MANAS national tele mental health helpline (Health Ministry press release)') +
       L(SRCURL['IDRS'], 'Indian Diabetes Risk Score table (Madras Diabetes Research Foundation), as used in a published study') +
       '</ul></div>';
     h += '<div><h3>Sources: international</h3><ul class="src-list">' +
@@ -1295,15 +1408,16 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
       L(SRCURL['Lp(a) society statements'], 'Society recommendations on Lipoprotein(a) testing') +
       L(SRCURL['AAFP 2023 review'], 'Chronic kidney disease review, American Family Physician 2023') +
       L(SRCURL['American Cancer Society'], 'American Cancer Society prostate screening advice') +
+      L(SRCURL['USPSTF colorectal'], 'US Preventive Services Task Force: colorectal cancer screening (ages 45 to 75)') +
+      L(SRCURL['US Multi-Society Task Force'], 'US Multi-Society Task Force: screening for relatives of people with colon cancer or advanced polyps') +
       L(SRCURL['MASLD diabetes guideline, summary'], 'Indian guideline on fatty liver (MASLD) in type 2 diabetes, news summary') +
       '</ul></div>';
     h += '<div><h3>Sources: money</h3><ul class="src-list">' +
-      L(SRCURL['IRDAI 2024 rules, as summarised by PolicyBazaar'], 'IRDAI health insurance rules from April 2024, summary') +
       L(SRCURL['Income Tax Act s.80D, as summarised by ClearTax'], 'Section 80D deduction limits, summary') +
       '</ul></div>';
     h += '</div></details>';
 
-    $('results').innerHTML = h;
+    $('results').innerHTML = warnHTML(p) + h;
 
     lastText = summaryText(p, fam, out);
     lastOut = out;
@@ -1630,9 +1744,129 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     } catch (e) { fallback(); }
   });
 
+
+  /* ---------- read values from pasted report text ---------- */
+  var RP = [
+    { id: 'hb', label: 'Haemoglobin (g/dL)', name: /h(?:a)?emoglobin|(?:^|[^a-z])hgb(?:[^a-z]|$)|(?:^|[^a-z])hb(?:[^a-z0-9]|$)/i, skip: /a1c|glyc|mch|mean corp|electro|hba/i, min: 2, max: 25, unit: /g\s*\/\s*dl|gm\s*%|g\/l/i },
+    { id: 'a1c', label: 'HbA1c (%)', name: /hb\s*a1c|hba1c|glyc(?:o)?sylated\s+h(?:a)?emoglobin|glycated\s+h(?:a)?emoglobin|(?:^|[^a-z])a1c/i, skip: /estimated|eag/i, min: 3, max: 18, unit: /%/ },
+    { id: 'ldl', label: 'LDL cholesterol (mg/dL)', name: /(?:^|[^a-z])ldl/i, skip: /vldl|ratio|hdl\s*\/|\/\s*hdl/i, min: 10, max: 500, unit: /mg\s*\/\s*dl/i, bad: /mmol/i },
+    { id: 'creat', label: 'Creatinine (mg/dL)', name: /creatinine/i, skip: /urine|clearance|ratio|albumin|egfr|24\s*h/i, min: 0.2, max: 15, unit: /mg\s*\/\s*dl/i, bad: /µmol|umol|micromol/i },
+    { id: 'tsh', label: 'TSH (mIU/L)', name: /(?:^|[^a-z])tsh(?:[^a-z]|$)|thyroid\s+stimulating\s+hormone/i, skip: /receptor|antibod/i, min: 0.01, max: 150, unit: /m?i?u\s*\/\s*m?l/i },
+    { id: 'psa', label: 'PSA total (ng/mL)', name: /(?:^|[^a-z])psa(?:[^a-z]|$)|prostate[\s-]+specific\s+antigen/i, skip: /free|ratio|density|f\s*\/\s*t|velocity/i, min: 0, max: 500, unit: /ng\s*\/\s*ml/i }
+  ];
+  function rpFirstNumber(str) {
+    var m = str.match(/(?:^|[^0-9.])(\d{1,4}(?:\.\d+)?)(?![0-9])/);
+    return m ? parseFloat(m[1]) : null;
+  }
+  function parseReport(text) {
+    var lines = String(text || '').split(/\r?\n/), found = [], seen = {};
+    RP.forEach(function (r) {
+      for (var i = 0; i < lines.length; i++) {
+        var ln = lines[i], m = ln.match(r.name);
+        if (!m || (r.skip && r.skip.test(ln))) continue;
+        var tail = ln.slice(m.index + m[0].length).replace(/^\s*\(.*?\)/, '');
+        var v = rpFirstNumber(tail);
+        if (v == null && lines[i + 1] && !r.name.test(lines[i + 1])) { tail = lines[i + 1]; v = rpFirstNumber(tail); }
+        if (v == null) continue;
+        var warn = '';
+        if (r.bad && r.bad.test(ln + ' ' + tail)) warn = 'This line seems to use a different unit. Convert it or skip it.';
+        else if (v < r.min || v > r.max) warn = 'This value is outside what the form accepts. Check the unit.';
+        if (!seen[r.id]) { seen[r.id] = 1; found.push({ id: r.id, label: r.label, value: v, line: ln.trim().slice(0, 110), warn: warn }); }
+        break;
+      }
+    });
+    var bp = String(text || '').match(/(?:blood\s+pressure|(?:^|[^a-z])bp)[^0-9\n]{0,20}(\d{2,3})\s*[\/\-]\s*(\d{2,3})/i);
+    if (bp) {
+      var sy = +bp[1], di = +bp[2];
+      found.push({ id: 'sys', label: 'BP top', value: sy, line: bp[0].trim().slice(0, 60), warn: (sy < 60 || sy > 260 || sy <= di) ? 'Check this blood pressure.' : '' });
+      found.push({ id: 'dia', label: 'BP bottom', value: di, line: '', warn: (di < 30 || di > 160) ? 'Check this blood pressure.' : '' });
+    }
+    return found;
+  }
+  var rpFound = [];
+  $('rpFind').addEventListener('click', function () {
+    rpFound = parseReport($('rpText').value);
+    var out = $('rpOut');
+    if (!rpFound.length) {
+      out.innerHTML = '<p class="hint">No values found. This works on report text that has the test name and the number on the same line. Scanned photos cannot be read. You can always type the values yourself.</p>';
+      $('rpActions').hidden = true; return;
+    }
+    out.innerHTML = rpFound.map(function (f, i) {
+      return '<div class="rp-row"><label class="chk"><input type="checkbox" data-rp="' + i + '"' + (f.warn ? '' : ' checked') + '> ' + f.label + '</label>' +
+        '<input type="number" step="any" data-rpv="' + i + '" value="' + f.value + '" aria-label="' + f.label + ' value">' +
+        (f.line ? '<span class="why">Read from: ' + esc(f.line) + '</span>' : '') +
+        (f.warn ? '<span class="why" style="color:var(--high)">' + f.warn + '</span>' : '') + '</div>';
+    }).join('');
+    $('rpActions').hidden = false;
+    say('rpStatus', '');
+  });
+  $('rpClear').addEventListener('click', function () { $('rpText').value = ''; $('rpOut').innerHTML = ''; $('rpActions').hidden = true; rpFound = []; });
+  $('rpApply').addEventListener('click', function () {
+    var n = 0;
+    rpFound.forEach(function (f, i) {
+      var cb = document.querySelector('[data-rp="' + i + '"]'), vi = document.querySelector('[data-rpv="' + i + '"]');
+      if (!cb || !cb.checked) return;
+      var v = parseFloat(vi.value); if (!isFinite(v)) return;
+      var el = $(f.id); if (!el) return;
+      el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); n++;
+    });
+    say('rpStatus', n ? 'Filled ' + n + ' value' + (n > 1 ? 's' : '') + '. Check them against your report.' : 'Nothing was ticked.');
+  });
+
+  /* ---------- backup code ---------- */
+  function b64enc(str) { return btoa(unescape(encodeURIComponent(str))); }
+  function b64dec(str) { return decodeURIComponent(escape(atob(str))); }
+  $('bkMake').addEventListener('click', function () {
+    var st = loadStore() || {};
+    if (!Object.keys(st).length) { say('bkStatus', 'No saved profiles on this device yet. Save a profile first.', true); return; }
+    var code = 'FHP1.' + b64enc(JSON.stringify({ app: 'family-health-planner', v: 1, profiles: st }));
+    $('bkOut').hidden = false; $('bkOut').value = code; $('bkCopy').hidden = false;
+    say('bkStatus', Object.keys(st).length + ' profile' + (Object.keys(st).length > 1 ? 's' : '') + ' in the code.');
+  });
+  $('bkCopy').addEventListener('click', function () {
+    var b = $('bkOut');
+    try { navigator.clipboard.writeText(b.value).then(function () { say('bkStatus', 'Copied.'); }, function () { b.select(); say('bkStatus', 'Select and copy the code.'); }); } catch (e) { b.select(); say('bkStatus', 'Select and copy the code.'); }
+  });
+  $('bkImport').addEventListener('click', function () {
+    var raw = $('bkIn').value.trim();
+    if (raw.indexOf('FHP1.') !== 0) { say('bkStatus', 'That does not look like a backup code from this tool.', true); return; }
+    var data;
+    try { data = JSON.parse(b64dec(raw.slice(5).replace(/\s+/g, ''))); } catch (e) { say('bkStatus', 'The code could not be read. Copy it again in full.', true); return; }
+    if (!data || data.app !== 'family-health-planner' || !data.profiles || typeof data.profiles !== 'object') { say('bkStatus', 'The code has no profiles in it.', true); return; }
+    var st = loadStore() || {}, added = 0;
+    Object.keys(data.profiles).slice(0, 40).forEach(function (name) {
+      var sn = data.profiles[name];
+      if (!sn || typeof sn !== 'object' || !sn.v || typeof sn.v !== 'object') return;
+      var clean = { v: {}, family: [] };
+      FIELD_IDS.forEach(function (id) { if (id in sn.v && (typeof sn.v[id] === 'string' || typeof sn.v[id] === 'boolean' || typeof sn.v[id] === 'number')) clean.v[id] = typeof sn.v[id] === 'string' ? sn.v[id].slice(0, 600) : sn.v[id]; });
+      (Array.isArray(sn.family) ? sn.family : []).slice(0, 30).forEach(function (m) {
+        if (!m || !REL[m.rel]) return;
+        var cond = {}; COND.forEach(function (c) { cond[c[0]] = !!(m.cond && m.cond[c[0]]); });
+        clean.family.push({ rel: m.rel, cond: cond, evAge: isFinite(+m.evAge) && m.evAge !== null ? +m.evAge : null, cAge: isFinite(+m.cAge) && m.cAge !== null ? +m.cAge : null, link: typeof m.link === 'string' ? m.link.slice(0, 60) : '' });
+      });
+      var nm = String(name).slice(0, 60), k = nm;
+      if (st[k]) k = nm + ' (imported)';
+      st[k] = clean; added++;
+    });
+    if (!added) { say('bkStatus', 'No usable profiles were found in the code.', true); return; }
+    if (!saveStore(st)) { say('bkStatus', 'This browser would not save them.', true); return; }
+    $('bkIn').value = '';
+    renderOverview();
+    if (typeof refreshProfileList === 'function') refreshProfileList();
+    say('bkStatus', 'Added ' + added + ' profile' + (added > 1 ? 's' : '') + '. Open them from the profile list.');
+  });
+
   /* ---------- version, changes, environment ---------- */
-  var APP_VERSION = '0.6.0', RULES_DATE = '13 Nov 2026';
+  var APP_VERSION = '0.7.0', RULES_DATE = '13 Nov 2026';
   var CHANGES = [
+    ['0.7.0 · 13 Nov 2026', [
+      'Prostate: the Urological Society of India guideline is now the first source, with the American Cancer Society for schedules',
+      'Anaemia: haemoglobin cut-offs and bands from the national Anemia Mukt Bharat guidelines, yearly check for women 20 to 49',
+      'Thyroid: ICMR workflow for confirming a high TSH. Colon: family-history start age and interval, and an honest note that India has no colon screening programme',
+      'Insurance rules now come from the IRDAI Master Circular of 29 May 2024 (36-month cap, 60-month moratorium, portability)',
+      'Checks on typed values (units, swapped BP numbers, mmol/L). Report reader that finds values in pasted text and asks you to confirm',
+      'Find care section: free tele-consultation, Tele-MANAS, emergency numbers, which doctor for what. Backup code to move profiles. Privacy and terms page, Hindi guide'
+    ]],
     ['0.6.0 · 13 Nov 2026', [
       'New cards: prostate and urinary, kidney, thyroid, liver, blood and vitamins, cancer in the family, cancer screening for your age',
       'New inputs: alcohol, lab values (LDL, creatinine, TSH, PSA, haemoglobin), PCOS, past cancers, vegetarian diet, metformin',
@@ -1643,8 +1877,8 @@ a.btn { display: inline-flex; align-items: center; text-decoration: none; }
     ['0.5.0 · earlier', ['First shareable version: diabetes, heart and blood pressure with family history, saved profiles, tester feedback by WhatsApp']]
   ];
   var inFrame = (function () { try { return window.top !== window.self; } catch (e) { return true; } })();
-  $('foot').innerHTML = 'Family Health Planner · version ' + APP_VERSION + ' · rules updated ' + RULES_DATE + ' · doctor review: not done yet' +
-    (inFrame ? '' : ' · <a href="review.html">Review sheet for doctors</a>');
+  $('foot').innerHTML = 'Family Health Planner · version ' + APP_VERSION + ' · rules and sources re-checked ' + RULES_DATE + ' · doctor review: not done yet' +
+    (inFrame ? '' : ' · <a href="review.html">Review sheet for doctors</a> · <a href="privacy.html">Privacy and terms</a> · <a href="hindi.html">हिन्दी में जानकारी</a> · <a href="https://github.com/vedasuite/family-health-planner/blob/main/RULES.md" target="_blank" rel="noopener">Rules and sources</a>');
   $('changeBody').innerHTML = CHANGES.map(function (c) { return '<div><h3>' + c[0] + '</h3><ul class="src-list">' + c[1].map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>'; }).join('');
 
   (function () {
