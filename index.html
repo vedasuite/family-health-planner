@@ -509,8 +509,11 @@ html:root .nav { border-radius: 999px; }
 html:root .site-foot { border-radius: 32px; }
 html:root .eyebrow { color: var(--accent); }
 /* ===== v1.1: layered results ===== */
-#viewTool .layout { grid-template-columns: minmax(0, 820px); justify-content: center; }
-#viewTool.res-mode .layout { grid-template-columns: minmax(0, 1040px); }
+#viewTool .layout { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) {
+  #viewTool #form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 48px; align-items: start; }
+  #viewTool #form > .example-bar, #viewTool #form > fieldset:nth-of-type(n+3), #viewTool #form > .stack { grid-column: 1 / -1; }
+}
 #viewTool:not(.res-mode) .results-col, #viewTool:not(.res-mode) .live-bar { display: none !important; }
 #viewTool.res-mode #form, #viewTool.res-mode .profile-bar, #viewTool.res-mode .ov-box, #viewTool.res-mode .notice, #viewTool.res-mode header.top, #viewTool.res-mode #langBar { display: none !important; }
 #viewTool:not(.res-mode) .res-top { display: none; }
