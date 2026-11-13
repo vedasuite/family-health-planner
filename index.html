@@ -508,6 +508,33 @@ html:root .hero-card { color: var(--fg); box-shadow: 0 24px 50px rgba(10, 6, 50,
 html:root .nav { border-radius: 999px; }
 html:root .site-foot { border-radius: 32px; }
 html:root .eyebrow { color: var(--accent); }
+/* ===== v1.1: layered results ===== */
+#viewTool .layout { grid-template-columns: minmax(0, 820px); justify-content: center; }
+#viewTool.res-mode .layout { grid-template-columns: minmax(0, 1040px); }
+#viewTool:not(.res-mode) .results-col, #viewTool:not(.res-mode) .live-bar { display: none !important; }
+#viewTool.res-mode #form, #viewTool.res-mode .profile-bar, #viewTool.res-mode .ov-box, #viewTool.res-mode .notice, #viewTool.res-mode header.top, #viewTool.res-mode #langBar { display: none !important; }
+#viewTool:not(.res-mode) .res-top { display: none; }
+.res-top { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.lens-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.lens-btn { font: inherit; font-size: 14.5px; font-weight: 600; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; cursor: pointer; min-height: 40px; }
+.lens-btn b { color: var(--muted); font-weight: 700; margin-left: 4px; }
+.lens-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.lens-btn[aria-pressed="true"] b { color: var(--accent-fg); }
+.cards[data-lens="you"] .risk[data-you="0"], .cards[data-lens="fam"] .risk[data-fam="0"], .cards[data-lens="link"] .risk[data-link="0"] { display: none; }
+.lens-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.lens { font-size: 12.5px; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.lens.f { background: var(--peach); color: var(--fg); } .lens.l { background: var(--sage); color: var(--fg); }
+details.why, details.why-d, details.more, details.quiet, details.fold { box-shadow: none; padding: 0; background: transparent; border-radius: 0; }
+details.why > summary, details.why-d > summary, details.more > summary { font-size: 14.5px; font-weight: 600; color: var(--accent); cursor: pointer; padding: 4px 0; }
+details.why[open] > summary, details.why-d[open] > summary { margin-bottom: 8px; }
+details.why-d .why { margin-bottom: 8px; }
+details.quiet > summary { font-size: 15px; color: var(--muted); cursor: pointer; padding: 6px 0; font-weight: 500; }
+details.quiet .cards { margin-top: 12px; }
+details.fold { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); padding: 6px 20px; box-shadow: var(--sh1); }
+details.fold > summary { font-family: var(--font-display); font-size: 21px; padding: 12px 0; cursor: pointer; }
+details.fold[open] { box-shadow: var(--sh2); }
+details.fold > .section { padding-bottom: 14px; }
+details.fold .section-head p { margin-bottom: 4px; }
 @media print { .nav, .site-foot { display: none; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .tile:hover, .risk:hover, .test:hover, .btn:hover, .care-grid > div:hover { transform: none !important; } }
 </style>
@@ -759,6 +786,7 @@ html:root .eyebrow { color: var(--accent); }
     </form>
 
     <main class="results-col">
+      <div class="res-top"><button type="button" class="btn" id="editBtn">&larr; Change my details</button><span class="hint">Change anything and the results update.</span></div>
       <div class="results" id="results" aria-live="polite"></div>
 
       <details id="cardBox">
@@ -939,6 +967,7 @@ html:root .eyebrow { color: var(--accent); }
     a.addEventListener('click', function (e) {
       e.preventDefault();
       focusAfter = a.getAttribute('data-focus') || '';
+      if (focusAfter) $('viewTool').classList.remove('res-mode');
       show(a.getAttribute('data-view'), true);
     });
   });
@@ -947,6 +976,7 @@ html:root .eyebrow { color: var(--accent); }
   if (hs) hs.addEventListener('click', function () {
     var b = $('clearExample');
     if (b && /load example/i.test(b.textContent)) b.click();
+    $('viewTool').classList.add('res-mode');
     show('tool', true);
   });
   var nav = document.querySelector('.nav');
@@ -1637,7 +1667,7 @@ html:root .eyebrow { color: var(--accent); }
     out.qs.push('Is there anything else in my family history that I should be tested for?');
 
     /* ===== Family members already diagnosed ===== */
-    fam.forEach(function (m) {
+    fam.concat([{ label: 'You', self: true, cond: { dm: own.dm, htn: own.htn, cvd: own.cvd, stroke: false, chol: own.chol, ckd: own.ckd, thy: own.thy, uro: false } }]).forEach(function (m) {
       var c = m.cond;
       var has = COND.filter(function (x) { return c[x[0]]; });
       if (!has.length) return;
@@ -1653,10 +1683,29 @@ html:root .eyebrow { color: var(--accent); }
       if (c.crc) items.push(li('Brothers, sisters and children of someone with colon or rectal cancer should ask about colon cancer checks at an earlier age.', 'general'));
       if (c.brca) items.push(li('Sisters, daughters and sometimes brothers of someone with breast or ovarian cancer should ask about earlier checks and genetic counselling.', 'general'));
       if ((c.dm && (c.htn || c.cvd || c.stroke)) || (c.htn && (c.cvd || c.stroke))) items.push(li('Having several illnesses together raises the risk even more, so every one of them needs to be kept under control, not only the one that caused the last hospital visit.', 'general'));
-      out.famcare.push({ label: m.label, has: has.map(function (x) { return x[1].toLowerCase(); }), items: items });
+      out.famcare.push({ label: m.label, self: !!m.self, has: has.map(function (x) { return x[1].toLowerCase(); }), items: items });
     });
+    if (own.predm && !own.dm) {
+      var pdItem = li('Prediabetes often turns into type 2 diabetes over the years if nothing changes, and it already raises heart risk a little. Eating less sugar, losing extra weight and moving more can lower that chance.', 'general', 'ADA');
+      var meFc = out.famcare.filter(function (f) { return f.self; })[0];
+      if (meFc) { meFc.items.unshift(pdItem); meFc.has.unshift('prediabetes'); } else out.famcare.push({ label: 'You', self: true, has: ['prediabetes'], items: [pdItem] });
+    }
 
     dm.key = 'dm'; ht.key = 'heart'; bp.key = 'bp';
+    var hiBMI = bmi != null && bmi >= 25;
+    var LZ = {
+      dm: { you: true, fam: fdrDM.length > 0, link: !!(own.htn || own.cvd || own.chol || own.pcos || own.gdm || own.liver) },
+      heart: { you: !!(own.cvd || p.smoke === 'current' || p.ldl != null || p.diet.salt || p.diet.fried || hiBMI || p.act >= 20 || drinksDaily), fam: famHeart.length > 0, link: !!(own.dm || own.htn || own.chol || own.ckd) },
+      bp: { you: !!(own.htn || readingHigh || hiBMI || p.smoke === 'current' || p.age > 50 || p.diet.salt || drinksDaily), fam: famHTN.length > 0, link: !!(own.dm || own.cvd || own.ckd) },
+      kidney: { you: !!(own.ckd || egfr != null || p.age >= 60), fam: famCKD.length > 0, link: !!(own.dm || own.htn || own.cvd) },
+      pros: { you: !!(own.pros || own.blood || uSym || p.psa != null || p.age >= 50), fam: famPros.length > 0 || famUro.length > 0, link: false },
+      thy: { you: !!(own.thy || p.tsh != null), fam: famThy.length > 0, link: false },
+      cancer: { you: false, fam: true, link: false },
+      liver: { you: !!(own.liver || drinksDaily || drinksWeekly || liverRF.length), fam: false, link: !!(own.dm || own.htn || own.chol) },
+      blood: { you: !!(p.hb != null || p.diet.veg), fam: false, link: !!own.metf },
+      screen: { you: true, fam: false, link: false }
+    };
+    out.cards.forEach(function (c) { c.lens = LZ[c.key] || { you: true, fam: false, link: false }; });
     var domOf = function (t) {
       if (t.dom) return t.dom;
       if (/HbA1c|glucose|Kidney, eye/.test(t.name)) return 'dm';
@@ -1694,14 +1743,30 @@ html:root .eyebrow { color: var(--accent); }
 
   /* ---------- drawing the results ---------- */
   function cardHTML(c) {
-    return '<article class="risk ' + c.level + '"><header><h3>' + c.title + '</h3><span class="pill ' + c.level + '">' + c.levelText + '</span></header>' +
-      '<p class="headline">' + c.headline + '</p><ul class="items">' + c.reasons.join('') + '</ul></article>';
+    var lz = c.lens || {};
+    var chips = (lz.you ? '<span class="lens y">Your body and habits</span>' : '') + (lz.fam ? '<span class="lens f">Family</span>' : '') + (lz.link ? '<span class="lens l">Linked to an illness you have</span>' : '');
+    return '<article class="risk ' + c.level + '" data-you="' + (lz.you ? 1 : 0) + '" data-fam="' + (lz.fam ? 1 : 0) + '" data-link="' + (lz.link ? 1 : 0) + '"><header><h3>' + c.title + '</h3><span class="pill ' + c.level + '">' + c.levelText + '</span></header>' +
+      '<p class="headline">' + c.headline + '</p>' + (chips ? '<div class="lens-row">' + chips + '</div>' : '') +
+      '<details class="why"><summary>Why we say this (' + c.reasons.length + ')</summary><ul class="items">' + c.reasons.join('') + '</ul></details></article>';
   }
   function testHTML(t) {
-    return '<div class="test"><div class="name">' + t.name + '</div><div class="when">' + t.when + '</div><div class="why">' + t.why + '</div>' + tag(t.kind, t.src) + '</div>';
+    return '<div class="test"><div class="name">' + t.name + '</div><div class="when">' + t.when + '</div><details class="why-d"><summary>Why?</summary><div class="why">' + t.why + '</div>' + tag(t.kind, t.src) + '</details></div>';
   }
   var lastText = '';
   var lastOut = null;
+  var curLens = 'all';
+  function foldSection(html) {
+    if (!html) return '';
+    var m = html.match(/<h2>(.*?)<\/h2>/);
+    return m ? '<details class="fold"><summary>' + m[1] + '</summary>' + html.replace(m[0], '') + '</details>' : html;
+  }
+  $('results').addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('[data-lens-btn]') : null;
+    if (!b) return;
+    curLens = b.getAttribute('data-lens-btn');
+    Array.prototype.forEach.call($('results').querySelectorAll('[data-lens-btn]'), function (x) { x.setAttribute('aria-pressed', x.getAttribute('data-lens-btn') === curLens ? 'true' : 'false'); });
+    var c = $('results').querySelector('.cards[data-lens]'); if (c) c.setAttribute('data-lens', curLens);
+  });
 
   function updateLive(out) {
     var bar = $('liveBar');
@@ -1713,25 +1778,41 @@ html:root .eyebrow { color: var(--accent); }
 
   function render(p, fam, out) {
     var h = '';
-    h += '<section class="section"><div class="section-head"><h2>Where you stand</h2><p>The health areas where your family history and your own numbers matter most.</p></div><div class="cards">' + out.cards.map(cardHTML).join('') + '</div></section>';
+    var isQuiet = function (c) { return c.level === 'low' && !(c.lens && (c.lens.fam || c.lens.link)); };
+    var loud = out.cards.filter(function (c) { return !isQuiet(c); }), quiet = out.cards.filter(isQuiet);
+    var nHigh = out.cards.filter(function (c) { return c.level === 'high'; }).length, nMod = out.cards.filter(function (c) { return c.level === 'mod'; }).length;
+    var cnt = function (k) { return loud.filter(function (c) { return c.lens && c.lens[k]; }).length; };
+    var lensBtn = function (k, label, n) { return '<button type="button" class="lens-btn" data-lens-btn="' + k + '" aria-pressed="' + (curLens === k ? 'true' : 'false') + '">' + label + (n != null ? ' <b>' + n + '</b>' : '') + '</button>'; };
+    h += '<section class="section"><div class="section-head"><h2>Your health picture</h2><p>' + (nHigh ? '<strong>' + nHigh + '</strong> to look at first' : 'Nothing urgent from what you entered') + (nMod ? ', <strong>' + nMod + '</strong> to keep an eye on' : '') + '. Tap "Why we say this" on any card for the details.</p></div>' +
+      '<div class="lens-tabs" role="group" aria-label="Show">' + lensBtn('all', 'All', loud.length) + lensBtn('you', 'You', cnt('you')) + lensBtn('fam', 'From family', cnt('fam')) + lensBtn('link', 'From illnesses you have', cnt('link')) + '</div>' +
+      '<div class="cards" data-lens="' + curLens + '">' + loud.map(cardHTML).join('') + '</div>' +
+      (quiet.length ? '<details class="quiet"><summary>Nothing flagged here (' + quiet.length + '): ' + quiet.map(function (c) { return c.short || c.title; }).join(', ') + '</summary><div class="cards">' + quiet.map(cardHTML).join('') + '</div></details>' : '') + '</section>';
+    var mine = out.famcare.filter(function (f) { return f.self; });
+    if (mine.length) {
+      h += '<section class="section"><div class="section-head"><h2>What your existing illnesses can lead to</h2><p>One illness can bring others with it. Knowing this early helps you act early.</p></div><div class="block">' +
+        mine.map(function (f) { return '<div class="member-out"><h3>Because of: ' + f.has.join(', ') + '</h3><ul class="items">' + f.items.join('') + '</ul></div>'; }).join('') + '</div></section>';
+    }
 
     var groups = [[1, 'Do these first'], [2, 'This year'], [3, 'Regular or routine']];
     h += '<section class="section"><div class="section-head"><h2>Tests to ask about, in order</h2><p>Show this list to your doctor. The doctor decides what is right for you. The order follows the levels above and comes from a simple rule we wrote for this test version.</p></div>' +
       groups.map(function (g) {
         var list = out.tests.filter(function (t) { return t.pri === g[0]; });
-        return list.length ? '<h3 class="grp">' + g[1] + '</h3><div class="tests">' + list.map(testHTML).join('') + '</div>' : '';
+        if (!list.length) return '';
+        if (g[0] === 1) return '<h3 class="grp">' + g[1] + '</h3><div class="tests">' + list.map(testHTML).join('') + '</div>';
+        return '<h3 class="grp">' + g[1] + '</h3><details class="more"><summary>Show ' + list.length + ' test' + (list.length > 1 ? 's' : '') + '</summary><div class="tests">' + list.map(testHTML).join('') + '</div></details>';
       }).join('') + '</section>';
 
-    h += planHTML(out);
+    h += foldSection(planHTML(out));
 
     h += '<section class="section"><div class="section-head"><h2>What to take care of</h2><p>Based on the habits you entered.</p></div><div class="block"><ul class="items">' + out.care.join('') + '</ul></div></section>';
 
-    h += '<section class="section"><div class="section-head"><h2>Plan ahead</h2><p>General ideas only. This is not financial advice.</p></div><div class="block"><ul class="items">' + out.plan.join('') + '</ul></div></section>';
+    h += foldSection('<section class="section"><div class="section-head"><h2>Plan ahead: insurance and money</h2><p>General ideas only. This is not financial advice.</p></div><div class="block"><ul class="items">' + out.plan.join('') + '</ul></div></section>');
 
-    if (out.famcare.length) {
-      h += '<section class="section"><div class="section-head"><h2>Looking after family who already have an illness</h2><p>What often goes along with each illness, so nothing comes as a surprise.</p></div><div class="block">' +
-        out.famcare.map(function (f) { return '<div class="member-out"><h3>' + f.label + ': ' + f.has.join(', ') + '</h3><ul class="items">' + f.items.join('') + '</ul></div>'; }).join('') +
-        '</div></section>';
+    var othersFc = out.famcare.filter(function (f) { return !f.self; });
+    if (othersFc.length) {
+      h += foldSection('<section class="section"><div class="section-head"><h2>Looking after family who already have an illness</h2><p>What often goes along with each illness, so nothing comes as a surprise.</p></div><div class="block">' +
+        othersFc.map(function (f) { return '<div class="member-out"><h3>' + f.label + ': ' + f.has.join(', ') + '</h3><ul class="items">' + f.items.join('') + '</ul></div>'; }).join('') +
+        '</div></section>');
     }
 
     h += '<section class="section"><div class="section-head"><h2>Questions to ask your doctor</h2></div><div class="block"><ul class="items">' + out.qs.map(function (q) { return '<li><span>' + q + '</span></li>'; }).join('') + '</ul></div></section>';
@@ -1884,14 +1965,15 @@ html:root .eyebrow { color: var(--accent); }
     }
     st.textContent = '';
     update();
-    var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    $('results').scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+    setMode(true);
   }
+  function setMode(on) {
+    $('viewTool').classList.toggle('res-mode', !!on);
+    window.scrollTo(0, 0);
+  }
+  $('editBtn').addEventListener('click', function () { setMode(false); });
   $('seeResults').addEventListener('click', goToResults);
-  $('liveBar').addEventListener('click', function () {
-    var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    $('results').scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
-  });
+  $('liveBar').addEventListener('click', function () { window.scrollTo(0, 0); });
 
   /* ---------- example and clear ---------- */
   function loadExample() {
@@ -2243,8 +2325,13 @@ html:root .eyebrow { color: var(--accent); }
   });
 
   /* ---------- version, changes, environment ---------- */
-  var APP_VERSION = '1.0.0', RULES_DATE = '13 Nov 2026';
+  var APP_VERSION = '1.1.0', RULES_DATE = '13 Nov 2026';
   var CHANGES = [
+    ['1.1.0 · 13 Nov 2026', [
+      'Results are now short cards you can filter: You, From family, From illnesses you have. Details fold away under "Why we say this"',
+      'New section: what illnesses you already have can lead to',
+      'Form and results are separate screens, so the results are easy to read. No medical rule changed'
+    ]],
     ['1.0.0 · 13 Nov 2026', [
       'New soft violet look, with a short Home page and a separate Check my family page',
       'Plainer words everywhere: medical terms are now explained, and test names say what they check',

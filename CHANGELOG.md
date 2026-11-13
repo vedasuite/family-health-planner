@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0 - 13 Nov 2026
+- Results are short cards, filterable by You / From family / From illnesses you have; details fold under "Why we say this".
+- New section on what existing illnesses can lead to.
+- Form and results are separate screens. No medical rule changed.
+
 ## 1.0.0 - 13 Nov 2026
 - New soft violet look with a short Home page and a separate Check my family page.
 - Plainer words everywhere: medical terms are explained and test names say what they check.

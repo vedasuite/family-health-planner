@@ -99,7 +99,7 @@ t('backup code round trip adds profiles and renames clashes', () => {
 });
 t('backup import rejects junk and does not break', () => { const a = make(); a.$('bkIn').value = 'FHP1.not-base64!!'; a.$('bkImport').click(); yes(/could not be read|does not look/.test(a.$('bkStatus').textContent)); a.$('bkIn').value = 'hello'; a.$('bkImport').click(); yes(/does not look like/.test(a.$('bkStatus').textContent)); });
 t('find care section has Tele-MANAS and emergency numbers', () => { const a = make(); const x = a.$('careBox').textContent; yes(/14416/.test(x) && /112/.test(x) && /eSanjeevani/.test(x)); });
-t('version is 1.0.0', () => { const a = make(); yes(/version 1\.0\.0/.test(a.$('foot').textContent)); });
+t('version is 1.1.0', () => { const a = make(); yes(/version 1\.1\.0/.test(a.$('foot').textContent)); });
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);
