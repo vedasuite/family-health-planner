@@ -508,6 +508,9 @@ html:root .hero-card { color: var(--fg); box-shadow: 0 24px 50px rgba(10, 6, 50,
 html:root .nav { border-radius: 999px; }
 html:root .site-foot { border-radius: 32px; }
 html:root .eyebrow { color: var(--accent); }
+/* ===== v1.2 ===== */
+.share-box { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--line); padding-top: 16px; margin-top: 8px; }
+.share-box h3 { font-size: 17px; }
 /* ===== v1.1: layered results ===== */
 #viewTool .layout { grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 900px) {
@@ -566,7 +569,7 @@ details.fold .section-head p { margin-bottom: 4px; }
       </div>
       <ul class="trust-row" aria-label="Why you can trust it">
         <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg><span>Based on Indian health guidelines (ICMR and the Health Ministry), not guesses</span></li>
-        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><span>Your details stay on your own phone or computer. No sign-up, no ads</span></li>
+        <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><span>Your details stay on your own phone or computer unless you choose to share them. No sign-up, no ads</span></li>
         <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2V5z"/><path d="M8 7h7"/></svg><span>Every point shows where it came from</span></li>
         <li class="pending"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>A doctor has not checked it yet. We tell you this openly</span></li>
       </ul>
@@ -626,7 +629,7 @@ details.fold .section-head p { margin-bottom: 4px; }
   </header>
 
   <div class="notice">
-    <strong>Please read.</strong> This tool gives awareness, not a diagnosis. Its rules come from health guidelines and an Indian diabetes risk score, and each result tells you which one. A doctor has not checked them yet. What you type stays on your own phone or computer. Nothing is sent anywhere.
+    <strong>Please read.</strong> This tool gives awareness, not a diagnosis. Its rules come from health guidelines and an Indian diabetes risk score, and each result tells you which one. A doctor has not checked them yet. What you type stays on your own phone or computer. Nothing is sent anywhere unless you choose to share it with the test team.
   </div>
 
   <div class="lang-bar" id="langBar" hidden>
@@ -753,9 +756,10 @@ details.fold .section-head p { margin-bottom: 4px; }
         </div>
         <p class="hint">Normal ranges differ a little from lab to lab. One number alone is never a diagnosis.</p>
         <details id="reportBox">
-          <summary>Read values from my report (paste the text)</summary>
+          <summary>Read values from my report (PDF, photo or pasted text)</summary>
           <div class="inner stack">
-            <p class="hint">Copy the text from a digital lab report (a PDF or a message) and paste it here. The tool finds the numbers on your own device. Nothing is uploaded. Photos and scans do not work. You confirm every number before it is used, because the reader can make mistakes.</p>
+            <p class="hint">Choose a lab report as a PDF or a photo, or paste its text below. The report is read on your own device and is never uploaded. A photo takes longer and can be misread, so you confirm every number before it is used. The first photo you read downloads a text-reading tool of about 10 MB.</p>
+            <div class="actions" id="rpFileRow"><label class="btn" for="rpFile">Choose PDF or photo</label><input type="file" id="rpFile" accept="application/pdf,image/*" style="position:absolute;opacity:0;width:1px;height:1px"><span class="status" id="rpFileStatus" role="status"></span></div>
             <textarea id="rpText" maxlength="20000" aria-label="Pasted report text" placeholder="Paste the report text here"></textarea>
             <div class="actions"><button type="button" class="btn" id="rpFind">Find values</button><button type="button" class="btn" id="rpClear">Clear</button></div>
             <div class="rp-table" id="rpOut" aria-live="polite"></div>
@@ -872,6 +876,13 @@ details.fold .section-head p { margin-bottom: 4px; }
         <label class="chk"><input type="checkbox" id="fbInclude"> Include my results summary (levels and tests) in the text I copy</label>
         <div class="actions"><a class="btn primary" id="fbWa" href="https://wa.me/" target="_blank" rel="noopener">Send on WhatsApp</a><button type="button" class="btn" id="fbCopy">Copy feedback</button><span class="status" id="fbStatus" role="status"></span></div>
         <textarea id="fbBox" readonly hidden aria-label="Feedback text"></textarea>
+        <div class="share-box" id="shareBox" hidden>
+          <h3>Help the test team learn (optional)</h3>
+          <p class="hint">If you agree, the test team gets your answers and results so it can see what the tool said and where it went wrong. Sent: age, sex, body measures, habits, illnesses, readings, family history (relation, illness, age) and the results. Not sent: any name, phone number, emergency card, report file or report text. It is kept in a private Google Sheet that only the test team can open. Please do not write names or phone numbers in the comments box above.</p>
+          <label class="chk"><input type="checkbox" id="shareOk"> I agree to share my answers and results with the test team</label>
+          <div class="actions"><button type="button" class="btn primary" id="shareSend" disabled>Send to test team</button><span class="status" id="shareStatus" role="status"></span></div>
+          <p class="hint" id="shareCode"></p>
+        </div>
         </div>
       </details>
       <details id="careBox">
@@ -916,7 +927,7 @@ details.fold .section-head p { margin-bottom: 4px; }
         <div class="inner">
           <ul class="src-list">
             <li>There is no account, and no server stores what you type. Saved profiles and the emergency card stay in this browser, on this device only. Anyone who uses the same browser can open them.</li>
-            <li>Nothing leaves your device unless you press Copy, Print, Invite or a WhatsApp button. On the Claude version, pressing the Explain button sends your results summary to Claude.</li>
+            <li>Nothing leaves your device unless you press Copy, Print, Invite or a WhatsApp button, or tick the box and press Send to test team. On the Claude version, pressing the Explain button sends your results summary to Claude.</li>
             <li>Like any website, the web host keeps basic visit records, such as your IP address. This page has no tracking and no ads.</li>
             <li>Health details are private. If this ever starts storing data on a server, it will first ask for your consent and follow India's Digital Personal Data Protection Act.</li>
           </ul>
@@ -2216,10 +2227,112 @@ details.fold .section-head p { margin-bottom: 4px; }
   });
 
 
+  /* ---------- read a report from a PDF or photo, on this device ---------- */
+  var LIBS = { pdf: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', pdfWorker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js', ocr: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js' };
+  var libLoads = {};
+  function loadScript(src) {
+    if (libLoads[src]) return libLoads[src];
+    libLoads[src] = new Promise(function (res, rej) {
+      var sc = document.createElement('script');
+      sc.src = src; sc.async = true; sc.onload = res; sc.onerror = function () { delete libLoads[src]; rej(new Error('load')); };
+      document.head.appendChild(sc);
+    });
+    return libLoads[src];
+  }
+  function ocr(imageOrCanvas, label) {
+    return loadScript(LIBS.ocr).then(function () {
+      return window.Tesseract.recognize(imageOrCanvas, 'eng', { logger: function (m) {
+        if (m && m.status === 'recognizing text') say('rpFileStatus', 'Reading ' + label + ': ' + Math.round((m.progress || 0) * 100) + '%');
+        else if (m && /loading/.test(m.status || '')) say('rpFileStatus', 'Getting the text-reading tool ready. This happens once.');
+      } });
+    }).then(function (r) { return (r && r.data && r.data.text) || ''; });
+  }
+  function pdfText(buf) {
+    return loadScript(LIBS.pdf).then(function () {
+      var lib = window.pdfjsLib; lib.GlobalWorkerOptions.workerSrc = LIBS.pdfWorker;
+      return lib.getDocument({ data: buf }).promise;
+    }).then(function (doc) {
+      var n = Math.min(doc.numPages, 8), pages = [], chain = Promise.resolve();
+      for (var i = 1; i <= n; i++) (function (i) {
+        chain = chain.then(function () { return doc.getPage(i); }).then(function (pg) {
+          return pg.getTextContent().then(function (tc) {
+            var lines = [], lastY = null, cur = '';
+            tc.items.forEach(function (it) {
+              var y = it.transform ? Math.round(it.transform[5]) : 0;
+              if (lastY !== null && Math.abs(y - lastY) > 3) { lines.push(cur); cur = ''; }
+              cur += (cur ? ' ' : '') + it.str; lastY = y;
+            });
+            if (cur) lines.push(cur);
+            var txt = lines.join('\n');
+            if (txt.replace(/\s/g, '').length >= 40) { pages.push(txt); return; }
+            var vp = pg.getViewport({ scale: 2 }), cv = document.createElement('canvas');
+            cv.width = vp.width; cv.height = vp.height;
+            return pg.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise.then(function () { return ocr(cv, 'page ' + i); }).then(function (t) { pages.push(t); });
+          });
+        });
+      })(i);
+      return chain.then(function () { return pages.join('\n'); });
+    });
+  }
+  $('rpFile').addEventListener('change', function () {
+    var f = this.files && this.files[0]; if (!f) return;
+    var input = this;
+    if (f.size > 15 * 1024 * 1024) { say('rpFileStatus', 'That file is too large (over 15 MB). Paste the text instead.', true); input.value = ''; return; }
+    say('rpFileStatus', 'Reading your report on this device...');
+    var isPdf = /pdf$/i.test(f.type) || /\.pdf$/i.test(f.name);
+    var job = isPdf ? new Promise(function (res, rej) { var fr = new FileReader(); fr.onload = function () { res(fr.result); }; fr.onerror = rej; fr.readAsArrayBuffer(f); }).then(pdfText) : ocr(f, 'photo');
+    job.then(function (text) {
+      text = (text || '').trim();
+      if (text.replace(/\s/g, '').length < 20) { say('rpFileStatus', 'Could not read any text. Try a clearer photo, or paste the text.', true); return; }
+      $('rpText').value = text.slice(0, 20000);
+      $('rpFind').click();
+      say('rpFileStatus', 'Done. Check every number below against your report.');
+    }).catch(function () {
+      say('rpFileStatus', 'Could not read this file here (it may be locked, or the reading tool could not load). Paste the text instead.', true);
+    }).then(function () { input.value = ''; });
+  });
+  if (inFrameEarly()) { $('rpFileRow').hidden = true; }
+  function inFrameEarly() { try { return window.top !== window.self; } catch (e) { return true; } }
+
+  /* ---------- optional, consent-based sharing with the test team ---------- */
+  var SHARE_URL = '';
+  function sharePayload() {
+    var sn = snapshot(), v = {};
+    Object.keys(sn.v).forEach(function (k) { if (!/^ec-/.test(k) && !/name/i.test(k)) v[k] = sn.v[k]; });
+    var code = '';
+    try { code = localStorage.getItem('fhp-test-code') || ''; } catch (e) {}
+    if (!code) { code = 'FHP-' + Math.random().toString(36).slice(2, 8).toUpperCase(); try { localStorage.setItem('fhp-test-code', code); } catch (e) {} }
+    return {
+      code: code, sentAt: new Date().toISOString(), version: APP_VERSION, consent: true,
+      feedback: { clear: $('fbClear').value, match: $('fbMatch').value, comments: $('fbText').value.trim().slice(0, 1500) },
+      profile: v,
+      family: sn.family.map(function (m) { return { rel: m.rel, cond: m.cond, evAge: m.evAge, cAge: m.cAge }; }),
+      results: lastOut ? {
+        cards: lastOut.cards.map(function (c) { return { title: c.title, level: c.level, headline: c.headline.replace(/<[^>]*>/g, '') }; }),
+        tests: lastOut.tests.map(function (t) { return { name: t.name, when: t.when }; })
+      } : null
+    };
+  }
+  window.__sharePayload = sharePayload;
+  if (SHARE_URL && !inFrameEarly()) {
+    $('shareBox').hidden = false;
+    var syncShare = function () { $('shareSend').disabled = !($('shareOk').checked && lastOut); };
+    $('shareOk').addEventListener('change', syncShare);
+    $('shareSend').addEventListener('click', function () {
+      if (!$('shareOk').checked || !lastOut) { say('shareStatus', 'Tick the box first, and make sure results are showing.', true); return; }
+      var pl = sharePayload();
+      $('shareSend').disabled = true;
+      fetch(SHARE_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(pl) }).then(function () {
+        say('shareStatus', 'Sent. Thank you.');
+        $('shareCode').textContent = 'Your test code is ' + pl.code + '. Quote it if you want your answers deleted.';
+      }).catch(function () { say('shareStatus', 'Could not send. Check your internet and try again.', true); }).then(function () { $('shareSend').disabled = false; });
+    });
+  }
+
   /* ---------- read values from pasted report text ---------- */
   var RP = [
     { id: 'hb', label: 'Haemoglobin (g/dL)', name: /h(?:a)?emoglobin|(?:^|[^a-z])hgb(?:[^a-z]|$)|(?:^|[^a-z])hb(?:[^a-z0-9]|$)/i, skip: /a1c|glyc|mch|mean corp|electro|hba/i, min: 2, max: 25, unit: /g\s*\/\s*dl|gm\s*%|g\/l/i },
-    { id: 'a1c', label: 'HbA1c (%)', name: /hb\s*a1c|hba1c|glyc(?:o)?sylated\s+h(?:a)?emoglobin|glycated\s+h(?:a)?emoglobin|(?:^|[^a-z])a1c/i, skip: /estimated|eag/i, min: 3, max: 18, unit: /%/ },
+    { id: 'a1c', label: 'HbA1c (%)', name: /hb\s*a[1l]c|hba[1l]c|glyc(?:o)?sylated\s+h(?:a)?emoglobin|glycated\s+h(?:a)?emoglobin|(?:^|[^a-z])a1c/i, skip: /estimated|eag/i, min: 3, max: 18, unit: /%/ },
     { id: 'ldl', label: 'LDL cholesterol (mg/dL)', name: /(?:^|[^a-z])ldl/i, skip: /vldl|ratio|hdl\s*\/|\/\s*hdl/i, min: 10, max: 500, unit: /mg\s*\/\s*dl/i, bad: /mmol/i },
     { id: 'creat', label: 'Creatinine (mg/dL)', name: /creatinine/i, skip: /urine|clearance|ratio|albumin|egfr|24\s*h/i, min: 0.2, max: 15, unit: /mg\s*\/\s*dl/i, bad: /µmol|umol|micromol/i },
     { id: 'tsh', label: 'TSH (mIU/L)', name: /(?:^|[^a-z])tsh(?:[^a-z]|$)|thyroid\s+stimulating\s+hormone/i, skip: /receptor|antibod/i, min: 0.01, max: 150, unit: /m?i?u\s*\/\s*m?l/i },
@@ -2328,8 +2441,12 @@ details.fold .section-head p { margin-bottom: 4px; }
   });
 
   /* ---------- version, changes, environment ---------- */
-  var APP_VERSION = '1.1.0', RULES_DATE = '13 Nov 2026';
+  var APP_VERSION = '1.2.0', RULES_DATE = '13 Nov 2026';
   var CHANGES = [
+    ['1.2.0 · 15 Nov 2026', [
+      'Lab reports can now be read from a PDF or a photo, on your own device',
+      'Optional, consent-based sharing of answers and results with the test team (private Google Sheet, no names or phone numbers)'
+    ]],
     ['1.1.0 · 13 Nov 2026', [
       'Results are now short cards you can filter: You, From family, From illnesses you have. Details fold away under "Why we say this"',
       'New section: what illnesses you already have can lead to',

@@ -47,6 +47,12 @@ t('low haemoglobin for a woman', () => { const a = make(); a.set('age', 29); a.s
 t('national cancer screening appears from 30 only', () => { const a = make(); a.set('age', 29); eq(a.level('Cancer screening for your age'), null); a.set('age', 30); yes(a.level('Cancer screening for your age') !== null); });
 t('age 30 to 34 gets the Indian diabetes screening advice', () => { const a = make(); a.set('age', 32); yes(/screens everyone from 30/.test(a.text())); });
 t('every tag with a known source is a link', () => { const a = make(); a.set('age', 45); a.set('sex', 'F'); yes(a.d.querySelectorAll('.tag a').length > 5); });
+t('share payload leaves out names, emergency card and report text', () => {
+  const a = make(); a.set('age', 40); a.set('ec-name', 'Secret Person'); a.set('fbWho', 'Mom'); a.set('rpText', 'Haemoglobin 9'); a.fam('father', ['dm'], 50);
+  const pl = JSON.stringify(a.d.defaultView.__sharePayload());
+  yes(!/Secret Person|Mom|Haemoglobin 9/.test(pl)); yes(/"age":"40"/.test(pl)); yes(/"rel":"father"/.test(pl));
+});
+t('report reader has a file chooser for PDF and photos', () => { const a = make(); yes(a.$('rpFile') && /pdf/.test(a.$('rpFile').accept) && /image/.test(a.$('rpFile').accept)); });
 t('tests are grouped by priority', () => { const a = make(); a.set('age', 38); a.fam('father', ['dm', 'cvd'], 52); yes(a.d.querySelector('.grp') !== null); });
 t('linked relative uses the saved profile', () => {
   const a = make();
@@ -99,7 +105,7 @@ t('backup code round trip adds profiles and renames clashes', () => {
 });
 t('backup import rejects junk and does not break', () => { const a = make(); a.$('bkIn').value = 'FHP1.not-base64!!'; a.$('bkImport').click(); yes(/could not be read|does not look/.test(a.$('bkStatus').textContent)); a.$('bkIn').value = 'hello'; a.$('bkImport').click(); yes(/does not look like/.test(a.$('bkStatus').textContent)); });
 t('find care section has Tele-MANAS and emergency numbers', () => { const a = make(); const x = a.$('careBox').textContent; yes(/14416/.test(x) && /112/.test(x) && /eSanjeevani/.test(x)); });
-t('version is 1.1.0', () => { const a = make(); yes(/version 1\.1\.0/.test(a.$('foot').textContent)); });
+t('version is 1.2.0', () => { const a = make(); yes(/version 1\.2\.0/.test(a.$('foot').textContent)); });
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);

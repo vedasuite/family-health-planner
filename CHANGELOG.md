@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0 - 15 Nov 2026
+- Lab reports can be read from a PDF or a photo, on the device (pdf.js and Tesseract, loaded only when used).
+- Optional, consent-based sharing of answers and results with the test team (private Google Sheet via receiver.gs; no names, phone numbers or report content).
+- Privacy page updated.
+
 ## 1.1.0 - 13 Nov 2026
 - Results are short cards, filterable by You / From family / From illnesses you have; details fold under "Why we say this".
 - New section on what existing illnesses can lead to.
